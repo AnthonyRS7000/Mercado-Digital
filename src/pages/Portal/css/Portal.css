@@ -1,0 +1,8 @@
+.portal {
+  display: flex;
+}
+
+.portal-content {
+  flex: 1;
+  padding: 20px;
+}

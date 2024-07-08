@@ -1,0 +1,48 @@
+/* src/pages/Portal/components/css/ProductList.css */
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 18%;
+  text-align: center;
+}
+
+.product-card img {
+  width: 75%; /* Ajusta el ancho al 100% del contenedor */
+  height: 100px; /* Fija la altura a 200px */
+  object-fit: cover; /* Asegura que la imagen cubra completamente el área */
+  border-radius: 10px;
+}
+
+.product-card h3 {
+  font-size: 18px;
+  color: #333;
+  margin: 10px 0;
+}
+
+.product-card p {
+  font-size: 16px;
+  color: #666;
+}
+
+.product-card button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 15px; /* Agrega un margen superior al botón */
+}
+
+.product-card button:hover {
+  background-color: #0056b3;
+}

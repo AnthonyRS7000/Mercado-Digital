@@ -1,0 +1,50 @@
+/* src/styles/css/MiCuenta.module.css */
+
+/* Dropdown container */
+.navbarDropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown content */
+  .navbarDropdownContent {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: -50%; 
+  }
+  
+  /* Links inside the dropdown */
+  .navbarDropdownContent a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Show the dropdown menu on hover */
+  .navbarDropdown:hover .navbarDropdownContent {
+    display: block;
+  }
+  
+  /* Hover effect for dropdown links */
+  .navbarDropdownContent a:hover {
+    background-color: #ddd; /* Change to desired hover color */
+    color: #2f7ed3; /* Change to desired hover text color */
+  }
+  
+  /* Mi cuenta link */
+  .navbarDropdownLink {
+    color: white; /* Mantener el color blanco para Mi cuenta */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  
+  .navbarDropdownLink i {
+    margin-right: 8px; /* Ajusta el espacio entre el icono y el texto */
+  }
+  

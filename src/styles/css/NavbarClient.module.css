@@ -1,0 +1,109 @@
+/* src/styles/css/NavbarClient.module.css */
+
+/* Navbar contenedor */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px; /* Ajusta el padding según sea necesario */
+  background-color: #2f7ed3;
+  color: white;
+  height: 60px; /* Modifica la altura de la barra de navegación aquí */
+}
+
+/* Logo de la navbar */
+.navbarLogo img {
+  height: 110px; /* Ajusta la altura del logo aquí */
+}
+
+/* Contenedor de búsqueda */
+.navbarSearch {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-right: 400px; /* Ajusta el margen derecho para posicionar la búsqueda */
+  background-color: white;
+  border-radius: 20px;
+  padding: 6px;
+  max-width: 600px; /* Ajusta la anchura máxima del contenedor de búsqueda aquí */
+}
+
+/* Select de categorías */
+.navbarCategories {
+  padding: 5px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  background-color: white;
+}
+
+/* Input de búsqueda */
+.navbarInput {
+  flex: 1;
+  padding: 5px;
+  margin: 0 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 0;
+  background-color: white;
+}
+
+/* Botón de búsqueda */
+.navbarSearchButton {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  background-color: white;
+  color: #2f7ed3;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.navbarSearchButton .fa-search {
+  font-size: 14px;
+}
+
+/* Contenedor de enlaces */
+.navbarLinks {
+  display: flex;
+  align-items: center;
+}
+
+/* Enlaces de la navbar */
+.navbarLink {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 16px; /* Aumenta el tamaño de la fuente */
+  display: flex;
+  align-items: center;
+  padding: 10px; /* Aumenta el tamaño del botón */
+}
+
+.navbarLink:hover {
+  text-decoration: underline;
+}
+
+/* Iconos de los enlaces */
+.navbarLink i {
+  margin-right: 10px; /* Ajusta el espacio entre el icono y el texto */
+  font-size: 20px; /* Aumenta el tamaño del icono */
+}
+
+/* Contador del carrito */
+.navbarCartCount {
+  background-color: white;
+  color: #2f7ed3;
+  border-radius: 50%;
+  padding: 4px 8px; /* Aumenta el tamaño del padding */
+  margin-left: 5px;
+  font-size: 14px; /* Aumenta el tamaño de la fuente */
+}
+
+/* Ajustes generales para que todos los elementos se vean como una barra unificada */
+.navbarCategories,
+.navbarInput,
+.navbarSearchButton {
+  border: none;
+  outline: none;
+}
