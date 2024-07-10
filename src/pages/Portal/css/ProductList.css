@@ -46,3 +46,15 @@
 .product-card button:hover {
   background-color: #0056b3;
 }
+
+/* src/pages/Portal/components/css/ProductList.css */
+.product-quantity {
+  width: 50px; /* Ancho del input */
+  margin-bottom: 10px; /* Margen inferior para separación */
+  text-align: center; /* Centra el texto en el input */
+  padding: 5px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de la fuente */
+  border: 1px solid #ccc; /* Borde del input */
+  border-radius: 5px; /* Esquinas redondeadas */
+}
+

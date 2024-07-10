@@ -1,0 +1,55 @@
+/* src/styles/css/Carrito.module.css */
+
+.carrito {
+  padding: 20px;
+}
+
+.cartItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.cartItemImage {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.cartItemInfo {
+  flex: 1;
+}
+
+.cartItemInfo h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.cartItemInfo p {
+  margin: 5px 0;
+}
+
+.cartItemInfo input {
+  width: 50px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.cartItemInfo button {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cartItemInfo button:hover {
+  background-color: #ff1a1a;
+}

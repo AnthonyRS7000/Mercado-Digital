@@ -1,56 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import bdMercado from '../services/bdMercado'; // Importa el servicio para obtener categorías
+// src/components/ClientNavbar.jsx
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import MiCuenta from '../pages/Portal/components/MiCuenta';
 import styles from '../styles/css/NavbarClient.module.css';
 import logo from '../../public/Logo.svg';
-import MiCuenta from '../pages/Portal/components/MiCuenta'; // Importa el componente MiCuenta
 
 const ClientNavbar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await bdMercado.get('/v1/categorias');
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    if (onSearch) {
-      onSearch(searchTerm);
-    }
-    navigate('/'); // Navega a la página principal para mostrar los resultados
-  }, [searchTerm, onSearch, navigate]);
+  const { user } = useContext(AuthContext);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (onSearch) {
-      onSearch(searchTerm);
-    }
+    onSearch(searchTerm);
     navigate('/'); // Navega a la página principal para mostrar los resultados
   };
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.navbarLogo} onClick={() => window.location.reload()}>
+      <div className={styles.navbarLogo}>
         <img src={logo} alt="Logo" />
       </div>
       <div className={styles.navbarSearch}>
         <select className={styles.navbarCategories}>
-          <option value="">Todas las categorías</option>
-          {categories.map(category => (
-            <option key={category.id} value={category.id}>
-              {category.nombre}
-            </option>
-          ))}
+          <option>Todas las categorías</option>
         </select>
         <input
           type="text"
@@ -64,10 +38,14 @@ const ClientNavbar = ({ onSearch }) => {
         </button>
       </div>
       <div className={styles.navbarLinks}>
-        <a className={styles.navbarLink} href="/orders">
+        <Link className={styles.navbarLink} to="/orders">
           <i className="fas fa-box"></i> Mis pedidos
-        </a>
-        <MiCuenta /> {/* Usa el componente MiCuenta */}
+        </Link>
+        <MiCuenta />
+        <Link className={styles.navbarLink} to="/carrito">
+          <i className="fas fa-shopping-cart"></i>
+          <span className={styles.navbarCartCount}>5</span>
+        </Link>
       </div>
     </nav>
   );

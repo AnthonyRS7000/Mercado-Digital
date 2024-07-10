@@ -1,9 +1,9 @@
+// src/App.jsx
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Portal from './pages/Portal/Portal';
 import Register from './pages/Register';
 import LoginAdmin from './pages/LoginAdmin';
-// import Cliente from './pages/Portal/LoginCliente';
 import AdminLayout from './layouts/AdminLayout';
 import VenderProducto from './pages/Proveedor/VenderProducto';
 import AlistarPedido from './pages/Personal/AlistarPedido';
@@ -12,14 +12,15 @@ import RegistrarProveedor from './pages/Proveedor/RegistrarProveedor';
 import RegistrarDelivery from './pages/Delivery/RegistrarDelivery';
 import RegistrarPersonal from './pages/Personal/RegistrarPersonal';
 import ClientLayout from './layouts/ClientLayout';
+import Carrito from './pages/Portal/components/Carrito';
 
 const App = () => {
   return (
     <Routes>
-      {/* <Route path="/logincliente" element={<Cliente />} /> */}
       <Route path="/login" element={<LoginAdmin />} />
       <Route path="/" element={<ClientLayout />}>
         <Route index element={<Portal />} />
+        <Route path="/carrito" element={<Carrito />} />
       </Route>
       <Route path="/register/proveedor" element={<Register tipo="proveedor" />} />
       <Route path="/register/delivery" element={<Register tipo="delivery" />} />

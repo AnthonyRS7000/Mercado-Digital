@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import bdMercado from '../../services/bdMercado';
 import styles from './css/LoginCliente.module.css';
@@ -10,6 +11,7 @@ import logo from '../../../public/Logo.svg';
 const LoginModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +29,21 @@ const LoginModal = ({ isOpen, onClose }) => {
       localStorage.setItem('token', token);
       login(userData);
       onClose();
+
+      // Redirigir según el rol
+      if (userData.num_rol === 2) {
+        navigate('/admin/vender-producto');
+      } else if (userData.num_rol === 3) {
+        navigate('/admin/alistar-pedido');
+      } else if (userData.num_rol === 4) {
+        navigate('/admin/entregar-pedido');
+      } else if (userData.num_rol === 20) {
+        navigate('/admin/dashboard');
+      } else if (userData.num_rol === 1) {
+        window.location.reload();
+      } else {
+        navigate('/portal');
+      }
     } catch (error) {
       console.error('Error logging in:', error);
     }
