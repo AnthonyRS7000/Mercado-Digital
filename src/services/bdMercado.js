@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, refreshToken } from './authService'; // Asume que tienes un servicio para manejar los tokens
+import { getToken, getUserId, refreshToken } from './authService';
 
 const bdMercado = axios.create({
   baseURL: 'http://127.0.0.1:8000/api',
@@ -8,8 +8,15 @@ const bdMercado = axios.create({
 bdMercado.interceptors.request.use(
   async config => {
     const token = getToken();
+    const userId = getUserId();
+    console.log('Using token:', token);
+    console.log('Using userId:', userId); // Imprimir el user_id que se está utilizando
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (userId) {
+      config.params = config.params || {};
+      config.params.userId = userId;
     }
     return config;
   },
@@ -26,7 +33,7 @@ bdMercado.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const newToken = await refreshToken(); // Lógica para obtener un nuevo token
+      const newToken = await refreshToken();
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
       return bdMercado(originalRequest);
     }

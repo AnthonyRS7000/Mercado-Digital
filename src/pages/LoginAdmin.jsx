@@ -43,7 +43,7 @@ const LoginAdmin = () => {
       } else if (userData.num_rol === 20) {
         navigate('/admin/dashboard');
       } else {
-        navigate('/portal');
+        navigate('/');
       }
     } catch (error) {
       console.error('Error logging in:', error);

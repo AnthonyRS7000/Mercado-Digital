@@ -22,14 +22,30 @@ const LoginModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     try {
       const response = await bdMercado.post('/login', formData);
+      console.log('Response:', response.data); // Imprimir toda la respuesta
+  
       const userData = response.data.user;
       const token = response.data.access_token;
-
+      const userId = userData.related_data.user_id; // Acceder correctamente al user_id dentro de related_data
+  
+      console.log('Token:', token); // Imprimir el token
+      console.log('UserId:', userId); // Imprimir el userId
+  
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', token);
-      login(userData);
+      localStorage.setItem('user_id', userId); // Almacena el user_id
+  
+      login(userData); // Pasar userData al contexto de autenticación
+  
+      // Realizar la combinación de carritos
+      const uuid = localStorage.getItem('carrito_uuid');
+      if (uuid) {
+        await bdMercado.post('/carrito/merge', { uuid, user_id: userId });
+        localStorage.removeItem('carrito_uuid');
+      }
+  
       onClose();
-
+  
       // Redirigir según el rol
       if (userData.num_rol === 2) {
         navigate('/admin/vender-producto');

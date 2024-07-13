@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import bdMercado from '../../../../services/bdMercado';
+import { v4 as uuidv4 } from 'uuid';
 import './css/Modal.css';
 
 const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) => {
@@ -36,7 +37,12 @@ const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) =>
 
   const handleAddWeight = async () => {
     try {
-      const uuid = localStorage.getItem('carrito_uuid');
+      let uuid = localStorage.getItem('carrito_uuid');
+      if (!uuid) {
+        uuid = uuidv4();
+        localStorage.setItem('carrito_uuid', uuid);
+      }
+
       const response = await bdMercado.post('/carrito/agregar', {
         producto_id: productId,
         cantidad: parseFloat(weight),
