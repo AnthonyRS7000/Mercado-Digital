@@ -21,26 +21,20 @@ const RegistrarProducto = ({ show, handleClose, refreshProducts }) => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await bdMercado.get(`/v1/proveedor/${user?.related_data?.id}`);
-        setCategorias(response.data.categorias);
+        if (user?.related_data?.id) {
+          const response = await bdMercado.get(`/v1/proveedor/${user.related_data.id}`);
+          setCategorias(response.data.categorias);
+        } else {
+          const response = await bdMercado.get('/v1/categorias');
+          setCategorias(response.data);
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
 
-    if (user?.related_data?.id) {
+    if (user) {
       fetchCategorias();
-    } else {
-      // Handle case when user is admin and doesn't have related_data
-      const fetchAllCategorias = async () => {
-        try {
-          const response = await bdMercado.get('/v1/categorias');
-          setCategorias(response.data);
-        } catch (error) {
-          console.error('Error fetching categories:', error);
-        }
-      };
-      fetchAllCategorias();
     }
   }, [user]);
 

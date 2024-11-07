@@ -1,0 +1,26 @@
+.pedidoContainer {
+    padding: 20px;
+  }
+  
+  .cartDetails {
+    margin-bottom: 20px;
+  }
+  
+  .actions {
+    text-align: center;
+  }
+  
+  .actionButton {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .actionButton:hover {
+    background: #0056b3;
+  }
+  

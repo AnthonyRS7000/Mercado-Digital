@@ -1,37 +1,73 @@
 import React, { createContext, useState, useEffect } from 'react';
+import bdMercado from '../services/bdMercado';
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  const login = async (userData) => {
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        if (user) {
+          const response = await bdMercado.get(`/carrito/user/${user.related_data.user_id}`);
+          setCartCount(response.data.productos.length);
+        } else {
+          const uuid = localStorage.getItem('carrito_uuid');
+          if (uuid) {
+            const response = await bdMercado.get(`/carrito/uuid/${uuid}`);
+            setCartCount(response.data.productos.length);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cart count:', error);
+        setCartCount(0);
+      }
+    };
+
+    fetchCartCount();
+  }, [user]);
+
+  const login = (userData) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('access_token', userData.token); // Asegúrate de que el token se guarda correctamente
-    localStorage.removeItem('carrito_uuid'); // Elimina el uuid del carrito del almacenamiento local
-
-    if (userData.carrito_uuid) {
-      localStorage.setItem('carrito_uuid', userData.carrito_uuid); // Guarda el uuid del carrito del usuario autenticado
-    }
+    // Fetch cart count after login
+    const fetchCartCount = async () => {
+      try {
+        const response = await bdMercado.get(`/carrito/user/${userData.related_data.user_id}`);
+        setCartCount(response.data.productos.length);
+      } catch (error) {
+        console.error('Error fetching cart count after login:', error);
+      }
+    };
+    fetchCartCount();
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('data');
+    localStorage.removeItem('token');
     localStorage.removeItem('carrito_uuid');
+    // Reset cart count on logout
+    setCartCount(0);
+    // Eliminar cualquier otro dato relacionado con el usuario si es necesario
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, cartCount, setCartCount }}>
       {children}
     </AuthContext.Provider>
   );

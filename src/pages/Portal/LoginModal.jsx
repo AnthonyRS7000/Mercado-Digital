@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { DataContext } from '../../context/DataContext';
 import bdMercado from '../../services/bdMercado';
 import styles from './css/LoginCliente.module.css';
 import logo from '../../../public/Logo.svg';
@@ -11,6 +12,7 @@ import logo from '../../../public/Logo.svg';
 const LoginModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const { login } = useContext(AuthContext);
+  const { saveData } = useContext(DataContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,44 +24,35 @@ const LoginModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     try {
       const response = await bdMercado.post('/login', formData);
-      console.log('Response:', response.data); // Imprimir toda la respuesta
-  
-      const userData = response.data.user;
+      console.log('Response:', response.data);
+
+      const userData = response.data;
       const token = response.data.access_token;
-      const userId = userData.related_data.user_id; // Acceder correctamente al user_id dentro de related_data
-  
-      console.log('Token:', token); // Imprimir el token
-      console.log('UserId:', userId); // Imprimir el userId
-  
-      localStorage.setItem('user', JSON.stringify(userData));
+      const userId = userData.user.related_data ? userData.user.related_data.user_id : null;
+
+      console.log('Token:', token);
+      console.log('UserId:', userId);
+
+      localStorage.setItem('data', JSON.stringify(userData));
       localStorage.setItem('token', token);
-      localStorage.setItem('user_id', userId); // Almacena el user_id
-  
-      login(userData); // Pasar userData al contexto de autenticación
-  
-      // Realizar la combinación de carritos
-      const uuid = localStorage.getItem('carrito_uuid');
-      if (uuid) {
-        await bdMercado.post('/carrito/merge', { uuid, user_id: userId });
-        localStorage.removeItem('carrito_uuid');
+
+      saveData(userData);
+      login(userData.user);
+
+      if (userId) {
+        const uuid = localStorage.getItem('carrito_uuid');
+        if (uuid) {
+          try {
+            const mergeResponse = await bdMercado.post('/carrito/merge', { uuid, user_id: userId });
+            console.log('Merge Response:', mergeResponse.data);
+            localStorage.removeItem('carrito_uuid');
+          } catch (mergeError) {
+            console.error('Error merging cart:', mergeError);
+          }
+        }
       }
-  
+
       onClose();
-  
-      // Redirigir según el rol
-      if (userData.num_rol === 2) {
-        navigate('/admin/vender-producto');
-      } else if (userData.num_rol === 3) {
-        navigate('/admin/alistar-pedido');
-      } else if (userData.num_rol === 4) {
-        navigate('/admin/entregar-pedido');
-      } else if (userData.num_rol === 20) {
-        navigate('/admin/dashboard');
-      } else if (userData.num_rol === 1) {
-        window.location.reload();
-      } else {
-        navigate('/portal');
-      }
     } catch (error) {
       console.error('Error logging in:', error);
     }

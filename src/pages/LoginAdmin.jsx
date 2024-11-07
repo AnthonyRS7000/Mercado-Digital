@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bdMercado from '../services/bdMercado';
 import { AuthContext } from '../context/AuthContext';
+import { DataContext } from '../context/DataContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import '../styles/css/LoginAdmin.css';
@@ -10,6 +11,7 @@ const LoginAdmin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+  const { saveData } = useContext(DataContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,27 +25,50 @@ const LoginAdmin = () => {
     e.preventDefault();
     try {
       const response = await bdMercado.post('/login', formData);
-      const userData = response.data.user;
+      const userData = response.data;
+
+      console.log('Response:', userData);
+
       const token = response.data.access_token;
-      
-      // Guardar usuario y token en el localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
+      const userId = userData.user.id; // Asegúrate de obtener el user_id del objeto user principal
+
+      console.log('Token:', token);
+      console.log('UserId:', userId);
+
+      localStorage.setItem('data', JSON.stringify(userData));
       localStorage.setItem('token', token);
 
-      // Llamar a la función login del contexto
-      login(userData);
+      saveData(userData);
+      login(userData.user);
+
+      const uuid = localStorage.getItem('carrito_uuid');
+      if (uuid && userData.user.related_data) { // Manejar carrito solo si hay related_data
+        try {
+          const mergeResponse = await bdMercado.post('/carrito/merge', { uuid, user_id: userData.user.related_data.user_id });
+          console.log('Merge Response:', mergeResponse.data);
+          localStorage.removeItem('carrito_uuid');
+        } catch (mergeError) {
+          console.error('Error merging cart:', mergeError);
+        }
+      }
 
       // Redirigir según el rol
-      if (userData.num_rol === 2) {
-        navigate('/admin/vender-producto');
-      } else if (userData.num_rol === 3) {
-        navigate('/admin/alistar-pedido');
-      } else if (userData.num_rol === 4) {
-        navigate('/admin/entregar-pedido');
-      } else if (userData.num_rol === 20) {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/');
+      switch (userData.user.num_rol) {
+        case 2:
+          navigate('/admin/vender-producto');
+          break;
+        case 3:
+          navigate('/admin/alistar-pedido');
+          break;
+        case 4:
+          navigate('/admin/entregar-pedido');
+          break;
+        case 20:
+          navigate('/admin/dashboard');
+          break;
+        default:
+          navigate('/');
+          break;
       }
     } catch (error) {
       console.error('Error logging in:', error);

@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import bdMercado from '../../../../services/bdMercado';
 import { v4 as uuidv4 } from 'uuid';
 import './css/Modal.css';
+import { DataContext } from '../../../../context/DataContext';
 
 const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) => {
   const [weight, setWeight] = useState('');
   const [message, setMessage] = useState('');
   const [price, setPrice] = useState(null);
+  const { data } = useContext(DataContext);
 
   useEffect(() => {
     if (weight && productId) {
@@ -36,18 +38,24 @@ const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) =>
   };
 
   const handleAddWeight = async () => {
-    try {
+    let payload = {
+      producto_id: productId,
+      cantidad: parseFloat(weight)
+    };
+
+    if (data && data.user && data.user.related_data) {
+      payload.user_id = data.user.related_data.user_id;
+    } else {
       let uuid = localStorage.getItem('carrito_uuid');
       if (!uuid) {
         uuid = uuidv4();
         localStorage.setItem('carrito_uuid', uuid);
       }
+      payload.uuid = uuid;
+    }
 
-      const response = await bdMercado.post('/carrito/agregar', {
-        producto_id: productId,
-        cantidad: parseFloat(weight),
-        uuid: uuid,
-      });
+    try {
+      const response = await bdMercado.post('/carrito/agregar', payload);
       console.log('Product added to cart:', response.data);
       onClose();
     } catch (error) {

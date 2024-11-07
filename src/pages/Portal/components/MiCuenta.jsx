@@ -1,4 +1,3 @@
-// src/pages/Portal/components/MiCuenta.jsx
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
@@ -20,7 +19,7 @@ const MiCuenta = ({ onLoginClick }) => {
   return (
     <div className={styles.navbarDropdown} onMouseEnter={toggleDropdown} onMouseLeave={toggleDropdown}>
       <a className={styles.navbarDropdownLink} href="#" onClick={toggleDropdown}>
-       <i className="fas fa-user"></i> {user ? user.name : 'Mi cuenta'} <i className="fas fa-chevron-down"></i>
+        <i className="fas fa-user"></i> {user ? user.name : 'Mi cuenta'} <i className="fas fa-chevron-down"></i>
       </a>
       {dropdownOpen && (
         <div className={styles.navbarDropdownContent}>

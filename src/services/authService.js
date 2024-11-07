@@ -1,15 +1,18 @@
-import axios from 'axios';
-
+// src/services/authService.js
 export const getToken = () => {
-  const token = localStorage.getItem('token');
-  console.log('Retrieved token:', token);
-  return token;
+  return localStorage.getItem('token');
 };
 
 export const getUserId = () => {
-  const userId = localStorage.getItem('user_id');
-  console.log('Retrieved userId:', userId);
-  return userId;
+  const user = JSON.parse(localStorage.getItem('data'));
+  return user ? user.user.user_id : null;
+};
+
+
+export const getProveedorId = () => {
+  const proveedorId = localStorage.getItem('proveedor_id');
+  console.log('Retrieved proveedorId:', proveedorId);
+  return proveedorId;
 };
 
 export const refreshToken = async () => {

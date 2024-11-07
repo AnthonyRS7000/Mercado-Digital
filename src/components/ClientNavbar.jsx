@@ -6,11 +6,14 @@ import LoginModal from '../pages/Portal/LoginModal';
 import bdMercado from '../services/bdMercado';
 import styles from '../styles/css/NavbarClient.module.css';
 import logo from '../../public/Logo.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBox, faShoppingCart, faUserTie, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const ClientNavbar = ({ onSearch, onCategorySelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -23,28 +26,43 @@ const ClientNavbar = ({ onSearch, onCategorySelect }) => {
         console.error('Error fetching categories:', error);
       }
     };
-
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchCartCount = async () => {
+      try {
+        let response;
+        if (user?.related_data) {
+          response = await bdMercado.get(`/carrito/user/${user.related_data.user_id}`);
+        } else {
+          const uuid = localStorage.getItem('carrito_uuid');
+          if (uuid) {
+            response = await bdMercado.get(`/carrito/uuid/${uuid}`);
+          }
+        }
+        setCartCount(response?.data?.productos?.length || 0);
+      } catch (error) {
+        console.error('Error fetching cart count:', error);
+        setCartCount(0);
+      }
+    };
+    fetchCartCount();
+  }, [user]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
-    navigate('/'); // Navega a la página principal para mostrar los resultados
+    navigate('/');
   };
 
   const handleLogoClick = () => {
-    navigate('/'); // Navega a la página principal cuando se hace click en el logo
-    onSearch(''); // Limpia el término de búsqueda
+    navigate('/');
+    onSearch('');
   };
 
-  const handleOpenLoginModal = () => {
-    setIsLoginModalOpen(true);
-  };
-
-  const handleCloseLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
+  const handleOpenLoginModal = () => setIsLoginModalOpen(true);
+  const handleCloseLoginModal = () => setIsLoginModalOpen(false);
 
   return (
     <nav className={styles.navbar}>
@@ -63,23 +81,23 @@ const ClientNavbar = ({ onSearch, onCategorySelect }) => {
           className={styles.navbarInput}
           placeholder="Hola, ¿qué estás buscando?"
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            onSearch(e.target.value);
-          }}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button className={styles.navbarSearchButton} onClick={handleSearch}>
-          <i className="fas fa-search"></i>
+          <FontAwesomeIcon icon={faSearch} />
         </button>
       </div>
       <div className={styles.navbarLinks}>
+        <Link className={styles.navbarLink} to="/login">
+          <FontAwesomeIcon icon={faUserTie} /> Proveedor
+        </Link>
         <Link className={styles.navbarLink} to="/orders">
-          <i className="fas fa-box"></i> Mis pedidos
+          <FontAwesomeIcon icon={faBox} /> Mis pedidos
         </Link>
         <MiCuenta onLoginClick={handleOpenLoginModal} />
         <Link className={styles.navbarLink} to="/carrito">
-          <i className="fas fa-shopping-cart"></i>
-          <span className={styles.navbarCartCount}>5</span>
+          <FontAwesomeIcon icon={faShoppingCart} />
+          <span className={styles.navbarCartCount}>{cartCount}</span>
         </Link>
       </div>
       {isLoginModalOpen && <LoginModal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} />}

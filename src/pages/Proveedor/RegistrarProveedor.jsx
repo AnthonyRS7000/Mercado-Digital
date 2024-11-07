@@ -1,8 +1,10 @@
+// src/pages/RegistrarProveedor.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBuilding, faMapMarkerAlt, faIdCard, faPhone, faEnvelope, faLock, faTags } from '@fortawesome/free-solid-svg-icons';
 import bdMercado from '../../services/bdMercado';
 import { AuthContext } from '../../context/AuthContext';
+import ProveedorModal from './ProveedorModal';
 import styles from '../../styles/css/RegistrarProveedor.module.css';
 
 const RegistrarProveedor = () => {
@@ -13,12 +15,14 @@ const RegistrarProveedor = () => {
     direccion: '',
     dni: '',
     celular: '',
-    categoria_ids: [],
+    ids: [],
     email: '',
     password: ''
   });
 
   const [categorias, setCategorias] = useState([]);
+  const [proveedorRegistrado, setProveedorRegistrado] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -35,17 +39,17 @@ const RegistrarProveedor = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'categoria_ids') {
+    if (name === 'ids') {
       const options = e.target.options;
       const selectedValues = [];
       for (let i = 0; i < options.length; i++) {
-        if (options[i].selected && !formData.categoria_ids.includes(parseInt(options[i].value))) {
+        if (options[i].selected && !formData.ids.includes(parseInt(options[i].value))) {
           selectedValues.push(parseInt(options[i].value));
         }
       }
       setFormData({
         ...formData,
-        [name]: [...formData.categoria_ids, ...selectedValues]
+        [name]: [...formData.ids, ...selectedValues]
       });
     } else {
       setFormData({
@@ -58,15 +62,16 @@ const RegistrarProveedor = () => {
   const handleCategoryRemove = (id) => {
     setFormData({
       ...formData,
-      categoria_ids: formData.categoria_ids.filter(catId => catId !== id)
+      ids: formData.ids.filter(catId => catId !== id)
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await bdMercado.post('/v1/proveedor', formData);
-      alert('Proveedor registrado exitosamente');
+      const response = await bdMercado.post('/v1/proveedor', formData);
+      setProveedorRegistrado(response.data.Proveedor);
+      setModalOpen(true);
     } catch (error) {
       console.error('Error registrando proveedor:', error);
     }
@@ -111,16 +116,16 @@ const RegistrarProveedor = () => {
             <input type="text" id="celular" name="celular" value={formData.celular} onChange={handleChange} required />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="categoria_ids">
+            <label htmlFor="ids">
               <FontAwesomeIcon icon={faTags} className={styles.faIcon} /> Categorías
             </label>
-            <select id="categoria_ids" name="categoria_ids" multiple value={formData.categoria_ids} onChange={handleChange} required>
+            <select id="ids" name="ids" multiple value={formData.ids} onChange={handleChange} required>
               {categorias.map(categoria => (
                 <option key={categoria.id} value={categoria.id}>{categoria.nombre}</option>
               ))}
             </select>
             <div className={styles.selectedCategories}>
-              {formData.categoria_ids.map(id => {
+              {formData.ids.map(id => {
                 const categoria = categorias.find(cat => cat.id === id);
                 return (
                   <span key={id} className={styles.categoryTag}>
@@ -146,6 +151,13 @@ const RegistrarProveedor = () => {
           <button type="submit" className={styles.btn}>Registrar</button>
         </form>
       </div>
+      {modalOpen && 
+        <ProveedorModal 
+          open={modalOpen} 
+          onClose={() => setModalOpen(false)} 
+          proveedor={proveedorRegistrado} 
+        />
+      }
     </div>
   );
 };
