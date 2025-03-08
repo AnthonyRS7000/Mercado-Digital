@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faBox, faShippingFast, faUserPlus, faMotorcycle, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faBox, faShippingFast, faUserPlus, faMotorcycle, faUserFriends, faClipboardList, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import '../styles/css/AdminNavbar.css';
 
 const AdminNavbar = () => {
@@ -42,6 +42,14 @@ const AdminNavbar = () => {
             </Link>
           </li>
         )}
+        {/* Nuevo enlace para Pedidos Listos */}
+        {(user?.num_rol === 20 || user?.num_rol === 4) && (
+          <li>
+            <Link to="/admin/pedidos-listos" className="navbar-link">
+              <FontAwesomeIcon icon={faCheckCircle} className="fa-icon" /> <span>Pedidos Listos</span>
+            </Link>
+          </li>
+        )}
         {user?.num_rol === 20 && (
           <>
             <li>
@@ -60,6 +68,13 @@ const AdminNavbar = () => {
               </Link>
             </li>
           </>
+        )}
+        {(user?.num_rol === 20 || user?.num_rol === 2) && (
+          <li>
+            <Link to="/admin/ver-pedidos" className="navbar-link">
+              <FontAwesomeIcon icon={faClipboardList} className="fa-icon" /> <span>Mis Pedidos</span>
+            </Link>
+          </li>
         )}
       </ul>
       <div className="admin-navbar-logout">

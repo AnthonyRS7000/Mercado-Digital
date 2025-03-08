@@ -4,16 +4,17 @@ export const getToken = () => {
 };
 
 export const getUserId = () => {
-  const user = JSON.parse(localStorage.getItem('data'));
-  return user ? user.user.user_id : null;
+  const data = JSON.parse(localStorage.getItem('data'));
+  return data?.user?.related_data?.id || null; // Ajusta según dónde está realmente el ID
 };
 
-
 export const getProveedorId = () => {
-  const proveedorId = localStorage.getItem('proveedor_id');
+  const data = JSON.parse(localStorage.getItem('data'));
+  const proveedorId = data?.user?.related_data?.id || null;
   console.log('Retrieved proveedorId:', proveedorId);
   return proveedorId;
 };
+
 
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refresh_token');

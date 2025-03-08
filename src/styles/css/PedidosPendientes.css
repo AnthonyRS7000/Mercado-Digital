@@ -1,0 +1,100 @@
+body {
+    background-color: #f9fafb;
+    font-family: Arial, sans-serif;
+  }
+  
+  .pedidos-container {
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .pedidos-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #1e40af;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+  }
+  
+  .pedidos-title::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #2563eb;
+    margin: 8px auto 0;
+    border-radius: 2px;
+  }
+  
+  
+  .pedido-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .pedido-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid #ddd;
+  }
+  
+  .pedido-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .pedido-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .pedido-card p {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  .btn-aceptar {
+    display: block;
+    width: 100%;
+    background-color: #2563eb;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-aceptar:hover {
+    background-color: #1e40af;
+  }
+  
+  /* Spinner de carga */
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+  }
+  
+  .loading-icon {
+    font-size: 40px;
+    color: #2563eb;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  

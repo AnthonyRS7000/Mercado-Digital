@@ -12,12 +12,14 @@ import RegistrarDelivery from './pages/Delivery/RegistrarDelivery';
 import RegistrarPersonal from './pages/Personal/RegistrarPersonal';
 import ClientLayout from './layouts/ClientLayout';
 import Carrito from './pages/Portal/components/carrito/Carrito';
-import Pedido from './pages/Portal/Pedido/Pedido'; // Importar la vista de Pedido
-import PedidoSeguimiento from './pages/Portal/Pedido/PedidoSeguimiento'; // Importar la vista de Seguimiento de Pedido
-import ProtectedRoute from './components/ProtectedRoute'; // Importar ProtectedRoute
+import Pedido from './pages/Portal/Pedido/Pedido'; 
+import PedidoSeguimiento from './pages/Portal/Pedido/PedidoSeguimiento'; 
+import ProtectedRoute from './components/ProtectedRoute'; 
+import VerPedidos from './pages/Proveedor/VerPedidos';
+import PedidosListos from './pages/Delivery/PedidosPendientes'; // Nueva importación
 
 const App = () => {
-  return (
+  return (  
     <Routes>
       <Route path="/login" element={<LoginAdmin />} />
       <Route path="/" element={<ClientLayout />}>
@@ -52,6 +54,14 @@ const App = () => {
           } 
         />
         <Route 
+          path="ver-pedidos" 
+          element={
+            <ProtectedRoute>
+              <VerPedidos />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
           path="alistar-pedido" 
           element={
             <ProtectedRoute>
@@ -64,6 +74,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <EntregarPedido />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="pedidos-listos" 
+          element={
+            <ProtectedRoute>
+              <PedidosListos />
             </ProtectedRoute>
           } 
         />
