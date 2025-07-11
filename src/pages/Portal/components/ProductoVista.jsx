@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaMinus, FaPlus, FaArrowLeft, FaStore } from 'react-icons/fa';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import '../css/productovista.css';
+import '../css/Productovista.css';
 import PesoModal from '../components/peso/PesoModal';
 import UnidadModal from '../components/peso/UnidadModal';
 import { DataContext } from '../../../context/DataContext';
