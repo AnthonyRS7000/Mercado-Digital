@@ -64,7 +64,7 @@ const ConfirmarPedido = () => {
           <button
             onClick={async () => {
               try {
-                await axios.put(`http://127.0.0.1:8000/api/confirmar-pedido/${pedido.id}`, {}, {
+                await axios.put(`https://mercado-backend/api/confirmar-pedido/${pedido.id}`, {}, {
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                   }

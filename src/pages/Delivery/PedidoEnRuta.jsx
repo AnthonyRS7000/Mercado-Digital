@@ -66,7 +66,7 @@ const PedidoEnRuta = () => {
 
       if (!deliveryId) throw new Error("No se encontró el ID del delivery");
 
-      const response = await fetch(`http://127.0.0.1:8000/api/pedidos/cancelar/${pedidoId}`, {
+      const response = await fetch(`https://mercado-backend/api/pedidos/cancelar/${pedidoId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

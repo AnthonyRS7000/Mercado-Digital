@@ -24,7 +24,7 @@ const Productovista = () => {
   const { setCartCount } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/productos-uno/${id}`)
+    axios.get(`https://mercado-backend/api/productos-uno/${id}`)
       .then(res => {
         setProducto(res.data.producto);
         setRelacionados(res.data.relacionados);

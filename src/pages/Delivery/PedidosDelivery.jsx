@@ -19,7 +19,7 @@ const PedidosDelivery = () => {
         const userData = JSON.parse(storedUser);
         const deliveryId = userData?.related_data?.id;
 
-        const response = await fetch(`http://127.0.0.1:8000/api/delivery/pedido-activo/${deliveryId}`, {
+        const response = await fetch(`https://mercado-backend/api/delivery/pedido-activo/${deliveryId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -41,7 +41,7 @@ const PedidosDelivery = () => {
 const fetchPedidos = async () => {
   try {
     const token = getToken();
-    const response = await fetch("http://127.0.0.1:8000/api/pedidos/pedidos-delivery", {
+    const response = await fetch("https://mercado-backend/api/pedidos/pedidos-delivery", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const fetchPedidos = async () => {
       const deliveryId = userData?.related_data?.id;
       if (!deliveryId) throw new Error("No se encontró el ID del delivery");
 
-      const response = await fetch(`http://127.0.0.1:8000/api/pedidos/aceptar/${pedidoId}`, {
+      const response = await fetch(`https://mercado-backend/api/pedidos/aceptar/${pedidoId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

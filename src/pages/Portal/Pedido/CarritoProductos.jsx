@@ -46,7 +46,7 @@ const CarritoProductos = () => {
           {cart.productos.map(({ id, cantidad, total, producto }) => (
             <tr key={id}>
               <td>
-                <img src={`http://localhost:8000${producto.imagen}`} alt={producto.nombre} className={styles.productImage} />
+                <img src={`https://mercado-backend${producto.imagen}`} alt={producto.nombre} className={styles.productImage} />
               </td>
               <td>{producto.nombre}</td>
               <td>{producto.precio}</td>

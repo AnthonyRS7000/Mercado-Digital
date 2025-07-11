@@ -18,7 +18,7 @@ const AlistarPedido = () => {
           throw new Error("No se encontró el token de usuario");
         }
 
-        const response = await fetch("http://127.0.0.1:8000/api/pedidos/notificados", {
+        const response = await fetch("https://mercado-backend/api/pedidos/notificados", {
           headers: {
             Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",

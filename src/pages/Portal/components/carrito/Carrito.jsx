@@ -107,7 +107,7 @@ const Carrito = ({ hideFooterOnDesktop }) => {
         {cart.productos.map(({ id, cantidad, producto }) => (
           <div className={styles.cartItem} key={id}>
             <div className={styles.productImgBox} style={{ background: '#f6fafd' }}>
-              <img src={`http://localhost:8000${producto.imagen}`} alt={producto.nombre} />
+              <img src={`https://mercado-backend${producto.imagen}`} alt={producto.nombre} />
             </div>
             <div className={styles.itemDetails}>
               <span className={styles.productName}>{producto.nombre}</span>

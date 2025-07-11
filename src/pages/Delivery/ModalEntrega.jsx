@@ -44,7 +44,7 @@ const ModalEntrega = ({ onClose, pedidoIdProp }) => {
 
     try {
       const token = getToken();
-      const response = await fetch("http://127.0.0.1:8000/api/entregas", {
+      const response = await fetch("https://mercado-backend/api/entregas", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
