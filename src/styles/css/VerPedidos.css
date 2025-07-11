@@ -1,5 +1,4 @@
-
-/* VerPedidos.css */
+/* Estilo base */
 .ver-pedidos-container {
   max-width: 1200px;
   margin: 20px auto;
@@ -12,8 +11,11 @@ h1 {
   text-align: left;
 }
 
+/* Estilo para la tabla */
 .table-container {
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .styled-table {
@@ -25,15 +27,19 @@ h1 {
   background: white;
 }
 
-.styled-table th, .styled-table td {
+.styled-table th,
+.styled-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
   vertical-align: middle;
+  word-break: break-word;
+  white-space: nowrap;
+  height: 60px; /* Fuerza una altura constante en todas las filas */
 }
 
 .styled-table th {
-  background-color: #007bff;
+  background-color: #8B1A1A; /* Paleta de colores azul */
   color: white;
   text-transform: uppercase;
 }
@@ -42,20 +48,31 @@ h1 {
   background-color: #f1f1f1;
 }
 
+/* Estilo para los detalles del producto */
 .producto-detalle {
   margin-bottom: 5px;
 }
 
+/* Corrección para el contenedor de Stock */
 .stock-container {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;  /* Centra tanto el ícono como el texto */
+  gap: 6px;
+  font-size: 15px;  /* Asegura que todo tenga el mismo tamaño */
+  line-height: 1.7;
+  padding: 0;
+  height: 100%;  /* Igual para todas las celdas */
 }
 
 .stock-container i {
-  color: #007bff;
+  font-size: 17px;
+  line-height: 1.2;
+  color: #28a745; /* Paleta de color verde */
+  vertical-align: middle; /* Asegura que el ícono esté centrado */
 }
 
+/* Botón Entregar */
 .btn-entregar {
   background-color: #28a745;
   color: white;
@@ -71,18 +88,44 @@ h1 {
   background-color: #218838;
 }
 
+/* Mensaje cuando no hay pedidos */
+.no-pedidos {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .ver-pedidos-container {
     margin: 10px;
   }
-  .styled-table th, .styled-table td {
+
+  .styled-table th,
+  .styled-table td {
     padding: 10px;
+    font-size: 14px;
+  }
+
+  .stock-container {
+    font-size: 14px;
+  }
+
+  .stock-container i {
     font-size: 14px;
   }
 }
 
 @media (max-width: 600px) {
   .styled-table {
+    font-size: 13px;
+  }
+
+  .stock-container {
+    font-size: 13px;
+  }
+
+  .stock-container i {
     font-size: 13px;
   }
 }

@@ -1,0 +1,113 @@
+/* Contenedor principal de los pedidos */
+.pedidos-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Título principal */
+.pedidos-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.no-pedidos-msg {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  padding: 30px 0;
+}
+
+
+/* Contenedor de los pedidos */
+.pedido-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Contenedor de cada pedido */
+.pedido-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+/* Botón de aceptar pedido */
+.btn-aceptar {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.btn-aceptar:hover {
+  background-color: #45a049;
+}
+
+/* Detalle del pedido aceptado */
+.pedido-detail {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+/* Títulos de los productos dentro del detalle */
+.productos-list {
+  margin-top: 20px;
+}
+
+.productos-list h4 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.productos-list p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Estilos del spinner de carga */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-icon {
+  font-size: 48px;
+  animation: spin 1s infinite linear;
+}
+
+/* Animación del spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mensaje de error */
+.text-red-600 {
+  color: #f44336;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Flexbox para alineación */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}

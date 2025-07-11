@@ -1,115 +1,264 @@
 .seguimiento-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    font-family: 'Arial', sans-serif;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f4e8;
+  border-radius: 10px;
+}
+/* Agregar este CSS en tu archivo .css */
+.wine-spinner {
+  border-color: #800000;
+  color: #800000;
+}
+
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.pedido-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9e2d0;
+}
+
+.estado {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.estado-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #8c1c2c;
+}
+
+.estado-text {
+  font-size: 18px;
+  color: #5a5a5a;
+  font-weight: bold;
+}
+
+.pedido-id {
+  margin-bottom: 10px;
+  color: #5a5a5a;
+}
+
+.pedido-fecha {
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.productos {
+  margin-bottom: 25px;
+}
+
+.productos h3 {
+  margin-bottom: 15px;
+  color: #8c1c2c;
+}
+
+.productos ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.productos li {
+  display: flex;
+  justify-content: space-between;
+  background: #f9f4e8;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.producto-nombre {
+  font-weight: bold;
+  color: #5a5a5a;
+}
+
+.producto-cantidad {
+  color: #666;
+}
+
+/* Timeline styles */
+.timeline {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  position: relative;
+  padding: 0 10px;
+}
+
+/* Línea base gris - Pantalla grande */
+.timeline-progress {
+  position: absolute;
+  top: 25px;
+  left: 80px;
+  height: 12px;  /* Asegúrate de que la altura sea suficiente */
+  background: #8c1c2c;
+  z-index: 1;
+  transition: all 0.3s ease;
+  width: 10px;  /* Este es el tamaño fijo que puedes ajustar */
+  max-width: 80%; /* Evita que se pase del 100% */
+  box-sizing: border-box;
+}
+
+
+
+/* Línea base gris (Ajustada también para reflejar el tamaño) */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: 80px;
+  right: 0;
+  height: 4px;
+  background: #d0c8b9;
+  z-index: 1;
+  width: 80%; /* Asegura que la línea base cubra todo el contenedor */
+}
+
+/* Puedes asignar el progreso dependiendo del estado del pedido */
+
+
+
+.timeline-step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+  z-index: 3;
+}
+
+.timeline-step .timeline-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #d0c8b9;
+  color: white;
+  margin: 0 auto 10px;
+  font-size: 20px;
+}
+
+.timeline-step .timeline-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
+.timeline-step p {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.timeline-step.completed .timeline-icon {
+  background-color: #ffffff;
+  color: #8c1c2c;
+}
+
+.timeline-step.completed p {
+  color: #8c1c2c;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px;
+    height: 330px;
   }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
+
+  .timeline::before {
+    top: 0;
+    bottom: 0;
+    left: 25px;
+    right: auto;
+    width: 4px;
+    height: 100%;
   }
-  
-  .pedido-item {
-    background: #f9f9f9;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .timeline-progress {
+    top: 0;
+    left: 25px;
+    width: 6px !important;
+    height: 100%;
+    transition: height 0.3s ease;
   }
-  
-  .estado {
+
+  /* Progreso en pantalla pequeña */
+  .timeline.step-1 .timeline-progress { height: 0%; }
+  .timeline.step-2 .timeline-progress { height: 25%; }
+  .timeline.step-3 .timeline-progress { height: 50%; }
+  .timeline.step-4 .timeline-progress { height: 75%; }
+  .timeline.step-5 .timeline-progress { height: 100%; }
+
+  .timeline-step {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    width: 10%;
   }
-  
-  .estado-icon {
-    font-size: 24px;
-    margin-right: 10px;
-    color: #007bff;
+
+  .timeline-step .timeline-icon {
+    margin: 0;
+    margin-right: 15px;
   }
-  
-  .estado-text {
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .pedido-fecha {
-    margin-bottom: 10px;
-    color: #666;
-  }
-  
-  .productos {
-    margin-bottom: 20px;
-  }
-  
-  .productos h3 {
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .productos ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .productos li {
-    display: flex;
-    justify-content: space-between;
-    background: #fff;
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .producto-nombre {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .producto-cantidad {
-    color: #666;
-  }
-  
-  .timeline {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .timeline-step {
-    text-align: center;
-    flex: 1;
-    position: relative;
-  }
-  
-  .timeline-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 12px;
-    right: -50%;
-    width: 100%;
-    height: 2px;
-    background: #ddd;
-    z-index: -1;
-  }
-  
-  .timeline-step.completed .timeline-icon,
-  .timeline-step.completed p {
-    color: #007bff;
-  }
-  
-  .timeline-icon {
-    font-size: 24px;
-    margin-bottom: 5px;
-    color: #ccc;
-  }
-  
+
   .timeline-step p {
-    font-size: 14px;
-    color: #ccc;
+    margin-top: 0;
+    font-size: 16px;
+    text-align: left;
   }
-  
+}
+
+@media (max-width: 480px) {
+  .pedido-item {
+    padding: 15px;
+  }
+
+  .timeline-step .timeline-icon {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+  }
+
+  .timeline-step .timeline-icon svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  .timeline::before,
+  .timeline-progress {
+    left: 26px;
+  }
+
+  .productos li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .producto-cantidad {
+    margin-top: 5px;
+  }
+
+  .estado-text {
+    font-size: 16px;
+  }
+}

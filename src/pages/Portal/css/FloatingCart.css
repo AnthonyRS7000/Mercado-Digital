@@ -1,0 +1,72 @@
+.floating-cart {
+  position: fixed;
+  bottom: 2.1rem;
+  right: 1.2rem;
+  z-index: 1111;
+  background: linear-gradient(135deg, #991f44 60%, #b0355a 100%);
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 24px #991f4433, 0 2px 8px #0001;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.18s, background 0.14s;
+  border: none;
+  outline: none;
+  /* Badge relativo a este */
+  position: fixed;
+}
+
+.floating-cart:hover, .floating-cart:focus {
+  box-shadow: 0 6px 32px #b0355a60, 0 2px 8px #991f4422;
+  background: linear-gradient(135deg, #b0355a 60%, #991f44 100%);
+}
+
+.floating-cart-badge {
+  position: absolute;
+  bottom: -4px;    /* Más abajo, ¡ajusta aquí! */
+  left: -4px;      /* Más a la izquierda */
+  background: #ff5858;
+  color: #fff;
+  font-size: 0.97rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 0 0.5em;   /* Menos padding para que no tape */
+  box-shadow: 0 2px 8px #991f4444;
+  border: 2px solid #fff;
+  min-width: 20px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+  transition: background 0.2s, color 0.2s;
+}
+.floating-cart-icon {
+  font-size: 1.8rem;
+  z-index: 5;     /* SIEMPRE encima del badge */
+  position: relative;
+}
+
+/* Opcional: Badge con 0 en color gris y más sutil */
+.floating-cart-badge {
+  background: #743d3d;
+  color: #fff;
+  opacity: 1;
+}
+.floating-cart-badge:empty,
+.floating-cart-badge[data-count="0"] {
+  background: #ccc;
+  color: #fff;
+  opacity: 0.75;
+}
+
+@media (min-width: 900px) {
+  .floating-cart {
+    display: none;
+  }
+}

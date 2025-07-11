@@ -3,199 +3,193 @@ import { useNavigate } from 'react-router-dom';
 import bdMercado from '../../../../services/bdMercado';
 import { AuthContext } from '../../../../context/AuthContext';
 import QuantityModal from './QuantityModal';
-import LoginModal from '../../LoginModal'; // Importar LoginModal
+import LoginModal from '../../LoginModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
-import '../../css/Carrito.css';
+import { faShoppingCart, faMinus, faPlus, faTrash, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import styles from '../../css/Carrito.module.css';
 
-const Carrito = () => {
+const Carrito = ({ hideFooterOnDesktop }) => {
   const [cart, setCart] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const { user, setCartCount } = useContext(AuthContext);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const { user, cartCount, setCartCount, cartRefreshTrigger, guestUuid } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Traer carrito
   const fetchCart = async () => {
     try {
       let response;
-      if (user && user.related_data) {
+      if (user?.related_data) {
         const userId = user.related_data.user_id;
         response = await bdMercado.get(`/carrito/user/${userId}`);
       } else {
-        const uuid = localStorage.getItem('carrito_uuid');
-        if (uuid) {
-          response = await bdMercado.get(`/carrito/uuid/${uuid}`);
-        }
+        if (guestUuid) response = await bdMercado.get(`/carrito/uuid/${guestUuid}`);
       }
-  
-      if (response) {
+      if (response?.data) {
         setCart(response.data);
-        setCartCount(response.data.productos.length); // Actualiza el contador global del carrito
+        setCartCount(response.data.productos.length);
       } else {
         setCart({ productos: [] });
-        setCartCount(0); // Actualiza el contador global del carrito
+        setCartCount(0);
       }
     } catch (error) {
-      console.error('Error fetching cart:', error);
       setCart({ productos: [] });
-      setCartCount(0); // Actualiza el contador global del carrito
+      setCartCount(0);
     }
-  };
-  
-  const handleEmptyCart = async () => {
-    try {
-      if (user && user.related_data) {
-        const userId = user.related_data.user_id;
-        await bdMercado.post('/carrito/vaciar', { user_id: userId });
-      } else {
-        const uuid = localStorage.getItem('carrito_uuid');
-        if (uuid) {
-          await bdMercado.post('/carrito/vaciar', { uuid });
-        }
-      }
-      fetchCart();
-    } catch (error) {
-      console.error('Error emptying cart:', error);
-    }
-  };
-
-  const handlePlaceOrder = () => {
-    if (!user) {
-      setLoginModalOpen(true);
-    } else {
-      navigate('/pedido');
-    }
-  };
-
-  const handleUpdateQuantity = async (carritoId, productId, newQuantity) => {
-    try {
-      if (newQuantity === '') return; // No hacer nada si el campo está vacío
-      await bdMercado.put(`/carrito-actualizar/${carritoId}/${productId}`, { cantidad: parseFloat(newQuantity) });
-  
-      // Actualizar directamente el estado del carrito en el frontend
-      setCart((prevCart) => ({
-        ...prevCart,
-        productos: prevCart.productos.map((producto) =>
-          producto.id === productId ? { ...producto, cantidad: newQuantity } : producto
-        ),
-        cantidad_total: prevCart.productos.reduce(
-          (acc, producto) => acc + (producto.id === productId ? parseFloat(newQuantity) : producto.cantidad),
-          0
-        ),
-        total_precio: prevCart.productos.reduce(
-          (acc, producto) => acc + (producto.id === productId ? parseFloat(newQuantity) * producto.producto.precio : producto.cantidad * producto.producto.precio),
-          0
-        ),
-      }));
-  
-    } catch (error) {
-      console.error('Error updating quantity:', error);
-    }
-  };
-  
-
-  const handleRemoveProduct = async (carritoId, productId) => {
-    try {
-      await bdMercado.delete(`/carrito-eliminar/${carritoId}/${productId}`);
-      // Actualiza el carrito en el estado
-      fetchCart(); 
-      // Actualiza el contador global del carrito
-      setCartCount((prevCount) => prevCount - 1);
-    } catch (error) {
-      console.error('Error removing product:', error);
-    }
-  };
-  
-
-  const handleChangeQuantity = (productId, value) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      productos: prevCart.productos.map((producto) =>
-        producto.id === productId ? { ...producto, cantidad: value } : producto
-      ),
-    }));
   };
 
   useEffect(() => {
     fetchCart();
-  }, [user]);
+    // eslint-disable-next-line
+  }, [user, guestUuid, cartRefreshTrigger]);
 
+  // Lógica para el botón siguiente
+  const handlePlaceOrder = () => {
+    if (!user) setLoginModalOpen(true);
+    else navigate('/pedido');
+  };
+
+  // Actualizar cantidad
+  const handleUpdateQuantity = async (carritoId, productId, newQuantity) => {
+    try {
+      if (newQuantity === '' || newQuantity <= 0) return;
+      await bdMercado.put(`/carrito-actualizar/${carritoId}/${productId}`, { cantidad: parseFloat(newQuantity) });
+      fetchCart();
+    } catch (error) {}
+  };
+
+  // Eliminar producto
+  const handleRemoveProduct = async (carritoId, productId) => {
+    try {
+      await bdMercado.delete(`/carrito-eliminar/${carritoId}/${productId}`);
+      fetchCart();
+    } catch (error) {}
+  };
+
+  // Responsive: solo muestra el footer si hay productos y corresponde (según tamaño)
+  const shouldShowFooter =
+    cart?.productos?.length > 0 &&
+    (!hideFooterOnDesktop || window.innerWidth < 900);
+
+  // Loader
   if (!cart) {
-    return <div>Cargando...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <FontAwesomeIcon icon={faShoppingCart} spin size="3x" className={styles.icon} />
+        <p>Cargando tu carrito...</p>
+      </div>
+    );
   }
 
+  // Carrito vacío
   if (!cart.productos || cart.productos.length === 0) {
     return (
-      <div className="empty-cart-container">
-        <FontAwesomeIcon icon={faShoppingCart} className="empty-cart-icon" />
+      <div className={styles.emptyCartContainer}>
+        <FontAwesomeIcon icon={faShoppingCart} className={styles.emptyCartIcon} />
         <p>Tu carrito está vacío.</p>
-        <p>Empieza a hacer tus compras <a href="/">aquí</a>.</p>
-        {!user && <p>o</p>}
-        {!user && <p>Inicia sesión para ver tu carrito.</p>}
+        <button className={styles.backHomeBtn} onClick={() => navigate('/')}>Ir al catálogo</button>
+        {!user && <p>Inicia sesión para ver tu carrito guardado.</p>}
       </div>
     );
   }
 
   return (
-    <div className="carrito-container">
-      <h2>Carrito {user ? 'de Usuario' : 'de Invitado'}</h2>
-      <table className="cart-table">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Detalles del Producto</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cart.productos.map(({ id, cantidad, total, producto }) => (
-            <tr key={id}>
-              <td>
-                <img src={`http://localhost:8000${producto.imagen}`} alt={producto.nombre} className="product-image" />
-              </td>
-              <td>
-                <p className="nombre">Nombre: {producto.nombre}</p>
-                <p>Precio unitario: {producto.precio}</p>
-              </td>
-              <td>
-                <p>{producto.precio}</p>
-              </td>
-              <td>
-                <input
-                  type="number"
-                  step={producto.tipo === 'peso' ? "0.01" : "1"}
-                  min="0"
-                  value={cantidad}
-                  onClick={() => setSelectedProduct({ id, cantidad, producto, carrito_id: cart.carrito_id })}
-                  onChange={(e) => handleChangeQuantity(id, e.target.value)}
-                />
-                <p>{producto.tipo === 'peso' ? 'kilogramos' : 'unidades'}</p>
-              </td>
-              <td>
-                <p>{total}</p>
-              </td>
-              <td>
-                <button className="btn eliminar" onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="total-container">
-        <p>Total en kilos: {cart.cantidad_total} {cart.cantidad_total > 1 ? 'kilogramos' : 'unidad'}</p>
-        <p>Total precio: {cart.total_precio}</p>
-        <button className="btn vaciar" onClick={handleEmptyCart}>Vaciar Carrito</button>
-        <button className="btn pedido" onClick={handlePlaceOrder}>Hacer Pedido</button>
+    <div className={styles.cartAppContainer}>
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick={() => navigate(-1)}>
+          <span>&larr;</span>
+        </button>
+        <h2>Mi carrito</h2>
+        <span className={styles.itemsCount}>({cart.productos.length})</span>
       </div>
+
+      <div className={styles.cartProducts}>
+        {cart.productos.map(({ id, cantidad, producto }) => (
+          <div className={styles.cartItem} key={id}>
+            <div className={styles.productImgBox} style={{ background: '#f6fafd' }}>
+              <img src={`http://localhost:8000${producto.imagen}`} alt={producto.nombre} />
+            </div>
+            <div className={styles.itemDetails}>
+              <span className={styles.productName}>{producto.nombre}</span>
+              <span className={styles.productDesc}>
+                {producto.tipo === 'peso' ? 'Producto a peso' : 'Producto por unidad'}
+              </span>
+              <span className={styles.productPrice}>S/. {producto.precio}</span>
+              <span className={styles.productSubtotal}>
+                Subtotal: <strong>S/. {(producto.precio * cantidad).toFixed(2)}</strong>
+              </span>
+            </div>
+            {/* Botones según tipo */}
+            {producto.tipo === 'unidad' ? (
+              <div className={styles.qtyBox}>
+                <button
+                  className={styles.qtyBtn}
+                  onClick={() => handleUpdateQuantity(cart.carrito_id, producto.id, Math.max(Number(cantidad) - 1, 1))}
+                  disabled={Number(cantidad) <= 1}
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+                <span className={styles.qtyNum}>{cantidad}</span>
+                <button
+                  className={styles.qtyBtn}
+                  onClick={() => handleUpdateQuantity(cart.carrito_id, producto.id, Number(cantidad) + 1)}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+            ) : (
+              <div className={styles.qtyBox}>
+                <span className={styles.qtyNum}>{cantidad}</span>
+                <button
+                  className={styles.qtyBtn}
+                  title="Actualizar cantidad"
+                  onClick={() => setSelectedProduct({
+                    ...producto, 
+                    tipo: producto.tipo,
+                    cantidad,
+                    carritoId: cart.carrito_id,
+                    id: producto.id
+                  })}
+                >
+                  <FontAwesomeIcon icon={faSyncAlt} />
+                </button>
+              </div>
+            )}
+            <button
+              className={styles.removeBtn}
+              onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}
+              title="Eliminar"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* FOOTER COMPLETO */}
+      {shouldShowFooter && (
+        <div className={styles.cartFooter}>
+          <div className={styles.deliveryBox}>
+            <span>Delivery</span>
+            <span>Envío gratis por compras mayores a S/ 100</span>
+          </div>
+          <div className={styles.totalRow}>
+            <span>Total</span>
+            <span className={styles.cartTotal}>S/. {cart.total_precio.toFixed(2)}</span>
+          </div>
+          <button className={styles.nextBtn} onClick={handlePlaceOrder}>
+            Siguiente
+          </button>
+        </div>
+      )}
+
+      {/* Modales */}
       {selectedProduct && (
         <QuantityModal
           isOpen={Boolean(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
           product={selectedProduct}
-          onUpdateQuantity={(carritoId, productId, newQuantity) => handleUpdateQuantity(carritoId, productId, newQuantity)}
+          onUpdateQuantity={handleUpdateQuantity}
         />
       )}
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setLoginModalOpen(false)} />

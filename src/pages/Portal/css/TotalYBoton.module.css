@@ -1,0 +1,64 @@
+.totalBox {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 3px 20px #991f4415;
+  padding: 2.2rem 2rem 1.7rem 2rem;
+  min-width: 230px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.totalLabelRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1.1rem;
+}
+
+.totalLabel {
+  color: #15171b;
+}
+.totalValue {
+  color: #991f44;
+  font-size: 1.48rem;
+}
+
+.nextBtn {
+  width: 100%;
+  padding: 1rem 0;
+  background: linear-gradient(90deg, #991f44, #b0355a 90%);
+  color: #fff;
+  border: none;
+  border-radius: 1.3rem;
+  font-size: 1.13rem;
+  font-weight: bold;
+  box-shadow: 0 2px 18px #b0355a11;
+  cursor: pointer;
+  margin-top: 0.1rem;
+  transition: background 0.18s, transform 0.12s;
+}
+
+.nextBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.nextBtn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #b0355a, #991f44 90%);
+  transform: scale(1.03);
+}
+
+@media (max-width: 900px) {
+  .totalBox {
+    margin: 0 auto;
+    margin-bottom: 2.2rem;
+    min-width: 0;
+    max-width: 99vw;
+    padding: 1.6rem 1rem 1.4rem 1rem;
+  }
+}

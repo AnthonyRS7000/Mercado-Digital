@@ -1,19 +1,36 @@
 /* src/styles/css/NavbarClient.module.css */
 
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #ffffff;
+}
+
 /* Navbar contenedor */
 .navbar {
+  position: sticky; /* Hace que el navbar se quede fijo al hacer scroll */
+  top: 0; /* Se queda en la parte superior */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px; /* Ajusta el padding según sea necesario */
-  background-color: #2f7ed3;
-  color: white;
-  height: 60px; /* Modifica la altura de la barra de navegación aquí */
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  background: linear-gradient(180deg, #a23250 0%, var(--vino-oscuro) 100%);
+  color: var(--blanco);
+  height: auto;
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
 
-/* Logo de la navbar */
-.navbarLogo img {
-  height: 110px; /* Ajusta la altura del logo aquí */
+/* Título del navbar */
+.navbarTitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--crema);
+  cursor: pointer;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 /* Contenedor de búsqueda */
@@ -21,40 +38,38 @@
   display: flex;
   align-items: center;
   flex: 1;
-  margin-right: 400px; /* Ajusta el margen derecho para posicionar la búsqueda */
-  background-color: white;
+  background-color: var(--blanco);
   border-radius: 20px;
   padding: 6px;
-  max-width: 600px; /* Ajusta la anchura máxima del contenedor de búsqueda aquí */
+  max-width: 600px;
+  margin: 10px auto;
 }
 
 /* Select de categorías */
 .navbarCategories {
-  padding: 5px;
+  padding: 6px;
   font-size: 14px;
-  border: none;
   border-radius: 4px 0 0 4px;
-  background-color: white;
+  background-color: var(--blanco);
 }
 
 /* Input de búsqueda */
 .navbarInput {
   flex: 1;
-  padding: 5px;
-  margin: 0 10px;
+  padding: 6px;
   font-size: 14px;
   border: none;
-  border-radius: 0;
-  background-color: white;
+  background-color: var(--blanco);
+  margin: 0 8px;
 }
 
 /* Botón de búsqueda */
 .navbarSearchButton {
-  padding: 5px 10px;
+  padding: 6px 10px;
   font-size: 14px;
   border: none;
-  background-color: white;
-  color: #2f7ed3;
+  background-color: var(--blanco);
+  color: var(--vino);
   border-radius: 0 4px 4px 0;
   cursor: pointer;
 }
@@ -67,43 +82,95 @@
 .navbarLinks {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
-/* Enlaces de la navbar */
+/* Enlaces */
 .navbarLink {
-  color: white;
-  margin-left: 20px;
+  color: var(--blanco);
   text-decoration: none;
-  font-size: 16px; /* Aumenta el tamaño de la fuente */
+  font-size: 16px;
   display: flex;
   align-items: center;
-  padding: 10px; /* Aumenta el tamaño del botón */
+  padding: 10px;
 }
 
 .navbarLink:hover {
   text-decoration: underline;
 }
 
-/* Iconos de los enlaces */
+/* Iconos */
 .navbarLink i {
-  margin-right: 10px; /* Ajusta el espacio entre el icono y el texto */
-  font-size: 20px; /* Aumenta el tamaño del icono */
+  margin-right: 8px;
+  font-size: 20px;
 }
 
 /* Contador del carrito */
 .navbarCartCount {
-  background-color: white;
-  color: #2f7ed3;
+  background-color: var(--blanco);
+  color: var(--vino);
   border-radius: 50%;
-  padding: 4px 8px; /* Aumenta el tamaño del padding */
+  padding: 4px 8px;
   margin-left: 5px;
-  font-size: 14px; /* Aumenta el tamaño de la fuente */
+  font-size: 14px;
 }
 
-/* Ajustes generales para que todos los elementos se vean como una barra unificada */
+/* Ajustes generales */
 .navbarCategories,
 .navbarInput,
 .navbarSearchButton {
   border: none;
   outline: none;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .navbarSearch {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .navbarLinks {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .navbarLogo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbarInput {
+    font-size: 12px;
+  }
+
+  .navbarSearchButton,
+  .navbarCategories {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .navbarLink {
+    font-size: 14px;
+  }
+
+  .navbarLink i {
+    font-size: 18px;
+  }
+
+  .navbarCartCount {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
 }

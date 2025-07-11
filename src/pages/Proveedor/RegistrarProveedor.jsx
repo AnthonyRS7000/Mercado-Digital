@@ -68,14 +68,23 @@ const RegistrarProveedor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    console.log("Datos enviados al backend:", formData); // <-- Agregado para depuración
+  
     try {
       const response = await bdMercado.post('/v1/proveedor', formData);
-      setProveedorRegistrado(response.data.Proveedor);
+      const proveedorCompleto = {
+        ...response.data.Proveedor,
+        user: response.data.user
+      };
+      setProveedorRegistrado(proveedorCompleto);
+      
       setModalOpen(true);
     } catch (error) {
-      console.error('Error registrando proveedor:', error);
+      console.error('Error registrando proveedor:', error.response?.data || error);
     }
   };
+  
 
   return (
     <div className={styles.registerContainer}>

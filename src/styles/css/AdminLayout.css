@@ -1,10 +1,32 @@
+/* General Layout */
 .admin-layout {
-    display: flex;
-  }
-  
+  display: flex;
+}
+
+.admin-content {
+  margin-left: 250px; /* Espacio para el navbar lateral en pantallas grandes */
+  width: calc(100% - 250px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition: margin-left 0.3s ease; /* Transición cuando la barra lateral se abre/cierra */
+}
+
+.admin-main {
+  padding: 20px;
+}
+
+/* Estilo para el icono de hamburguesa */
+.hamburger-icon {
+  display: none; /* Oculto en pantallas grandes */
+  font-size: 30px;
+  cursor: pointer;
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 999px) {
   .admin-content {
-    margin-left: 250px;
-    padding: 20px;
-    width: calc(100% - 250px);
+    margin-left: 0;
+    width: 100%;
   }
-  
+}

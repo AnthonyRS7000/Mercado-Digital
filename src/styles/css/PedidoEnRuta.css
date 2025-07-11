@@ -1,0 +1,32 @@
+.estado-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+  }
+  
+  .estado-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.3s;
+  }
+  
+  .estado-wrapper:hover {
+    transform: scale(1.1);
+    opacity: 0.85;
+  }
+  
+  .estado-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .estado-label {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #444;
+    font-weight: 500;
+  }
+  

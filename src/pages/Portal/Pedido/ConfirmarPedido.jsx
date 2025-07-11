@@ -16,19 +16,46 @@ const ConfirmarPedido = () => {
 
   const handlePedido = async () => {
     try {
+      // Crear los datos del pedido
       const pedidoData = {
         tipo: pedidoTipo,
         direccion,
         ...(pedidoTipo === 'programado' && { fecha, hora }),
       };
+  
+      // Realizar el pedido
       const response = await bdMercado.post(`/pedidos/${user.related_data.user_id}`, pedidoData);
       console.log('Pedido realizado:', response.data);
+  
+      // Log para depurar: Verificar el user_id y la llamada a vaciar carrito
+      console.log('ID del usuario que está haciendo el pedido:', user.related_data.user_id);
+  
+      // Verificación de la URL para vaciar el carrito
+      const vaciarCarritoUrl = '/carrito/vaciar';
+      console.log('Enviando solicitud a la URL de vaciar carrito:', vaciarCarritoUrl);
+  
+      // Vaciar el carrito después de realizar el pedido
+      const vaciarCarritoResponse = await bdMercado.post(vaciarCarritoUrl, { user_id: user.related_data.user_id });
+  
+      // Log para depurar: Verificar la respuesta de vaciar carrito
+      console.log('Respuesta de la API de vaciar carrito:', vaciarCarritoResponse);
+  
+      // Verificar la respuesta para vaciar el carrito
+      if (vaciarCarritoResponse.status === 200) {
+        console.log('Carrito vacío:', vaciarCarritoResponse.data);
+      } else {
+        console.error('Error vaciando el carrito:', vaciarCarritoResponse.data);
+      }
+  
+      // Alerta de éxito
       alert('Pedido realizado con éxito');
     } catch (error) {
-      console.error('Error realizando el pedido:', error);
+      console.error('Error realizando el pedido o vaciando el carrito:', error);
+      alert('Hubo un error al realizar el pedido');
     }
   };
-
+  
+   
   return (
     <div className={styles.confirmarPedidoContainer}>
       <h2>Confirmar Pedido</h2>

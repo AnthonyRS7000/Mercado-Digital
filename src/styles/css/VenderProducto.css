@@ -1,7 +1,12 @@
-/* src/styles/css/VenderProducto.css */
-
+/* Estilo base */
 .vender-producto-container {
   padding: 20px;
+}
+
+.productos-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Habilita el deslizamiento suave en dispositivos iOS */
 }
 
 .productos-table {
@@ -12,13 +17,15 @@
 
 .productos-table th, .productos-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
   text-align: left;
+  color: #333; /* Color para el texto */
 }
 
 .productos-table th {
-  background-color: #f2f2f2;
   font-weight: bold;
+  color: #8B1A1A; /* Color vino para encabezados */
+  text-transform: uppercase;
 }
 
 .productos-table tr:nth-child(even) {
@@ -45,6 +52,15 @@
   padding: 10px 20px;
   font-size: 16px;
   margin-bottom: 20px;
+  background-color: #8B1A1A; /* Vino para registrar */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background-color: #6A0E0E; /* Sombra más oscura del vino */
 }
 
 .update-btn, .delete-btn {
@@ -52,8 +68,25 @@
   padding: 5px 10px;
   font-size: 14px;
   margin: 2px;
+  background-color: #FFC107; /* Amarillo para actualizar */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
+.update-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #DC3545; /* Rojo para eliminar */
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Estilo modal */
 .modal {
   display: flex;
   justify-content: center;
@@ -71,6 +104,7 @@
   padding: 20px;
   border-radius: 5px;
   width: 500px;
+  max-width: 90%; /* Para pantallas más pequeñas */
 }
 
 .close-button {
@@ -79,6 +113,7 @@
   cursor: pointer;
 }
 
+/* Estilo para el formulario */
 .vender-producto-form-group {
   margin-bottom: 15px;
 }
@@ -92,4 +127,51 @@
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  border: 1px solid #ddd; /* Borde claro para los inputs */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .productos-table th, .productos-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
+
+  .vender-producto-form-group input {
+    font-size: 14px;
+  }
+
+  .register-btn, .update-btn, .delete-btn {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .producto-imagen {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-btn, .update-btn, .delete-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .producto-imagen {
+    width: 30px;
+    height: 30px;
+  }
+
+  .vender-producto-form-group input {
+    font-size: 13px;
+  }
+
+  .productos-table th, .productos-table td {
+    font-size: 12px;
+  }
 }

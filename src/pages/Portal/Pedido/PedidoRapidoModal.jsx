@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCreditCard, faMapMarkerAlt, faWallet, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { AuthContext } from '../../../context/AuthContext';
 import styles from './css/PedidoRapidoModal.module.css';
+import bdMercado from '../../../services/bdMercado';
 
 const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
   const [step, setStep] = useState(1);
@@ -41,16 +42,37 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
     if (loc !== 'Nueva Ubicación') {
       setNewAddress('');
       setIsAddingNewAddress(false);
+      nextStep(); // Avanza automáticamente al paso 2
     } else {
       setIsAddingNewAddress(true);
     }
   };
+  
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const finalLocation = isAddingNewAddress ? newAddress : location;
+  
+    // Llama a la función onConfirm pasada por el padre
     onConfirm(paymentMethod, finalLocation, paymentDetails);
-    navigate('/seguimiento');
+  
+    // Aquí agregarás la lógica para vaciar el carrito después de confirmar el pedido
+    try {
+      console.log('Confirmando pedido para el usuario:', user.related_data.user_id);
+  
+      // Llama a la API para vaciar el carrito
+      const vaciarCarritoResponse = await bdMercado.post('/carrito/vaciar', { user_id: user.related_data.user_id });
+  
+      // Verifica la respuesta de la API
+      console.log('Respuesta al vaciar carrito:', vaciarCarritoResponse.data);
+  
+      // Redirige a la página de seguimiento
+      navigate('/seguimiento');
+    } catch (error) {
+      console.error('Error al vaciar el carrito:', error);
+      alert('Hubo un error al vaciar el carrito');
+    }
   };
+  
 
   const handleChangePaymentDetails = (e) => {
     const { name, value } = e.target;
@@ -198,14 +220,35 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
                 <p>Revise su información antes de confirmar el pedido.</p>
                 <p>Método de Pago: {paymentMethod === 1 ? 'Pago Contraentrega' : paymentMethod === 2 ? 'Pago con tarjeta' : 'Billetera electrónica'}</p>
                 <p>Ubicación: {isAddingNewAddress ? newAddress : location}</p>
-                <button className={styles.confirmButton} onClick={handleConfirm}>
-                  Confirmar
-                </button>
               </div>
             )}
+
             <div className={styles.navigation}>
-              {step > 1 && <button onClick={prevStep} className={styles.navButton}>Anterior</button>}
-              {step < 4 && (paymentMethod || (step === 1 && (location || newAddress))) && <button onClick={nextStep} className={styles.navButton}>Siguiente</button>}
+              {step > 1 && (
+                <button onClick={prevStep} className={styles.navButton}>
+                  Anterior
+                </button>
+              )}           
+              {step < 4 && !(step === 3 && paymentMethod === 1) && (
+                <button 
+                  onClick={nextStep} 
+                  className={styles.navButton}
+                  disabled={
+                    (step === 1 && !location && !newAddress) || 
+                    (step === 2 && !paymentMethod) ||
+                    (step === 3 && (paymentMethod !== 1 && 
+                      ((paymentMethod === 2 && (!paymentDetails.cardNumber || !paymentDetails.cardExpiry || !paymentDetails.cardCVC)) ||
+                      (paymentMethod === 3 && !paymentDetails.walletInfo))))
+                  }
+                >
+                  Siguiente
+                </button>
+              )}
+              {step === 4 && (
+                <button onClick={handleConfirm} className={styles.navButton}>
+                  Confirmar
+                </button>
+              )}
             </div>
           </div>
         </div>

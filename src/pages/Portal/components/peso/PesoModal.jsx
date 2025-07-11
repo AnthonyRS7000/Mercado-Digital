@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import bdMercado from '../../../../services/bdMercado';
-import { v4 as uuidv4 } from 'uuid';
 import './css/Modal.css';
-import { DataContext } from '../../../../context/DataContext';
+import { AuthContext } from '../../../../context/AuthContext';
 
-const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) => {
+const PesoModal = ({ isOpen, onClose, productId, productName }) => {
   const [weight, setWeight] = useState('');
   const [message, setMessage] = useState('');
   const [price, setPrice] = useState(null);
-  const { data } = useContext(DataContext);
+  const [view, setView] = useState('form');
+
+  // Contexto global para refresh
+  const { user, guestUuid, refreshCartCount } = useContext(AuthContext);
 
   useEffect(() => {
-    if (weight && productId) {
+    if (weight && productId && !isNaN(parseFloat(weight))) {
       calculatePrice();
     }
+    // eslint-disable-next-line
   }, [weight, productId]);
 
   const calculatePrice = async () => {
@@ -28,43 +31,52 @@ const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) =>
       const gramos = (weight - kilos) * 1000;
 
       if (weight < 1) {
-        setMessage(`Estás a punto de agregar ${gramos.toFixed(0)} gramos de ${productName} a tu carrito. Esto costará S/ ${precio_total.toFixed(2)}.`);
+        setMessage(`Estás a punto de agregar ${gramos.toFixed(0)} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`);
       } else {
-        setMessage(`Estás a punto de agregar ${kilos} kilo${kilos !== 1 ? 's' : ''} con ${gramos.toFixed(0)} gramos de ${productName} a tu carrito. Esto costará S/ ${precio_total.toFixed(2)}.`);
+        setMessage(`Estás a punto de agregar ${kilos} kilo${kilos !== 1 ? 's' : ''} con ${gramos.toFixed(0)} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`);
       }
     } catch (error) {
-      console.error('Error calculating price:', error);
+      setMessage('');
     }
   };
 
   const handleAddWeight = async () => {
+    if (!weight || parseFloat(weight) <= 0) {
+      setMessage('⚠️ Ingrese un peso válido.');
+      return;
+    }
+
     let payload = {
       producto_id: productId,
-      cantidad: parseFloat(weight)
+      cantidad: parseFloat(weight),
     };
 
-    if (data && data.user && data.user.related_data) {
-      payload.user_id = data.user.related_data.user_id;
+    if (user?.related_data) {
+      payload.user_id = user.related_data.user_id;
     } else {
-      let uuid = localStorage.getItem('carrito_uuid');
-      if (!uuid) {
-        uuid = uuidv4();
-        localStorage.setItem('carrito_uuid', uuid);
-      }
-      payload.uuid = uuid;
+      payload.uuid = guestUuid; // Siempre usa guestUuid del contexto
     }
 
     try {
-      const response = await bdMercado.post('/carrito/agregar', payload);
-      console.log('Product added to cart:', response.data);
-      onClose();
+      await bdMercado.post('/carrito/agregar', payload);
+      await refreshCartCount(true); // 🔥 ACTUALIZA BURBUJA AL INSTANTE
+      setView('success');
+      setTimeout(() => {
+        setView('form');
+        setWeight('');
+        setMessage('');
+        onClose();
+      }, 1500);
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      setMessage('❌ Hubo un error al agregar el producto.');
     }
   };
 
   const handleCloseModal = (e) => {
     if (e.target.className === 'modal-overlay' || e.target.className === 'close-button') {
+      setView('form');
+      setWeight('');
+      setMessage('');
       onClose();
     }
   };
@@ -72,22 +84,34 @@ const PesoModal = ({ isOpen, onClose, productId, productName, productPrice }) =>
   return (
     isOpen && (
       <div className="modal-overlay" onClick={handleCloseModal}>
-        <div className="modal-content">
+        <div className="peso-modal-content">
           <button className="close-button" onClick={handleCloseModal}>X</button>
-          <h2>Ingresar Peso</h2>
-          <input
-            type="number"
-            step="0.01"
-            min="0.1"
-            placeholder="0.1"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            className="modal-input"
-          />
-          <button className="modal-button" onClick={handleAddWeight}>
-            Agregar al Carrito
-          </button>
-          {message && <p className="modal-message">{message}</p>}
+          {view === 'form' ? (
+            <>
+              <h2 className="modal-title">Ingresar Peso</h2>
+              <input
+                type="number"
+                step="0.01"
+                min="0.1"
+                placeholder="0.1"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="modal-input"
+              />
+              <button className="modal-button" onClick={handleAddWeight}>
+                Agregar al Carrito
+              </button>
+              {message && <p className="modal-message">{message}</p>}
+            </>
+          ) : (
+            <div className="success-view">
+              <div className="success-card">
+                <div className="success-icon">🛒✅</div>
+                <h3 className="success-text">¡Producto agregado!</h3>
+                <p className="success-subtext">Tu producto fue añadido correctamente al carrito.</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )

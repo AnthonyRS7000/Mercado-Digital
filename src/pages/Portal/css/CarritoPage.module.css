@@ -1,0 +1,26 @@
+.cartWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.productsCol {
+  flex: 2 1 500px;
+  min-width: 350px;
+}
+
+.summaryCol {
+  flex: 1 1 300px;
+  min-width: 320px;
+}
+
+@media (max-width: 900px) {
+  .cartWrapper {
+    flex-direction: column;
+  }
+  .summaryCol {
+    display: none; /* Oculta el resumen en móvil */
+  }
+}

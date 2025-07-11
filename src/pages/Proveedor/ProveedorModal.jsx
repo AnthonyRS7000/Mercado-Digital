@@ -1,4 +1,3 @@
-// src/components/ProveedorModal.jsx
 import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
 
@@ -12,7 +11,10 @@ const ProveedorModal = ({ open, onClose, proveedor }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width: {
+          xs: '90%',  // Para pantallas pequeñas (xs), el ancho es el 90% del viewport
+          sm: 400,    // Para pantallas medianas (sm), el ancho es de 400px
+        },
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -37,7 +39,7 @@ const ProveedorModal = ({ open, onClose, proveedor }) => {
           <strong>Celular:</strong> {proveedor.celular}
         </Typography>
         <Typography sx={{ mt: 2 }}>
-          <strong>Email:</strong> {proveedor.email}
+          <strong>Email:</strong> {proveedor.user?.email} {/* Aquí accedes al email correctamente */}
         </Typography>
         <Button onClick={onClose} sx={{ mt: 2 }}>Cerrar</Button>
       </Box>

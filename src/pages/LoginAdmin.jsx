@@ -61,7 +61,7 @@ const LoginAdmin = () => {
           navigate('/admin/alistar-pedido');
           break;
         case 4:
-          navigate('/admin/entregar-pedido');
+          navigate('/admin/recoger-pedido');
           break;
         case 20:
           navigate('/admin/dashboard');
@@ -78,8 +78,7 @@ const LoginAdmin = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Bienvenido a la Intranet del Mercado Digital</h2>
-        <h2>Proveedores, Delivery, Personal y Admin</h2>
+        <h2>Bienvenido a la Intranet del Mercado Central Digital</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>

@@ -1,25 +1,45 @@
-/* src/styles/css/LoginAdmin.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  padding: 20px;
+
+  /* Fondo con imagen */
+  background-image: url('/public/imagen_huanuco_sansebastian.jpg'); /* Reemplaza con la ruta real */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Color de respaldo si la imagen no carga */
   background-color: #f0f2f5;
 }
 
+
 .login-box {
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
   text-align: center;
-  width: 300px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
+
+
 
 .login-box h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #7B1E3A; /* Color vino elegante */
+  font-family: 'Playfair Display', serif; /* Tipografía elegante */
+  font-size: 28px;
+  background:none
 }
 
 .form-group {
@@ -40,6 +60,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
+  overflow: hidden;
 }
 
 .input-group-icon {
@@ -47,6 +68,9 @@
   background-color: #eee;
   border-right: 1px solid #ccc;
   color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .input-group input {
@@ -61,7 +85,7 @@
 .btn-primary {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #7B1E3A;
   border: none;
   color: #fff;
   border-radius: 4px;
@@ -70,7 +94,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #7B1E3A;
 }
 
 .register-links {
@@ -96,4 +120,31 @@
 
 .register-links .btn-secondary:hover {
   background-color: #5a6268;
+}
+
+/* Responsive: pantallas menores a 480px */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+    height: 100vh;
+    justify-content: center; /* 🔧 CENTRAR verticalmente también en móvil */
+    align-items: center;
+  }
+
+  .login-box {
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+    height: auto;
+  }
+
+  .input-group input {
+    font-size: 14px;
+  }
+
+  .btn-primary,
+  .register-links .btn-secondary {
+    font-size: 14px;
+  }
 }

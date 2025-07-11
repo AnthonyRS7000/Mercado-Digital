@@ -1,60 +1,29 @@
-/* src/pages/Portal/components/css/ProductList.css */
-.product-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.product-card {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 1px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 18%;
+.loading-container {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;    /* Ocupa todo el ancho de la ventana */
+  min-height: 300px;
+  height: 65vh;
+  margin: 0 auto;
   text-align: center;
 }
 
-.product-card img {
-  width: 75%; /* Ajusta el ancho al 100% del contenedor */
-  height: 100px; /* Fija la altura a 200px */
-  object-fit: cover; /* Asegura que la imagen cubra completamente el área */
-  border-radius: 10px;
+@media (max-width: 600px) {
+  .loading-container {
+    min-height: 230px;
+    height: 45vh;
+    width: 100vw;  /* Siempre ancho completo en mobile */
+    padding: 0 0.2rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .loading-container p {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    text-align: center;
+  }
 }
-
-.product-card h3 {
-  font-size: 18px;
-  color: #333;
-  margin: 10px 0;
-}
-
-.product-card p {
-  font-size: 16px;
-  color: #666;
-}
-
-.product-card button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-bottom: 15px; /* Agrega un margen superior al botón */
-}
-
-.product-card button:hover {
-  background-color: #0056b3;
-}
-
-/* src/pages/Portal/components/css/ProductList.css */
-.product-quantity {
-  width: 50px; /* Ancho del input */
-  margin-bottom: 10px; /* Margen inferior para separación */
-  text-align: center; /* Centra el texto en el input */
-  padding: 5px; /* Espaciado interno */
-  font-size: 16px; /* Tamaño de la fuente */
-  border: 1px solid #ccc; /* Borde del input */
-  border-radius: 5px; /* Esquinas redondeadas */
-}
-

@@ -1,5 +1,3 @@
-/* RegistrarProducto.css */
-
 .stock-hint {
   font-size: 0.9em;
   color: #888;
@@ -16,7 +14,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000; /* Asegúrate de que el modal tenga un z-index alto */
+  z-index: 1000;
 }
 
 .modal-content {
@@ -63,7 +61,8 @@
   margin-bottom: 20px;
 }
 
-.update-btn, .delete-btn {
+.update-btn,
+.delete-btn {
   width: auto;
   padding: 5px 10px;
   font-size: 14px;

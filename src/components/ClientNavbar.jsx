@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import MiCuenta from '../pages/Portal/components/MiCuenta';
@@ -13,11 +13,14 @@ const ClientNavbar = ({ onSearch, onCategorySelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
 
-  useEffect(() => {
+  // 🔥 Ahora tomamos cartCount desde el AuthContext
+  const { user, cartCount } = useContext(AuthContext);
+
+  // Obtener categorías una sola vez
+  useState(() => {
     const fetchCategories = async () => {
       try {
         const response = await bdMercado.get('/v1/categorias');
@@ -29,31 +32,37 @@ const ClientNavbar = ({ onSearch, onCategorySelect }) => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const fetchCartCount = async () => {
-      try {
-        let response;
-        if (user?.related_data) {
-          response = await bdMercado.get(`/carrito/user/${user.related_data.user_id}`);
-        } else {
-          const uuid = localStorage.getItem('carrito_uuid');
-          if (uuid) {
-            response = await bdMercado.get(`/carrito/uuid/${uuid}`);
-          }
-        }
-        setCartCount(response?.data?.productos?.length || 0);
-      } catch (error) {
-        console.error('Error fetching cart count:', error);
-        setCartCount(0);
-      }
-    };
-    fetchCartCount();
-  }, [user]);
-
+  // Buscar productos manualmente al enviar
   const handleSearch = (e) => {
     e.preventDefault();
     onSearch(searchTerm);
     navigate('/');
+  };
+
+  // Buscar productos mientras escribe
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchTerm(query);
+
+    if (query.length > 2) {
+      const fetchSearchResults = async () => {
+        try {
+          const response = await bdMercado.get(`/productos/search/${query}`);
+          setSearchResults(response.data);
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+        }
+      };
+      fetchSearchResults();
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
+    }
   };
 
   const handleLogoClick = () => {
@@ -66,40 +75,46 @@ const ClientNavbar = ({ onSearch, onCategorySelect }) => {
 
   return (
     <nav className={styles.navbar}>
-      <div className={styles.navbarLogo} onClick={handleLogoClick}>
-        <img src={logo} alt="Logo" />
+      <div className={styles.navbarTitle} onClick={handleLogoClick}>
+        Mercado Central
       </div>
+
       <div className={styles.navbarSearch}>
-        <select className={styles.navbarCategories} onChange={(e) => onCategorySelect(e.target.value)}>
-          <option value="">Todas las categorías</option>
-          {categories.map(category => (
-            <option key={category.id} value={category.id}>{category.nombre}</option>
-          ))}
-        </select>
         <input
           type="text"
           className={styles.navbarInput}
           placeholder="Hola, ¿qué estás buscando?"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
+          onKeyDown={handleKeyDown}
         />
         <button className={styles.navbarSearchButton} onClick={handleSearch}>
           <FontAwesomeIcon icon={faSearch} />
         </button>
+        {searchResults.length > 0 && (
+          <div className={styles.searchResults}>
+            {searchResults.map((product) => (
+              <div key={product.id} className={styles.searchResultItem}>
+                <Link to={`/producto/${product.id}`}>{product.nombre}</Link>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
       <div className={styles.navbarLinks}>
-        <Link className={styles.navbarLink} to="/login">
-          <FontAwesomeIcon icon={faUserTie} /> Proveedor
-        </Link>
-        <Link className={styles.navbarLink} to="/orders">
-          <FontAwesomeIcon icon={faBox} /> Mis pedidos
-        </Link>
+        {user && (
+          <Link className={styles.navbarLink} to="/seguimiento">
+            <FontAwesomeIcon icon={faBox} /> Mis pedidos
+          </Link>
+        )}
         <MiCuenta onLoginClick={handleOpenLoginModal} />
         <Link className={styles.navbarLink} to="/carrito">
           <FontAwesomeIcon icon={faShoppingCart} />
-          <span className={styles.navbarCartCount}>{cartCount}</span>
+          <span className={styles.navbarCartCount}>{cartCount}</span> {/* ✅ Aquí usamos el del contexto */}
         </Link>
       </div>
+
       {isLoginModalOpen && <LoginModal isOpen={isLoginModalOpen} onClose={handleCloseLoginModal} />}
     </nav>
   );

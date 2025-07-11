@@ -1,8 +1,33 @@
-.portal {
-  display: flex;
+:root {
+  --vino: #7b1e3d;
+  --crema: #ffffff;
 }
 
+/* Contenedor principal del portal */
+.portal {
+  display: flex;
+  min-height: 100vh;
+  background-color: #fff;
+  flex-direction: row;
+}
+
+/* Contenido del portal */
 .portal-content {
   flex: 1;
-  padding: 20px;
+  padding: 10px;
+  background-color: #fff;
+  margin: 10px;
+  box-shadow: 0 2px 6px rgb(255, 255, 255);
+}
+
+/* --- Responsive para pantallas pequeñas --- */
+@media (max-width: 768px) {
+  .portal {
+    flex-direction: column;
+  }
+
+  .portal-content {
+    padding: 0px;
+    margin: 1px 1px;
+  }
 }

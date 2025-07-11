@@ -1,40 +1,18 @@
 import React, { useState, useContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import bdMercado from '../../../services/bdMercado';
 import PesoModal from '../components/peso/PesoModal';
+import UnidadModal from '../components/peso/UnidadModal';
 import '../css/ProductCard.css';
-import { DataContext } from '../../../context/DataContext';
+import { AuthContext } from '../../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+// Lazy load image
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
-const ProductCard = ({ product, handleQuantityChange, quantities, onProductAdded }) => {
+const ProductCard = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const { data } = useContext(DataContext);
-
-  const handleAddToCart = async (productId, quantity) => {
-    let payload = {
-      producto_id: productId,
-      cantidad: quantity
-    };
-
-    if (data && data.user && data.user.related_data) {
-      payload.user_id = data.user.related_data.user_id;
-    } else {
-      let uuid = localStorage.getItem('carrito_uuid');
-      if (!uuid) {
-        uuid = uuidv4();
-        localStorage.setItem('carrito_uuid', uuid);
-      }
-      payload.uuid = uuid;
-    }
-
-    try {
-      const response = await bdMercado.post('/carrito/agregar', payload);
-      console.log('Product added to cart:', response.data);
-      onProductAdded();  // Llamar a la función onProductAdded para forzar la actualización del carrito
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
-  };
+  const { user, guestUuid, setCartRefreshTrigger } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleOpenModal = (product) => {
     setSelectedProduct(product);
@@ -46,44 +24,80 @@ const ProductCard = ({ product, handleQuantityChange, quantities, onProductAdded
     setSelectedProduct(null);
   };
 
+  const handleCardClick = () => {
+    navigate(`/producto/${product.id}`);
+  };
+
   return (
     <>
-      <div className="product-card">
-        <img src={`http://localhost:8000${product.imagen}`} alt={product.nombre} className="product-image" />
-        <div className="product-info">
-          <h3 className="product-name">{product.nombre}</h3>
-          <p className="product-description">{product.descripcion}</p>
-          <p className="product-price">S/ {product.precio} {product.tipo === 'peso' ? 'x kg' : 'x un'}</p>
-          <p className="product-stock">Stock: {product.stock}</p>
-          {product.tipo === 'unidad' && (
-            <>
-              <input
-                type="number"
-                min="1"
-                className="product-quantity"
-                value={quantities[product.id] || 1}
-                onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
-              />
-              <button className="product-button" onClick={() => handleAddToCart(product.id, quantities[product.id] || 1)}>
-                Agregar
-              </button>
-            </>
-          )}
-          {product.tipo === 'peso' && (
-            <button className="product-button" onClick={() => handleOpenModal(product)}>
-              Agregar <br /><small>(Seleccionarás tu peso)</small>
+      <div className="product-card-wrapper">
+        <div className="product-card" onClick={handleCardClick}>
+          {/* Imagen siempre centrada y ocupando el máximo espacio disponible */}
+          <div className="product-image-container" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            minHeight: '110px'
+          }}>
+            <LazyLoadImage
+              src={`http://localhost:8000${product.imagen}`}
+              alt={product.nombre}
+              effect="blur"
+              className="product-image"
+            />
+          </div>
+
+          {/* Info del producto */}
+          <div className="product-info">
+            <h3 className="product-name">{product.nombre}</h3>
+            <p className="product-description">{product.descripcion}</p>
+            <p className="product-price">
+              S/ {product.precio} {product.tipo === 'peso' ? 'x kg' : 'x ud'}
+            </p>
+            <button
+              className="product-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenModal(product);
+              }}
+            >
+              Agregar <br />
+              <small className="hide-on-mobile">
+                {product.tipo === 'peso'
+                  ? '(Seleccionarás tu peso)'
+                  : '(Seleccionarás unidades)'}
+              </small>
             </button>
-          )}
+          </div>
         </div>
       </div>
-      {isModalOpen && selectedProduct && (
+
+      {/* Modal para productos por peso */}
+      {isModalOpen && selectedProduct && selectedProduct.tipo === 'peso' && (
         <PesoModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           productId={selectedProduct.id}
           productName={selectedProduct.nombre}
           productPrice={selectedProduct.precio}
-          handleAddToCart={handleAddToCart}
+          guestUuid={guestUuid}
+          setCartRefreshTrigger={setCartRefreshTrigger}
+          user={user}
+        />
+      )}
+
+      {/* Modal para productos por unidad */}
+      {isModalOpen && selectedProduct && selectedProduct.tipo === 'unidad' && (
+        <UnidadModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          productId={selectedProduct.id}
+          productName={selectedProduct.nombre}
+          productPrice={selectedProduct.precio}
+          guestUuid={guestUuid}
+          setCartRefreshTrigger={setCartRefreshTrigger}
+          user={user}
         />
       )}
     </>

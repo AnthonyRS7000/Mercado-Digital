@@ -1,27 +1,95 @@
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --gris-suave: #f5f5f5;
+}
+
+/* Estilo general para desktop */
 .category-navbar {
-    width: 200px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    margin-right: 20px;
-  }
-  
-  .category-navbar h3 {
-    margin-bottom: 10px;
-  }
-  
-  .category-navbar ul {
-    list-style-type: none;
+  width: 200px;
+  min-width: 180px;
+  padding: 15px;
+  background-color: var(--crema);
+  border-radius: 12px;
+  margin-right: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 30px; /* Se queda 10px por debajo del borde superior */
+  z-index: 500; /* Ajustado para que esté debajo del modal y otros elementos emergentes */
+  height: auto; /* Ajusta la altura automáticamente según el contenido */
+}
+
+/* Título del navbar */
+.category-navbar h3 {
+  margin-bottom: 12px;
+  color: var(--vino);
+  font-size: 18px;
+}
+
+/* Lista de categorías */
+.category-navbar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-navbar ul li {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 15px;
+}
+
+.category-navbar ul li:hover {
+  background-color: var(--vino);
+  color: white;
+}
+
+/* MODO RESPONSIVE / MOBILE */
+@media (max-width: 768px) {
+  .category-navbar {
+    position: sticky; /* Se queda fijo al hacer scroll */
+    top: 177px; /* Ajusta este valor según el espacio que quieras entre el navbar y el contenido */
+    background: white; /* Mantiene el fondo consistente */
+    box-shadow: none;
+    width: 100%;
+    margin: 0;
     padding: 0;
+    border-radius: 0;
+    z-index: 500; /* Asegura que el navbar de categorías quede debajo de modales */
   }
-  
-  .category-navbar ul li {
+
+  .category-navbar h3 {
+    display: none;
+  }
+
+  .category-navbar ul {
+    display: flex;
+    overflow-x: auto;
     padding: 10px;
-    cursor: pointer;
+    gap: 10px;
+    scroll-behavior: smooth;
   }
-  
-  .category-navbar ul li:hover {
-    background-color: #007bff;
+
+  .category-navbar ul::-webkit-scrollbar {
+    display: none; /* Oculta la scrollbar */
+  }
+
+  .category-navbar ul li {
+    background-color: var(--vino);
     color: white;
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
   }
-  
+
+  .category-navbar ul li:hover {
+    background-color: var(--vino-oscuro);
+    transform: scale(1.05);
+  }
+}

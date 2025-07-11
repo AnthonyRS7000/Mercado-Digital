@@ -1,0 +1,48 @@
+.pedido-container {
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.expand-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.expand-btn:hover {
+  background-color: #0056b3;
+}
+
+.productos-list {
+  margin-top: 10px;
+}
+
+.producto-item {
+  margin-bottom: 10px;
+}
+
+.notificar-btn {
+  background-color: #f39c12;
+  border: none;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.notificar-btn.green {
+  background-color: #2ecc71;
+}

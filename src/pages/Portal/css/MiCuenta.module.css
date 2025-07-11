@@ -1,50 +1,82 @@
-/* src/styles/css/MiCuenta.module.css */
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #ffffff;
+  --gris-hover: #f0e6dc;
+}
 
-/* Dropdown container */
+/* Contenedor del dropdown */
 .navbarDropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  /* Dropdown content */
+  position: relative;
+  display: inline-block;
+}
+
+/* Contenido del dropdown */
+.navbarDropdownContent {
+  display: none;
+  position: absolute;
+  background-color: var(--crema);
+  min-width: 180px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  left: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Mostrar dropdown al hacer hover */
+.navbarDropdown:hover .navbarDropdownContent {
+  display: block;
+}
+
+/* Enlaces dentro del dropdown */
+.navbarDropdownContent a {
+  color: var(--vino);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover sobre enlaces */
+.navbarDropdownContent a:hover {
+  background-color: var(--gris-hover);
+  color: var(--vino-oscuro);
+}
+
+/* Link principal "Mi cuenta" */
+.navbarDropdownLink {
+  color: var(--blanco);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+/* Ícono en "Mi cuenta" */
+.navbarDropdownLink i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .navbarDropdownContent {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    left: -50%; 
+    left: 0;
+    right: auto;
+    min-width: 100%;
   }
-  
-  /* Links inside the dropdown */
-  .navbarDropdownContent a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  /* Show the dropdown menu on hover */
-  .navbarDropdown:hover .navbarDropdownContent {
-    display: block;
-  }
-  
-  /* Hover effect for dropdown links */
-  .navbarDropdownContent a:hover {
-    background-color: #ddd; /* Change to desired hover color */
-    color: #2f7ed3; /* Change to desired hover text color */
-  }
-  
-  /* Mi cuenta link */
+
   .navbarDropdownLink {
-    color: white; /* Mantener el color blanco para Mi cuenta */
-    display: flex;
-    align-items: center;
-    text-decoration: none;
+    font-size: 14px;
   }
-  
-  .navbarDropdownLink i {
-    margin-right: 8px; /* Ajusta el espacio entre el icono y el texto */
+
+  .navbarDropdownContent a {
+    font-size: 14px;
+    padding: 10px 14px;
   }
-  
+}

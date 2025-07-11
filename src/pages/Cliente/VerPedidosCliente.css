@@ -1,0 +1,47 @@
+.pedidos-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+  }
+  
+  .pedidos-list {
+    margin-top: 20px;
+  }
+  
+  .pedido-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .pedido-footer {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .loading-icon {
+    font-size: 30px;
+    animation: spin 1s infinite linear;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
+  /* Animación de carga */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  

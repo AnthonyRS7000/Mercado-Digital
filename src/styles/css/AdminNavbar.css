@@ -1,39 +1,77 @@
+/* Estilo base para la barra lateral */
 .admin-navbar {
   width: 250px;
   height: 100vh;
   position: fixed;
+  top: 0;
+  left: 0;
   background-color: #ffffff;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
+  padding-top: 10px;
+  transition: transform 0.3s ease;
+  z-index: 1000;
 }
 
+/* Oculto por defecto en pantallas pequeñas */
+@media (max-width: 768px) {
+  .admin-navbar {
+    transform: translateX(-100%);
+    width: 200px;
+  }
+
+  .admin-navbar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Icono de hamburguesa */
+.hamburger-icon {
+  display: none;
+  font-size: 30px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1100; /* Por encima del navbar */
+}
+
+@media (max-width: 768px) {
+  .hamburger-icon {
+    display: block;
+  }
+}
+
+/* Logo */
 .admin-navbar-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .admin-navbar-logo img {
-  width: 200px;
+  width: 180px;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .admin-navbar-logo h2 {
   margin: 0;
   font-size: 18px;
-  color: #007bff;
+  background: none;
+  color: #7B1E3A;
 }
 
+/* Menú */
 .admin-navbar-menu {
   list-style: none;
   padding: 0;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .admin-navbar-menu li {
@@ -43,26 +81,15 @@
 .admin-navbar-menu .navbar-link {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 12px 20px;
   text-decoration: none;
   color: #333;
   font-size: 18px;
   transition: background-color 0.3s, transform 0.3s;
-  position: relative;
-}
-
-.admin-navbar-menu .navbar-link .fa-icon {
-  margin-right: 15px; /* Ajuste del espacio */
-  font-size: 20px;
-  transition: transform 0.3s;
 }
 
 .admin-navbar-menu .navbar-link:hover {
   background-color: #f0f0f0;
-  transform: translateX(5px);
-}
-
-.admin-navbar-menu .navbar-link:hover .fa-icon {
   transform: translateX(5px);
 }
 
@@ -71,12 +98,15 @@
   color: #ffffff;
 }
 
+/* Logout */
 .admin-navbar-logout {
   margin-top: auto;
-  padding: 20px;
+  padding: 15px 20px;
   width: 100%;
   display: flex;
   justify-content: center;
+  position: absolute;
+  bottom: 30px;
 }
 
 .admin-navbar-logout .logout-btn {
@@ -92,4 +122,21 @@
 
 .admin-navbar-logout .logout-btn:hover {
   background-color: #c82333;
+}
+
+/* Ajustes adicionales en pantallas pequeñas */
+@media (max-width: 768px) {
+  .admin-navbar-menu .navbar-link {
+    font-size: 16px;
+    padding: 12px 18px;
+  }
+
+  .admin-navbar-menu .navbar-link .fa-icon {
+    font-size: 18px;
+    margin-right: 12px;
+  }
+
+  .admin-navbar-logout {
+    bottom: 25px;
+  }
 }
