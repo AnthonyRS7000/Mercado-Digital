@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken, getUserId } from './authService';
 
 const bdMercado = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: 'https://mercado-backend.sistemasudh.com/api',
 });
 
 bdMercado.interceptors.request.use(

@@ -19,7 +19,7 @@ export const getProveedorId = () => {
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refresh_token');
   // Lógica para obtener un nuevo token usando el refresh token
-  const response = await axios.post('http://127.0.0.1:8000/api/refresh-token', { token: refreshToken });
+  const response = await axios.post('https://mercado-backend.sistemasudh.com/refresh-token', { token: refreshToken });
   const newToken = response.data.access_token;
   localStorage.setItem('token', newToken);
   return newToken;
