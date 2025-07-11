@@ -41,7 +41,7 @@ const ProductCard = ({ product }) => {
             minHeight: '110px'
           }}>
             <LazyLoadImage
-              src={`https://mercado-backend${product.imagen}`}
+              src={`https://mercado-backend.sistemasudh.com${product.imagen}`}
               alt={product.nombre}
               effect="blur"
               className="product-image"
