@@ -1,64 +1,75 @@
+/* CategoryNavbar.css */
+
+/* Colores */
 :root {
   --vino: #7b1e3d;
-  --vino-oscuro: #5c152e;
-  --crema: #fff5e1;
+  --vino-claro: #a34767;
   --gris-suave: #f5f5f5;
 }
 
-/* Estilo general para desktop */
+/* ==== DESKTOP ==== */
 .category-navbar {
-  width: 200px;
-  min-width: 180px;
-  padding: 15px;
-  background-color: var(--crema);
-  border-radius: 12px;
-  margin-right: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  width: 240px;
+  background: #fff;
+  border: 1px solid var(--gris-suave);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   position: sticky;
-  top: 30px; /* Se queda 10px por debajo del borde superior */
-  z-index: 500; /* Ajustado para que esté debajo del modal y otros elementos emergentes */
-  height: auto; /* Ajusta la altura automáticamente según el contenido */
+  top: 32px;
 }
 
-/* Título del navbar */
 .category-navbar h3 {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  font-size: 1.125rem;
+  font-weight: 600;
   color: var(--vino);
-  font-size: 18px;
+  text-transform: uppercase;
 }
 
-/* Lista de categorías */
 .category-navbar ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .category-navbar ul li {
   padding: 10px 12px;
+  margin-bottom: 8px;
   cursor: pointer;
+  color: var(--vino);
   border-radius: 6px;
-  transition: background-color 0.2s, color 0.2s;
-  font-size: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 
+/* Hover */
 .category-navbar ul li:hover {
-  background-color: var(--vino);
-  color: white;
+  background-color: var(--vino-claro);
+  color: #fff;
 }
 
-/* MODO RESPONSIVE / MOBILE */
+/* Activo */
+.category-navbar ul li.active {
+  background-color: var(--vino);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(123,30,61,0.3);
+}
+
+/* ==== MOBILE: sin cambios ==== */
+
+
+/* ==== MOBILE: sin cambios ==== */
 @media (max-width: 768px) {
   .category-navbar {
-    position: sticky; /* Se queda fijo al hacer scroll */
-    top: 177px; /* Ajusta este valor según el espacio que quieras entre el navbar y el contenido */
-    background: white; /* Mantiene el fondo consistente */
+    position: sticky;
+    top: 177px;
+    background: white;
     box-shadow: none;
     width: 100%;
     margin: 0;
     padding: 0;
     border-radius: 0;
-    z-index: 500; /* Asegura que el navbar de categorías quede debajo de modales */
+    z-index: 500;
   }
 
   .category-navbar h3 {
@@ -74,7 +85,7 @@
   }
 
   .category-navbar ul::-webkit-scrollbar {
-    display: none; /* Oculta la scrollbar */
+    display: none;
   }
 
   .category-navbar ul li {
@@ -89,7 +100,7 @@
   }
 
   .category-navbar ul li:hover {
-    background-color: var(--vino-oscuro);
+    background-color: var(--vino-claro);
     transform: scale(1.05);
   }
 }

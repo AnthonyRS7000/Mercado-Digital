@@ -13,12 +13,6 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
   const [userAddresses, setUserAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState('');
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: '',
-    cardExpiry: '',
-    cardCVC: '',
-    walletInfo: ''
-  });
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -30,11 +24,7 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
 
   const handlePaymentMethodSelect = (method) => {
     setPaymentMethod(method);
-    if (method === 1) {
-      setStep(3); // Skip to confirmation step for cash on delivery
-    } else {
-      nextStep(); // Go to payment details step for card or wallet
-    }
+    setStep(3); // Ir a confirmación directamente
   };
 
   const handleLocationSelect = (loc) => {
@@ -42,48 +32,54 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
     if (loc !== 'Nueva Ubicación') {
       setNewAddress('');
       setIsAddingNewAddress(false);
-      nextStep(); // Avanza automáticamente al paso 2
+      nextStep();
     } else {
       setIsAddingNewAddress(true);
     }
   };
-  
 
   const handleConfirm = async () => {
     const finalLocation = isAddingNewAddress ? newAddress : location;
-  
-    // Llama a la función onConfirm pasada por el padre
-    onConfirm(paymentMethod, finalLocation, paymentDetails);
-  
-    // Aquí agregarás la lógica para vaciar el carrito después de confirmar el pedido
-    try {
-      console.log('Confirmando pedido para el usuario:', user.related_data.user_id);
-  
-      // Llama a la API para vaciar el carrito
-      const vaciarCarritoResponse = await bdMercado.post('/carrito/vaciar', { user_id: user.related_data.user_id });
-  
-      // Verifica la respuesta de la API
-      console.log('Respuesta al vaciar carrito:', vaciarCarritoResponse.data);
-  
-      // Redirige a la página de seguimiento
-      navigate('/seguimiento');
-    } catch (error) {
-      console.error('Error al vaciar el carrito:', error);
-      alert('Hubo un error al vaciar el carrito');
-    }
-  };
-  
 
-  const handleChangePaymentDetails = (e) => {
-    const { name, value } = e.target;
-    setPaymentDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value
-    }));
+    try {
+      if (paymentMethod === 1) {
+        // CONTRAENTREGA → el padre crea el pedido y vacía carrito
+        await onConfirm(paymentMethod, finalLocation);
+        navigate('/seguimiento');
+        return;
+      }
+
+      if (paymentMethod === 2) {
+        // MERCADO PAGO → crear preferencia
+        const { data } = await bdMercado.post('/mercadopago/preferencia', {
+          user_id: user.related_data.user_id,
+          direccion_entrega: finalLocation,
+          productos: user.carrito.map((p) => ({
+            producto_id: p.producto_id,
+            cantidad: p.cantidad,
+          })),
+          fecha_programada: null,
+          hora_programada: null,
+        });
+
+        if (data.init_point) {
+          // Redirigir al checkout de MP con back_url al frontend
+          const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
+          window.location.href = `${data.init_point}&back_url=${encodeURIComponent(
+            `${frontendUrl}/mp/success?address=${encodeURIComponent(finalLocation)}`
+          )}`;
+        } else {
+          alert('No se pudo generar la preferencia de pago');
+        }
+      }
+    } catch (error) {
+      console.error('Error al confirmar pedido:', error.response?.data || error.message);
+      alert('Hubo un error al confirmar el pedido');
+    }
   };
 
   const nextStep = () => {
-    if (step < 4) setStep(step + 1);
+    if (step < 3) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -130,6 +126,7 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
                 )}
               </div>
             )}
+
             {step === 2 && (
               <div className={styles.step}>
                 <FontAwesomeIcon icon={faCreditCard} className={styles.icon} />
@@ -147,79 +144,24 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
                     onClick={() => handlePaymentMethodSelect(2)}
                   >
                     <FontAwesomeIcon icon={faCreditCard} />
-                    <p>Pago con tarjeta</p>
-                  </button>
-                  <button
-                    className={`${styles.optionButton} ${paymentMethod === 3 ? styles.selected : ''}`}
-                    onClick={() => handlePaymentMethodSelect(3)}
-                  >
-                    <FontAwesomeIcon icon={faWallet} />
-                    <p>Billetera electrónica</p>
+                    <p>Mercado Pago</p>
                   </button>
                 </div>
               </div>
             )}
-            {step === 3 && (paymentMethod === 2 || paymentMethod === 3) && (
-              <div className={styles.step}>
-                <FontAwesomeIcon icon={faCreditCard} className={styles.icon} />
-                <h2>Ingresa los detalles de tu {paymentMethod === 2 ? 'tarjeta' : 'billetera electrónica'}</h2>
-                {paymentMethod === 2 && (
-                  <div className={styles.formGroup}>
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      placeholder="Número de tarjeta"
-                      value={paymentDetails.cardNumber}
-                      onChange={handleChangePaymentDetails}
-                    />
-                    <input
-                      type="text"
-                      name="cardExpiry"
-                      placeholder="Fecha de expiración (MM/AA)"
-                      value={paymentDetails.cardExpiry}
-                      onChange={handleChangePaymentDetails}
-                    />
-                    <input
-                      type="text"
-                      name="cardCVC"
-                      placeholder="CVC"
-                      value={paymentDetails.cardCVC}
-                      onChange={handleChangePaymentDetails}
-                    />
-                  </div>
-                )}
-                {paymentMethod === 3 && (
-                  <div className={styles.formGroup}>
-                    <input
-                      type="text"
-                      name="walletInfo"
-                      placeholder="Información de la billetera"
-                      value={paymentDetails.walletInfo}
-                      onChange={handleChangePaymentDetails}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            {step === 3 && paymentMethod === 1 && (
+
+            {step === 3 && (
               <div className={styles.step}>
                 <FontAwesomeIcon icon={faCheckCircle} className={styles.icon} />
                 <h2>Confirmar Pedido</h2>
                 <p>Revise su información antes de confirmar el pedido.</p>
-                <p>Método de Pago: {paymentMethod === 1 ? 'Pago Contraentrega' : paymentMethod === 2 ? 'Pago con tarjeta' : 'Billetera electrónica'}</p>
+                <p>
+                  Método de Pago: {paymentMethod === 1 ? 'Pago Contraentrega' : 'Mercado Pago'}
+                </p>
                 <p>Ubicación: {isAddingNewAddress ? newAddress : location}</p>
                 <button className={styles.confirmButton} onClick={handleConfirm}>
                   Confirmar
                 </button>
-              </div>
-            )}
-            {step === 4 && (
-              <div className={styles.step}>
-                <FontAwesomeIcon icon={faCheckCircle} className={styles.icon} />
-                <h2>Confirmar Pedido</h2>
-                <p>Revise su información antes de confirmar el pedido.</p>
-                <p>Método de Pago: {paymentMethod === 1 ? 'Pago Contraentrega' : paymentMethod === 2 ? 'Pago con tarjeta' : 'Billetera electrónica'}</p>
-                <p>Ubicación: {isAddingNewAddress ? newAddress : location}</p>
               </div>
             )}
 
@@ -228,25 +170,14 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
                 <button onClick={prevStep} className={styles.navButton}>
                   Anterior
                 </button>
-              )}           
-              {step < 4 && !(step === 3 && paymentMethod === 1) && (
-                <button 
-                  onClick={nextStep} 
+              )}
+              {step < 3 && (
+                <button
+                  onClick={nextStep}
                   className={styles.navButton}
-                  disabled={
-                    (step === 1 && !location && !newAddress) || 
-                    (step === 2 && !paymentMethod) ||
-                    (step === 3 && (paymentMethod !== 1 && 
-                      ((paymentMethod === 2 && (!paymentDetails.cardNumber || !paymentDetails.cardExpiry || !paymentDetails.cardCVC)) ||
-                      (paymentMethod === 3 && !paymentDetails.walletInfo))))
-                  }
+                  disabled={(step === 1 && !location && !newAddress) || (step === 2 && !paymentMethod)}
                 >
                   Siguiente
-                </button>
-              )}
-              {step === 4 && (
-                <button onClick={handleConfirm} className={styles.navButton}>
-                  Confirmar
                 </button>
               )}
             </div>

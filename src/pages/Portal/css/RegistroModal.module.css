@@ -1,0 +1,224 @@
+:root {
+  --vino: #7b1e3d;
+  --crema: #fff5e1;
+  --gris-suave: #f5f5f5;
+}
+
+/* Container del formulario de registro */
+.registroContainer {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Título centrado */
+.registroTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  color: var(--vino);
+  text-align: center;
+  font-weight: 600;
+  margin: 8px 0 18px;
+}
+
+/* Grid de dos columnas en desktop */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 12px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  justify-items: stretch;
+  align-items: start;
+}
+
+/* Campo que ocupe ambas columnas */
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+/* Cada grupo de campo */
+.formGroup {
+  position: relative;
+  margin-bottom: 0;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Label */
+.formGroup label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--vino);
+  font-weight: 500;
+  font-size: 15.5px;
+}
+
+/* Input + icon container */
+.inputGroup {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputGroup input,
+.inputGroup select {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  height: 36px;
+  box-sizing: border-box;
+  background: #fff;
+  font-size: 14px;
+}
+
+/* Icono */
+.inputGroupIcon {
+  position: absolute;
+  left: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 17px;
+  z-index: 2;
+}
+
+/* Error en campo */
+.inputError {
+  border: 1px solid red !important;
+  background-color: #ffe6e6 !important;
+}
+
+/* Icono ojo para contraseñas */
+.eyeIcon {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  z-index: 3;
+}
+
+/* Mensaje de error */
+.errorText {
+  color: red;
+  font-size: 12px;
+  margin-top: 1px;
+  height: 14px;
+  display: block;
+}
+
+/* Botón principal */
+.btn {
+  grid-column: 1 / -1;
+  background-color: var(--vino);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+  margin-top: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: #5c152e;
+}
+
+/* Botón volver (segundo paso) */
+.linkButton {
+  grid-column: 1 / -1;
+  background: none;
+  border: none;
+  color: var(--vino);
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 8px;
+}
+
+.linkButton:hover {
+  color: #5c152e;
+}
+
+/* Animación */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------- TABLET (601px - 768px) -------------------- */
+@media (max-width: 768px) and (min-width: 601px) {
+  .formGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 10px;
+  }
+  
+  .registroTitle {
+    font-size: 20px;
+  }
+}
+
+/* -------------------- MÓVIL (hasta 600px) -------------------- */
+@media (max-width: 600px) {
+  /* Container del registro */
+  .registroContainer {
+    width: 100%;
+    padding: 0;
+  }
+
+  /* Grid a UNA sola columna */
+  .formGrid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Campos fullWidth llenan la única columna */
+  .fullWidth {
+    grid-column: 1 !important;
+  }
+
+  /* Ajustes de texto y botones */
+  .registroTitle {
+    font-size: 18px !important;
+    margin: 6px 0 14px !important;
+  }
+  
+  .btn {
+    font-size: 15px !important;
+    padding: 12px 10px !important;
+  }
+  
+  .formGroup label {
+    font-size: 14px !important;
+  }
+  
+  .inputGroup input,
+  .inputGroup select {
+    font-size: 13px !important;
+    height: 34px !important;
+  }
+}

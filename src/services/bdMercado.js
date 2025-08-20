@@ -1,9 +1,12 @@
+// src/services/bdMercado.js
 import axios from 'axios';
 import { getToken } from './authService';
 
-const bdMercado = axios.create({
-  baseURL: 'https://mercado-backend.sistemasudh.com/api',
-});
+export const baseURL = import.meta.env.VITE_API_URL;
+export const BASE_IMG_URL = import.meta.env.VITE_IMG_URL;
+
+// Instancia de Axios con baseURL
+const bdMercado = axios.create({ baseURL });
 
 bdMercado.interceptors.request.use(
   async (config) => {
@@ -13,9 +16,7 @@ bdMercado.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default bdMercado;

@@ -22,6 +22,23 @@
   font-size: 30px;
   cursor: pointer;
 }
+.navbar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.18);
+  z-index: 999; /* Menor que el navbar */
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .navbar-overlay {
+    display: block;
+  }
+}
+
 
 /* Ajuste para pantallas pequeñas */
 @media (max-width: 999px) {

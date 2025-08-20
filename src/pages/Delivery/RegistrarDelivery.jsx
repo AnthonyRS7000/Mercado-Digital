@@ -26,6 +26,17 @@ const RegistrarDelivery = () => {
     e.preventDefault();
     try {
       await bdMercado.post('/v1/delivery', formData);
+
+      // Limpiar campos después de registrar
+      setFormData({
+        nombre: '',
+        nombre_empresa: '',
+        dni: '',
+        celular: '',
+        email: '',
+        password: ''
+      });
+
       alert('Delivery registrado exitosamente');
     } catch (error) {
       console.error('Error registrando delivery:', error);
@@ -35,11 +46,8 @@ const RegistrarDelivery = () => {
   return (
     <div className={styles.registerContainer}>
       <div className={styles.registerBox}>
-        <div className={styles.registerLogo}>
-          <img src="/Logo.svg" alt="Logo" />
-        </div>
-        <h2>Registro de Delivery</h2>
-        <form onSubmit={handleSubmit}>
+        <h2 className={styles.title}>Registro de Delivery</h2>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="nombre">
               <FontAwesomeIcon icon={faUser} className={styles.faIcon} /> Nombre

@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaMinus, FaPlus, FaArrowLeft, FaStore } from 'react-icons/fa';
-import axios from 'axios';
+// 👇 Solo importa bdMercado y BASE_IMG_URL
+import bdMercado, { BASE_IMG_URL } from '../../../services/bdMercado';
 import { v4 as uuidv4 } from 'uuid';
 import '../css/Productovista.css';
 import PesoModal from '../components/peso/PesoModal';
 import UnidadModal from '../components/peso/UnidadModal';
 import { DataContext } from '../../../context/DataContext';
 import { AuthContext } from '../../../context/AuthContext';
-// 👉 Lazy load image
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
@@ -24,7 +24,7 @@ const Productovista = () => {
   const { setCartCount } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get(`https://mercado-backend/api/productos-uno/${id}`)
+    bdMercado.get(`/productos-uno/${id}`)
       .then(res => {
         setProducto(res.data.producto);
         setRelacionados(res.data.relacionados);
@@ -33,14 +33,10 @@ const Productovista = () => {
   }, [id]);
 
   const disminuirCantidad = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
-    }
+    if (cantidad > 1) setCantidad(cantidad - 1);
   };
 
-  const aumentarCantidad = () => {
-    setCantidad(cantidad + 1);
-  };
+  const aumentarCantidad = () => setCantidad(cantidad + 1);
 
   const handleVolverAtras = () => navigate(-1);
 
@@ -71,7 +67,7 @@ const Productovista = () => {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/carrito/agregar', payload);
+      await bdMercado.post('/carrito/agregar', payload);
       setCartCount(prev => prev + 1);
       mostrarConfirmacion('Producto agregado al carrito');
     } catch (error) {
@@ -87,10 +83,15 @@ const Productovista = () => {
     }
   };
 
-  const navegarAProveedor = () => {
-    // Esta función se implementará más adelante para navegar a la vista del proveedor
-    // navigate(`/proveedor/${producto.proveedor?.id}`);
-  };
+const navegarAProveedor = () => {
+  const provId   = producto?.proveedor?.id ?? producto?.proveedor_id;
+  const provName = producto?.proveedor?.nombre ?? producto?.proveedor_nombre ?? '';
+
+  if (provId) {
+    navigate(`/proveedor/${provId}`, { state: { provName } });
+  }
+};
+
 
   if (!producto) {
     return (
@@ -121,7 +122,7 @@ const Productovista = () => {
           <LazyLoadImage
             src={producto.imagen?.startsWith('http')
               ? producto.imagen
-              : `http://localhost:8000${producto.imagen}`}
+              : `${BASE_IMG_URL}${producto.imagen}`}
             alt={producto.nombre}
             effect="blur"
             width={350}
@@ -157,7 +158,7 @@ const Productovista = () => {
               Agregar <FaShoppingCart className="carrito-icono" />
             </button>
           </div>
-            {mensajeConfirmacion && <div className="toast-confirmacion">{mensajeConfirmacion}</div>}
+          {mensajeConfirmacion && <div className="toast-confirmacion">{mensajeConfirmacion}</div>}
         </div>
         
         <div className="acciones-superiores">
@@ -185,7 +186,7 @@ const Productovista = () => {
           <LazyLoadImage
             src={producto.imagen?.startsWith('http')
               ? producto.imagen
-              : `http://localhost:8000${producto.imagen}`}
+              : `${BASE_IMG_URL}${producto.imagen}`}
             alt={producto.nombre}
             effect="blur"
             width={250}
@@ -229,8 +230,7 @@ const Productovista = () => {
             </button>
           </div>
 
-            {mensajeConfirmacion && <div className="toast-confirmacion">{mensajeConfirmacion}</div>}
-
+          {mensajeConfirmacion && <div className="toast-confirmacion">{mensajeConfirmacion}</div>}
         </div>
       </div>
 
@@ -245,7 +245,7 @@ const Productovista = () => {
                   <LazyLoadImage
                     src={rel.imagen?.startsWith('http') 
                       ? rel.imagen 
-                      : `http://localhost:8000${rel.imagen}`}
+                      : `${BASE_IMG_URL}${rel.imagen}`}
                     alt={rel.nombre}
                     effect="blur"
                     width={120}

@@ -8,7 +8,8 @@ import PedidoProgramadoModal from './PedidoProgramadoModal';
 import './css/Pedido.css';
 
 const Pedido = () => {
-  const { user } = useContext(AuthContext);
+  const { user, refreshCartCount } = useContext(AuthContext);
+
   const [cart, setCart] = useState({ productos: [] });
   const [isPedidoRapidoModalOpen, setPedidoRapidoModalOpen] = useState(false);
   const [isPedidoProgramadoModalOpen, setPedidoProgramadoModalOpen] = useState(false);
@@ -21,7 +22,6 @@ const Pedido = () => {
       setCart(response.data);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching cart:', error);
       setCart({ productos: [] });
       setIsLoading(false);
     }
@@ -31,13 +31,14 @@ const Pedido = () => {
     if (user?.related_data?.user_id) {
       fetchCart();
     }
+    // eslint-disable-next-line
   }, [user]);
 
+  // ------- Confirmación de Pedido Rápido -------
   const handleConfirmOrder = async (paymentMethod, address) => {
     try {
-      console.log(`Confirmando pedido para el usuario: ${user.related_data.user_id}`);
-      
-      const response = await bdMercado.post('/pedidos', {
+      // Crear pedido
+      await bdMercado.post('/pedidos', {
         fecha: new Date().toISOString().split('T')[0],
         estado: 1,
         direccion_entrega: address,
@@ -49,55 +50,20 @@ const Pedido = () => {
         })),
       });
 
-      console.log('Pedido realizado:', response.data);
       setPedidoRapidoModalOpen(false);
-      
-      // Vaciar el carrito después de realizar el pedido
-      const emptyCart = await bdMercado.delete(`/carrito/vaciar/${user.related_data.user_id}`);
-      console.log('Respuesta al vaciar carrito:', emptyCart.data);
-      
-      // Actualizar el estado del carrito
-      fetchCart();
+
+      // 🚨 Vaciar carrito SOLO en contraentrega
+      if (paymentMethod === 1) {
+        await bdMercado.post('/carrito/vaciar', {
+          user_id: user.related_data.user_id,
+        });
+        await refreshCartCount(true);
+        fetchCart();
+      }
     } catch (error) {
-      console.error('Error realizando pedido:', error);
+      console.error('Error al confirmar pedido:', error.response?.data || error.message);
     }
   };
-
-// Corrección en Pedido.jsx
-const handleConfirmProgramado = async (data) => {
-  try {
-    console.log(`Confirmando pedido programado para el usuario: ${user.related_data.user_id}`);
-    
-    // Desestructurar correctamente los datos recibidos del modal
-    const { fechaEntrega, horaEntrega, paymentMethod, address } = data;
-    
-    const response = await bdMercado.post('/pedidos', {
-      fecha: new Date().toISOString().split('T')[0],
-      estado: 1,
-      direccion_entrega: address,        // Campo requerido que faltaba
-      user_id: user.related_data.user_id,
-      metodo_pago_id: paymentMethod,     // Campo requerido que faltaba
-      fecha_programada: fechaEntrega,
-      hora_programada: horaEntrega,
-      productos: cart.productos.map((p) => ({
-        producto_id: p.producto.id,
-        cantidad: p.cantidad,
-      })),
-    });
-
-    console.log('Pedido programado realizado:', response.data);
-    setPedidoProgramadoModalOpen(false);
-    
-    // Vaciar el carrito después de realizar el pedido
-    const emptyCart = await bdMercado.delete(`/carrito/vaciar/${user.related_data.user_id}`);
-    console.log('Respuesta al vaciar carrito:', emptyCart.data);
-    
-    // Actualizar el estado del carrito
-    fetchCart();
-  } catch (error) {
-    console.error('Error realizando pedido programado:', error);
-  }
-};
 
   if (isLoading) {
     return (
@@ -173,7 +139,7 @@ const handleConfirmProgramado = async (data) => {
       <PedidoProgramadoModal
         isOpen={isPedidoProgramadoModalOpen}
         onClose={() => setPedidoProgramadoModalOpen(false)}
-        onConfirm={handleConfirmProgramado}
+        cart={cart}
       />
     </div>
   );

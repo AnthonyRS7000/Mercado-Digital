@@ -1,0 +1,162 @@
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #fff;
+}
+
+.formBox {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 16px;
+  row-gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .fieldsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.logoTop {
+  width: 90px;
+  margin-bottom: 14px;
+}
+
+.title {
+  color: var(--vino);
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin-bottom: 17px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: 700;
+  color: var(--vino-oscuro);
+  font-size: 1.06rem;
+  margin-bottom: 3px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1.4px solid #f3d0e2;
+  border-radius: 8px;
+  background: #fff5e1;
+  font-size: 1.11rem;
+  color: var(--vino-oscuro);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--vino);
+  background: #fff;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px 0;
+  background: var(--vino);
+  color: var(--blanco);
+  border: none;
+  border-radius: 7px;
+  font-size: 1.13rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 13px;
+  box-shadow: 0 2px 9px 0 rgba(123,30,58,0.09);
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: var(--vino-oscuro);
+  color: #ffe9f4;
+}
+
+.msg {
+  width: 100%;
+  margin-top: 13px;
+  text-align: center;
+  font-size: 1.01rem;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.success {
+  background: #e6fff0;
+  color: #21895a;
+  border: 1px solid #6cfbb4;
+}
+
+.error {
+  background: #ffeaea;
+  color: #a93030;
+  border: 1px solid #efbebe;
+}
+.fullWidth {
+  grid-column: span 2;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #fff5e1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.4px solid #f3d0e2;
+}
+
+.checkboxLabel {
+  font-size: 0.95rem;
+  color: var(--vino-oscuro);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.invalid {
+  border-color: #e24b4b !important;
+  background: #ffecec !important;
+}
+
+.errorText {
+  font-size: 0.85rem;
+  color: #a93030;
+  margin-top: 4px;
+}
+.formLabel{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;               /* <— ESPACIO entre icono y palabra */
+  font-weight:700;
+  color:var(--vino-oscuro);
+  margin-bottom:6px;
+  font-size:1.05rem;
+}
+
+/* NUEVO: opcional ajuste fino del icono */
+.labelIcon{
+  color:var(--vino);
+  font-size:1.06em;
+  transform: translateY(1px);
+}

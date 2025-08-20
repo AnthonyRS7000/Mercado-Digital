@@ -1,0 +1,233 @@
+:root {
+  --prov-gap: .75rem; /* un poco más compacto para 2x2 */
+  --prov-radius: 16px;
+  --prov-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  --prov-border: 1px solid rgba(0,0,0,0.06);
+  /* toma el color global si existe, sino borgoña por defecto */
+  --brand-color: var(--app-primary, #8b1d3d);
+  --prov-accent: var(--brand-color);
+  --prov-muted: #64748b;
+  --prov-bg: #ffffff;
+}
+
+.prov-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+/* header centrado con botón a la izquierda */
+.prov-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  min-height: 42px;
+}
+.prov-header--centered { justify-content: center; }
+
+.btn-back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  border: var(--prov-border);
+  cursor: pointer;
+  transition: transform .08s ease, background .2s ease;
+}
+.btn-back:hover { background: #e2e8f0; }
+.btn-back:active { transform: translateY(-50%) scale(0.96); }
+
+.prov-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  text-align: center;
+}
+
+/* Spinner con color de marca y centrado */
+.prov-loading {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  height: 45vh;
+  color: var(--prov-muted);
+  font-size: 0.95rem;
+}
+.prov-loading--center { justify-items: center; align-content: center; }
+.spinner-store {
+  font-size: 3rem;
+  animation: spin 1.2s linear infinite;
+  color: var(--prov-accent);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.prov-empty {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  height: 40vh;
+  color: var(--prov-muted);
+  text-align: center;
+}
+.btn-cta {
+  background: var(--prov-accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  box-shadow: var(--prov-shadow);
+}
+.btn-cta:hover { filter: brightness(1.05); }
+
+/* === GRID ===
+ * móvil: 2 columnas
+ * tablet: 3 columnas
+ * desktop: 4 columnas
+ */
+.prov-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr)); /* 👈 dos por fila en móvil */
+  gap: var(--prov-gap);
+}
+
+@media (min-width: 768px) {
+  .prov-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+@media (min-width: 1200px) {
+  .prov-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
+}
+
+/* Tarjeta compacta para 2x2 en móvil */
+.prov-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--prov-bg);
+  border-radius: var(--prov-radius);
+  border: var(--prov-border);
+  box-shadow: var(--prov-shadow);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .2s ease;
+}
+.prov-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+/* imagen cuadrada (como la grilla del inicio) */
+.prov-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* 👈 cuadrado para tarjetas compactas */
+  background: #f8fafc;
+  overflow: hidden;
+}
+.prov-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prov-body {
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.prov-name {
+  font-size: .95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prov-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prov-price {
+  font-weight: 800;
+  color: #16a34a;
+  font-size: .95rem;
+}
+
+.prov-stock {
+  font-size: .8rem;
+  color: #0f172a;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  padding: 3px 8px;
+}
+.prov-stock.out {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.prov-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.prov-tag {
+  font-size: .78rem;
+  color: var(--prov-accent);
+  background: color-mix(in srgb, var(--prov-accent) 15%, white);
+  border-radius: 9999px;
+  padding: 3px 8px;
+}
+.prov-tag.soft {
+  color: #64748b;
+  background: #f1f5f9;
+}
+/* === Acciones === */
+.prov-actions {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: var(--prov-border);
+  background: var(--prov-accent);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--prov-shadow);
+  transition: transform .08s ease, filter .2s ease, opacity .2s ease;
+}
+
+.btn-add:hover { filter: brightness(1.05); }
+.btn-add:active { transform: scale(0.98); }
+.btn-add:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: none;
+}
+
+/* spinner del botón usando el ícono FaStore (alineado con la guía) */
+.btn-add-spinner {
+  font-size: 1rem; /* compacto dentro del botón */
+  animation: spin 1.2s linear infinite;
+  color: #fff;
+}

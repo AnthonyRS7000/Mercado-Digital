@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -16,22 +16,29 @@ const LoginModal = ({ isOpen, onClose }) => {
   const { saveData } = useContext(DataContext);
   const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [error, setError] = useState(''); // Agregamos estado para manejar errores
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Limpiar error cuando el usuario empiece a escribir
     if (error) setError('');
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(''); // Limpiar errores previos
-    
+    setError('');
     try {
       const response = await bdMercado.post('/login', formData);
       const userData = response.data;
@@ -44,7 +51,6 @@ const LoginModal = ({ isOpen, onClose }) => {
       saveData(userData);
       login(userData.user);
 
-      // ✅ Separar el merge del carrito del flujo principal del login
       if (userId) {
         const uuid = localStorage.getItem('carrito_uuid');
         if (uuid) {
@@ -52,25 +58,17 @@ const LoginModal = ({ isOpen, onClose }) => {
             await bdMercado.post('/carrito/merge', { uuid, user_id: userId });
             localStorage.removeItem('carrito_uuid');
           } catch (mergeError) {
-            // ✅ Error en merge no debe afectar el login
-            console.error('Error al fusionar carrito (no crítico):', mergeError);
-            // Opcional: remover el UUID aunque falle el merge
             localStorage.removeItem('carrito_uuid');
           }
         }
       }
-
-      // ✅ Cerrar modal SIEMPRE después de login exitoso
       onClose();
-
       const redirectTo = localStorage.getItem('redirectAfterLogin');
       if (redirectTo) {
         localStorage.removeItem('redirectAfterLogin');
         navigate(redirectTo);
       }
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      // ✅ Solo mostrar error si realmente falló el LOGIN, no el merge
       setError('Email o contraseña incorrectos. Por favor, inténtalo de nuevo.');
     } finally {
       setLoading(false);
@@ -93,38 +91,26 @@ const LoginModal = ({ isOpen, onClose }) => {
   return (
     isOpen && (
       <div className={styles.overlay} onClick={handleOverlayClick}>
-        <div className={`${styles.modal} ${showRegister ? styles.modalWide : ''}`}>
+        <div className={`${styles.modal} ${showRegister ? styles.modalRegistro : ''}`}>
           <button className={styles.closeButton} onClick={handleClose} aria-label="Cerrar">
             <FontAwesomeIcon icon={faTimes} />
           </button>
           <div className={styles.modalContent}>
             <img src={logo} alt="Logo" className={styles.logo} />
             {showRegister ? (
-            <RegistroModal 
-              onClose={onClose} 
-              setShowRegister={setShowRegister} 
-              styles={styles}
-            />
+              <RegistroModal 
+                onClose={onClose} 
+                setShowRegister={setShowRegister} 
+              />
             ) : (
               <>
                 <h2 className={styles.modalTitle}>Inicia sesión</h2>
-                
-                {/* ✅ Mostrar mensaje de error si existe */}
                 {error && (
-                  <div className={styles.errorMessage} style={{
-                    color: '#dc3545',
-                    backgroundColor: '#f8d7da',
-                    border: '1px solid #f5c6cb',
-                    borderRadius: '4px',
-                    padding: '12px',
-                    marginBottom: '16px',
-                    fontSize: '14px'
-                  }}>
+                  <div className={styles.errorMessage}>
                     {error}
                   </div>
                 )}
-                
-                <form onSubmit={handleSubmit} className={styles.form}>
+                <form onSubmit={handleSubmit} className={styles.form} autoComplete="on">
                   <div className={styles.formGroup}>
                     <label htmlFor="email">Email</label>
                     <div className={styles.inputGroup}>
@@ -138,10 +124,10 @@ const LoginModal = ({ isOpen, onClose }) => {
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        autoComplete="username"
                       />
                     </div>
                   </div>
-
                   <div className={styles.formGroup}>
                     <label htmlFor="password">Contraseña</label>
                     <div className={styles.inputGroup}>
@@ -155,14 +141,14 @@ const LoginModal = ({ isOpen, onClose }) => {
                         value={formData.password}
                         onChange={handleChange}
                         required
+                        autoComplete="current-password"
                       />
                     </div>
                   </div>
-
                   <button 
                     type="submit" 
                     className={styles.btn}
-                    disabled={loading} // ✅ Deshabilitar botón durante carga
+                    disabled={loading}
                   >
                     {loading ? 'Ingresando...' : 'Ingresar'}
                   </button>

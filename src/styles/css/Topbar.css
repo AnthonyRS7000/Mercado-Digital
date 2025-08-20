@@ -1,76 +1,172 @@
 .topbar {
   width: 100%;
-  height: 90px;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #ddd;
+  height: 56px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #f2d5de;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 14px;
   box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* Icono de hamburguesa a la izquierda */
+/* Bloque izquierdo: hamburguesa, usuario */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ícono de hamburguesa: SIEMPRE visible en mobile, OCULTO en desktop */
 .hamburger-icon {
-  font-size: 26px;
+  font-size: 24px;
+  color: #b63c56;
   cursor: pointer;
   display: none; /* Oculto por defecto */
 }
 
-/* Contenido derecho (usuario + logout) */
-.topbar-content {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Usuario */
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 16px;
-  color: #333;
-}
-
 .icon-user {
-  font-size: 20px;
-  color: #007bff;
+  font-size: 22px;
+  color: #b63c56;
 }
 
 .username {
-  font-weight: bold;
+  font-weight: 600;
+  color: #7B1E3A;
+  font-size: 15.5px;
+}
+
+/* Derecha */
+.topbar-right {
+  display: flex;
+  align-items: center;
 }
 
 /* Botón logout */
 .btn-logout {
-  background-color: #dc3545;
-  color: white;
+  background: #b63c56;
+  color: #fff;
   border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
+  padding: 8px 18px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.22s;
 }
 
 .btn-logout:hover {
-  background-color: #c82333;
+  background: #7B1E3A;
+}
+.icon-logout {
+  font-size: 17px;
+}
+.logout-text {
+  display: inline;
 }
 
-/* Responsive: mostrar el ícono de hamburguesa */
+/* -------- RESPONSIVE -------- */
 @media (max-width: 999px) {
   .topbar {
-    height: 60px;
-    padding: 0 10px;
+    height: 58px;
+    padding: 0 6px;
   }
-
+  .topbar-left {
+    gap: 7px;
+  }
+  .username {
+    font-size: 12.5px;
+  }
+  .btn-logout {
+    padding: 7px 10px;
+    min-width: 38px;
+    border-radius: 50%;
+    font-size: 18px;
+    justify-content: center;
+    gap: 0;
+  }
+  .logout-text {
+    display: none; /* Sólo ícono en mobile */
+  }
   .hamburger-icon {
-    display: block !important;
+    display: block !important; /* SIEMPRE visible en mobile */
+    margin-right: 5px;
   }
+}
 
-  .topbar-content {
-    margin-left: auto;
-    gap: 10px;
+/* ¡Truco! Para forzar que el ícono NUNCA desaparezca */
+.hamburger-icon {
+  display: block;
+}
+
+@media (min-width: 1000px) {
+  .hamburger-icon {
+    display: none !important;
+  }
+}
+/* --- User dropdown menu --- */
+.user-menu-trigger {
+  position: relative;
+  outline: none;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 115%; /* Justo debajo del bloque usuario */
+  left: 0;
+  background: #fff;
+  min-width: 120px;
+  max-width: 160px;
+  border-radius: 9px;
+  box-shadow: 0 6px 30px 0 rgba(90,30,56,0.13);
+  border: 1px solid #f2d5de;
+  padding: 5px 0;
+  z-index: 1200;
+  animation: dropdown-appear 0.18s;
+}
+
+@keyframes dropdown-appear {
+  from { opacity: 0; transform: translateY(-10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.user-dropdown-item {
+  padding: 10px 22px 10px 16px;
+  cursor: pointer;
+  color: #7B1E3A;
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  transition: background 0.18s;
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown-item:hover {
+  background: #ffe7f1;
+}
+
+.user-dropdown-item.logout {
+  color: #b63c56;
+}
+
+/* Solo ocultamos el botón logout en mobile */
+@media (max-width: 999px) {
+  .btn-logout {
+    display: none !important;
+  }
+  .topbar-left {
+    margin-right: 10px;
+  }
+    .user-dropdown-menu {
+    left: auto;
+    right: 1px;  /* Ajusta el espacio al borde derecho */
+    min-width: 140px;
   }
 }

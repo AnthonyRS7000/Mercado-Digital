@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import bdMercado from '../../../../services/bdMercado';
 import './css/Modal.css';
 import { AuthContext } from '../../../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const PesoModal = ({ isOpen, onClose, productId, productName }) => {
   const [weight, setWeight] = useState('');
@@ -60,13 +61,11 @@ const PesoModal = ({ isOpen, onClose, productId, productName }) => {
     try {
       await bdMercado.post('/carrito/agregar', payload);
       await refreshCartCount(true); // 🔥 ACTUALIZA BURBUJA AL INSTANTE
-      setView('success');
-      setTimeout(() => {
-        setView('form');
-        setWeight('');
-        setMessage('');
-        onClose();
-      }, 1500);
+      toast.success('🛒 Producto agregado al carrito');
+      setWeight('');
+      setMessage('');
+      onClose();
+
     } catch (error) {
       setMessage('❌ Hubo un error al agregar el producto.');
     }

@@ -1,133 +1,148 @@
+/* Pedido.css */
+
+/* Variables de color */
+:root {
+  --vino: #7b1e3d;
+  --vino-claro: #a34767;
+  --crema: #fff5e1;
+  --gris-claro: #f5f5f5;
+  --gris-oscuro: #ccc;
+}
+
+/* Contenedor principal */
 .pedido-container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 900px;
+  margin: 30px auto;
+  background: var(--crema);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
+/* Título */
 .titulo-pedido {
-  color: #2e2525;
-  background: 7b1e3d;
-  font-size: 1.8em;
-  padding-top: 8px;
-  padding-bottom: 16px;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--vino);
+  text-align: center;
 }
 
-
+/* Sección de detalles */
 .pedido-detalles {
   margin-bottom: 20px;
+  /* permite scroll horizontal de la tabla en móvil */
+  overflow-x: auto;
 }
-
 .pedido-detalles h3 {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  color: var(--vino);
 }
 
+/* Estilo de la tabla */
 .pedido-table {
   width: 100%;
-  border-collapse: collapse;
+  min-width: 600px;             /* asegura scroll en móvil */
+  border-collapse: separate;
+  border-spacing: 0 10px;       /* separación vertical entre filas */
   margin-bottom: 20px;
 }
 
+/* Encabezado */
+.pedido-table thead th {
+  padding: 12px 16px;
+  background: var(--vino-claro);
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Filas */
+.pedido-table tbody tr {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
+
+/* Celdas */
 .pedido-table th,
 .pedido-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
+  padding: 12px 16px;
+  border: none;
+  color: #333;
 }
 
-.pedido-total {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 10px;
+/* Zebra stripes */
+.pedido-table tbody tr:nth-child(even) {
+  background: var(--gris-claro);
 }
 
+/* Total */
+.pedido-total p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--vino);
+  text-align: right;
+  margin: 0;
+}
+
+/* Opciones de pedido */
 .pedido-opciones {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
 }
 
-/* Botones */
-.btn-pedido {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.btn-rapido {
-  background-color: transparent;
-  color: #7b1e3d; /* Color vino */
-  border: 2px solid #7b1e3d;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1em;
+/* Botones Pedido Rápido y Programado */
+.btn-rapido,
+.btn-custom-vino {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--vino);
+  background: transparent;
+  border: 2px solid var(--vino);
+  border-radius: 8px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
 }
 .btn-rapido:hover,
-.btn-programado:hover {
-  background-color: var(--vino);
-  color: white;
-  box-shadow: 0 0 10px rgba(123, 30, 61, 0.5);
-  transform: scale(1.02);
-}
-.btn-custom-vino {
-  background-color: transparent;
-  color: var(--vino);
-  border: 2px solid var(--vino);
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
 .btn-custom-vino:hover {
   background-color: var(--vino);
-  color: white;
-  box-shadow: 0 0 10px rgba(123, 30, 61, 0.5);
-  transform: scale(1.02);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(123,30,61,0.3);
+  transform: translateY(-2px);
 }
 
-
-.btn-programado {
-  background-color: transparent;
-  color: #7b1e3d; /* Color vino */
-  border: 2px solid #7b1e3d;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-pedido:hover {
-  opacity: 0.9;
-}
+/* Responsive: solo ajusta scroll, no esconde nada */
 @media (max-width: 600px) {
+  .pedido-container {
+    padding: 20px;
+  }
+  .titulo-pedido { font-size: 1.5rem; }
+  .pedido-detalles {
+    /* ya tiene overflow-x:auto; */
+  }
+  .pedido-table {
+    min-width: 500px;
+  }
   .pedido-opciones {
     flex-direction: column;
-    gap: 10px; /* separa los botones verticalmente */
-    align-items: stretch; /* hace que ambos botones ocupen todo el ancho disponible */
+    gap: 12px;
   }
-
   .btn-rapido,
-  .btn-programado {
+  .btn-custom-vino {
     width: 100%;
+    justify-content: center;
   }
 }

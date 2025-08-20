@@ -1,29 +1,36 @@
-.loading-container {
-  display: flex !important;
+/* --------------------------------------------------
+   Loader específico para ProductList
+-------------------------------------------------- */
+.pl-loader-container {
+  display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  width: 100vw;    /* Ocupa todo el ancho de la ventana */
-  min-height: 300px;
-  height: 65vh;
-  margin: 0 auto;
-  text-align: center;
+  align-items: center;
+
+  width: 100%;
+  max-width: 1050px;   /* coincide con el layout principal */
+  margin: 0 auto;      /* centra horizontalmente */
+  min-height: 70vh;    /* suficiente espacio para centrar */
 }
 
-@media (max-width: 600px) {
-  .loading-container {
-    min-height: 230px;
-    height: 45vh;
-    width: 100vw;  /* Siempre ancho completo en mobile */
-    padding: 0 0.2rem;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+@media (max-width: 900px) {
+  .pl-loader-container {
+    max-width: 98vw;
+    margin: 0 auto;
+    min-height: 60vh;
   }
-  .loading-container p {
-    font-size: 1rem;
-    margin-top: 1.5rem;
-    width: 100%;
-    text-align: center;
-  }
+}
+
+/* Icono giratorio */
+.pl-loader-icon {
+  font-size: 3rem;    /* equivalente a size="3x" */
+  color: #B63C56;
+  margin-bottom: 0.8rem;
+}
+
+/* Texto de carga */
+.pl-loader-text {
+  font-size: 1rem;
+  margin: 0;
+  text-align: center;
 }

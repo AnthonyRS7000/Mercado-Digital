@@ -5,171 +5,48 @@
   --gris-suave: #f5f5f5;
 }
 
+/* Overlay */
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  padding: 15px;
-}
-.dividerText {
-  display: inline-block;
-  margin: 0 0.5rem;
-  font-weight: 500;
-  color: #666;
-  cursor: default;
-  user-select: none;
-  font-size: 0.9rem;
-}
-
-
-.modal {
-  background-color: var(--crema);
-  padding: 25px 20px; /* Reducción del padding para ajustarse mejor */
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  width: 400px;
-  height: 700px;
-  max-width: 500px; /* Limitar el ancho en pantallas grandes */
-  position: relative;
-  animation: fadeInUp 0.3s ease-out;
-  transition: width 0.3s ease;
-}
-
-.modalWide {
-  width: 100%; /* Esto puede seguir utilizándose si quieres más espacio en pantallas grandes */
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr; /* Una sola columna por defecto */
-  gap: 16px;
-  width: 100%;
-}
-
-.fullWidth {
-  grid-column: span 2; /* Campos largos como email y contraseña ocupan toda la fila */
-}
-
-.overlay .modal h2 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 24px;
-  color: var(--vino);
-  margin-top: 10px;
-  margin-bottom: 20px;
-  background: none;
-  padding: 0;
-  box-shadow: none;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.googleContainer {
-  display: flex;
   justify-content: center;
-  margin-top: 0px;
+  z-index: 1000;
 }
 
-.loaderOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
+/* Modal de login o registro (ancho base para login) */
+.modal {
+  background: var(--crema);
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  width: 410px;
+  max-width: 95vw;
+  padding: 32px 24px 22px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 20;
-  border-radius: 12px;
-}
-.inputError {
-  border: 1px solid red;
-  background-color: #ffe6e6; /* Color de fondo suave para el campo con error */
+  position: relative;
+  box-sizing: border-box;
+  animation: fadeInUp 0.3s ease-out;
 }
 
-.errorText {
-  color: red;
-  font-size: 12px;
-  margin-top: 5px;
+/* Cuando cambiamos a registro, ampliamos un poco */
+.modalRegistro {
+  width: 680px;
+  max-width: 90vw;
 }
 
-
-.link {
-  color: var(--vino);
-  margin-bottom: 10px;
-  text-decoration: none;
-  font-size: 14px;
-  display: block;
-  cursor: pointer;
+/* Contenido interior */
+.modalContent {
+  text-align: center;
 }
 
-.link:hover {
-  text-decoration: underline;
-}
-
-/* input moderno */
-input,
-select {
-  width: 100%;
-  padding: 8px 12px; /* Reducir padding para mejor ajuste */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  font-size: 14px; /* Reducir tamaño de fuente para mejor ajuste */
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus,
-select:focus {
-  border-color: var(--vino);
-  box-shadow: 0 0 0 3px rgba(123, 30, 61, 0.2);
-  outline: none;
-}
-
-.loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid var(--vino, #800000);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loadingText {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--vino, #800000);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Botón cerrar */
 .closeButton {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px; right: 16px;
   background: none;
   border: none;
   font-size: 20px;
@@ -177,22 +54,29 @@ select:focus {
   color: var(--vino);
 }
 
-.modalContent {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 10px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
+/* Logo */
 .logo {
-  height: 180px;
-  margin-bottom: 5px;
-  top: 1px;
+  height: 70px;
+  margin: 8px auto 10px;
 }
 
+/* Título */
+.modalTitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 23px;
+  color: var(--vino);
+  margin: 0 0 22px;
+  font-weight: 600;
+}
+
+/* Formularios */
+.form {
+  margin: 0;
+}
+
+/* Grupos de campo */
 .formGroup {
-  margin-bottom: 18px;
+  margin-bottom: 17px;
   text-align: left;
 }
 
@@ -209,7 +93,7 @@ select:focus {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 10px;
-  background-color: white;
+  background: #fff;
 }
 
 .inputGroupIcon {
@@ -222,93 +106,132 @@ select:focus {
   border: none;
   outline: none;
   font-size: 15px;
+  background: transparent;
 }
 
+/* Campo en error */
+.inputError {
+  border: 1px solid red;
+  background: #ffe6e6;
+}
+
+/* Botón principal */
 .btn {
-  background-color: var(--vino);
+  background: var(--vino);
   color: #fff;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 14px;
   width: 100%;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .btn:hover {
-  background-color: var(--vino-oscuro);
+  background: var(--vino-oscuro);
 }
 
+/* Links y divider */
 .links {
-  margin-top: 20px;
+  margin-top: 14px;
   text-align: center;
 }
 
-.links a {
-  display: block;
+.link {
   color: var(--vino);
-  margin-bottom: 10px;
   text-decoration: none;
   font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+  cursor: pointer;
 }
 
-.links a:hover {
+.link:hover {
   text-decoration: underline;
 }
 
-.btnGoogle {
-  background-color: #db4437;
-  color: #fff;
+.dividerText {
+  display: inline-block;
+  margin: 0 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+  user-select: none;
 }
 
-.btnGoogle:hover {
-  background-color: #c33c29;
+/* Google */
+.googleContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 
-/* Responsive para pantallas pequeñas */
+/* Error general */
+.errorMessage {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Loader overlay */
+.loaderOverlay {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.8);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  border-radius: 12px; z-index: 20;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid var(--vino);
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingText {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--vino);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive móvil (login + registro) */
 @media (max-width: 480px) {
-  .overlay {
-    padding: 10px;
-  }
-
-  .modal {
-    background-color: var(--crema);
-    padding: 20px 15px;
-    max-width: 400px;
-    margin: 30px;
-    position: relative;
-    animation: fadeInUp 0.3s ease-out;
+  .modal,
+  .modalRegistro {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    padding: 20px 12px !important;
+    border-radius: 10px !important;
+    margin: 0 auto !important;
   }
 
   .logo {
-    height: 140px;
+    height: 46px;
   }
-
-  h2 {
-    font-size: 20px;
+  .modalTitle {
+    font-size: 16.5px;
   }
-
   .btn {
-    font-size: 16px;
-    padding: 14px 24px;
-  }
-
-  .formGroup label {
-    font-size: 14px;
-  }
-
-  .inputGroup input {
-    font-size: 14px;
-  }
-
-  .links a {
-    font-size: 13px;
-  }
-}
-
-/* Para pantallas grandes */
-@media (min-width: 1024px) {
-  .formGrid {
-    grid-template-columns: 1fr 1fr; /* Usar dos columnas en pantallas grandes */
+    font-size: 15px;
+    padding: 11px 7px;
   }
 }

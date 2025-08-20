@@ -1,8 +1,11 @@
+// src/components/ConfirmarPedido.jsx
 import React, { useEffect, useState } from 'react';
 import bdMercado from '../../services/bdMercado';
 import '../../styles/css/ConfirmarPedido.css';
-import { FaCheckCircle } from 'react-icons/fa';
-import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStore } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ConfirmarPedido = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -13,19 +16,14 @@ const ConfirmarPedido = () => {
     const obtenerPedidos = async () => {
       try {
         const response = await bdMercado.get('/pedidos-por-confirmar');
-        if (Array.isArray(response.data)) {
-          setPedidos(response.data);
-        } else {
-          setPedidos([]);
-        }
+        setPedidos(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
-        console.error('Error al obtener pedidos:', error);
-        setPedidos([]); // Para evitar errores si falla
+        setPedidos([]);
+        toast.error(`❌ Error al cargar pedidos: ${error.message}`);
       } finally {
         setLoading(false);
       }
     };
-
     obtenerPedidos();
   }, []);
 
@@ -36,11 +34,34 @@ const ConfirmarPedido = () => {
     }));
   };
 
-  if (loading) return <p className="cargando">Cargando pedidos...</p>;
+  const handleConfirmarPedido = async (pedidoId) => {
+    try {
+      await bdMercado.put(`/confirmar-pedido/${pedidoId}`, {});
+      toast.success('✅ Pedido confirmado con éxito');
+      setPedidos((prev) => prev.filter((p) => p.id !== pedidoId));
+    } catch (err) {
+      console.error(err);
+      toast.error('❌ No se pudo confirmar el pedido');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="spinner-container loadingContainer">
+        <FontAwesomeIcon
+          icon={faStore}
+          spin
+          size="3x"
+          className="loadingIcon"
+        />
+        <p>Cargando pedidos por confirmar…</p>
+      </div>
+    );
+  }
 
   if (!Array.isArray(pedidos) || pedidos.length === 0) {
     return (
-      <div className="container no-pedidos">
+      <div className="confirmar-pedidos-container no-pedidos">
         <h2>📭 No hay pedidos pendientes por confirmar</h2>
         <p>Vuelve a revisar más tarde.</p>
       </div>
@@ -48,57 +69,82 @@ const ConfirmarPedido = () => {
   }
 
   return (
-    <div className="container">
-      <h2>Pedidos por Confirmar</h2>
-      {pedidos.map((pedido) => (
-        <div key={pedido.id} className="card">
-          <h3>
-            Pedido #{pedido.id} - {pedido.fecha}
-            <button onClick={() => toggleProductos(pedido.id)} style={{ marginLeft: '10px' }}>
-              {mostrarProductos[pedido.id] ? '🙈 Ocultar' : '👁️ Ver productos'}
+    <div className="confirmar-pedidos-container">
+      <h2 className="confirmar-title">Pedidos por Confirmar</h2>
+      <div className="pedidos-list">
+        {pedidos.map((pedido) => (
+          <div key={pedido.id} className="pedido-card">
+            <div className="pedido-header">
+              <h3>
+                Pedido #{pedido.id}{' '}
+                <span className="pedido-fecha">{pedido.fecha}</span>
+              </h3>
+              <button
+                className="expand-btn"
+                onClick={() => toggleProductos(pedido.id)}
+              >
+                {mostrarProductos[pedido.id]
+                  ? 'Ocultar productos'
+                  : 'Ver productos'}
+              </button>
+            </div>
+            <p>
+              <strong>Cliente:</strong> {pedido.comprador?.nombre}
+            </p>
+            <p>
+              <strong>Dirección de entrega:</strong>{' '}
+              {pedido.direccion_entrega}
+            </p>
+            <p>
+              <strong>Total:</strong> S/ {pedido.total}
+            </p>
+            <button
+              onClick={() => handleConfirmarPedido(pedido.id)}
+              title="Confirmar pedido"
+              className="btn-confirmar"
+            >
+              Confirmar
             </button>
-          </h3>
-          <p><strong>Cliente:</strong> {pedido.comprador?.nombre}</p>
-          <p><strong>Dirección de entrega:</strong> {pedido.direccion_entrega}</p>
-          <p><strong>Total:</strong> S/ {pedido.total}</p>
-          <button
-            onClick={async () => {
-              try {
-                await axios.put(`https://mercado-backend/api/confirmar-pedido/${pedido.id}`, {}, {
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                  }
-                });
-
-                alert('✅ Pedido confirmado con éxito');
-                setPedidos(prev => prev.filter(p => p.id !== pedido.id));
-              } catch (err) {
-                console.error('Error al confirmar pedido', err);
-                alert('❌ No se pudo confirmar el pedido');
-              }
-            }}
-            title="Confirmar pedido"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: '10px', color: 'green' }}
-          >
-            <FaCheckCircle size={20} />
-          </button>
-
-          {mostrarProductos[pedido.id] && (
-            <>
-              <h4>Productos:</h4>
-              <ul>
-                {pedido.detalles_pedido.map((detalle) => (
-                  <li key={detalle.id}>
-                    <strong>{detalle.nombre_producto}</strong> - {detalle.cantidad} x S/ {detalle.precio_unitario} <br />
-                    <small>Proveedor: {detalle.proveedor?.nombre} ({detalle.proveedor?.nombre_empresa})</small><br />
-                    <small>Categoría: {detalle.categoria?.nombre}</small>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
-      ))}
+            {mostrarProductos[pedido.id] && (
+              <div className="productos-list">
+                <h4>Productos:</h4>
+                {pedido.detalles_pedido &&
+                pedido.detalles_pedido.length > 0 ? (
+                  <div className="productos-list-items-horizontal">
+                    {pedido.detalles_pedido.map((detalle) => (
+                      <div
+                        key={detalle.id}
+                        className="producto-card-horizontal"
+                      >
+                        <p>
+                          <strong>{detalle.nombre_producto}</strong>
+                        </p>
+                        <p>Cantidad: {detalle.cantidad}</p>
+                        <p>Precio: S/ {detalle.precio_unitario}</p>
+                        {detalle.proveedor && (
+                          <p className="proveedor">
+                            <span>Proveedor: </span>
+                            {detalle.proveedor.nombre}{' '}
+                            <span>({detalle.proveedor.nombre_empresa})</span>
+                          </p>
+                        )}
+                        {detalle.categoria && (
+                          <p className="categoria">
+                            <span>Categoría: </span>
+                            {detalle.categoria.nombre}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No hay productos para este pedido</p>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

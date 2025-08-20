@@ -8,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
+// 👇 Importa tu constante centralizada
+import { BASE_IMG_URL } from '../../../services/bdMercado';
+
 const ProductCard = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -41,7 +44,9 @@ const ProductCard = ({ product }) => {
             minHeight: '110px'
           }}>
             <LazyLoadImage
-              src={`https://mercado-backend.sistemasudh.com${product.imagen}`}
+              src={product.imagen?.startsWith('http')
+                ? product.imagen
+                : `${BASE_IMG_URL}${product.imagen}`}
               alt={product.nombre}
               effect="blur"
               className="product-image"

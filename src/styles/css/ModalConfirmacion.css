@@ -1,0 +1,103 @@
+/* --- MODAL UNIVERSAL --- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.43);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #fff;
+  color: #22181c;
+  border-radius: 17px;
+  box-shadow: 0 6px 40px rgba(0,0,0,0.16);
+  max-width: 360px;
+  min-width: 200px;
+  width: 96vw;
+  padding: 2rem 1.6rem 1.3rem 1.6rem;
+  text-align: center;
+  position: relative;
+  animation: modalPopIn 0.22s cubic-bezier(.24,1.48,.53,1.11);
+}
+
+@media (max-width: 480px) {
+  .modal-box {
+    padding: 1rem 0.5rem 1.2rem 0.5rem;
+    min-width: 0;
+    max-width: 98vw;
+    border-radius: 9px;
+  }
+}
+
+@keyframes modalPopIn {
+  0% { opacity: 0; transform: scale(0.88);}
+  100% { opacity: 1; transform: scale(1);}
+}
+
+.modal-box h2 {
+  color: #a52d47;
+  font-weight: 700;
+  font-size: 1.38rem;
+  margin-bottom: 1.1rem;
+  margin-top: 0;
+  letter-spacing: 0.01em;
+}
+
+.modal-box p {
+  color: #282124;
+  font-size: 1.03rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 400;
+  line-height: 1.32;
+}
+.modal-box strong {
+  color: #7B1E3A;
+  font-weight: 700;
+  font-size: 1.07em;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.1rem;
+  margin-top: 1.35rem;
+}
+
+.btn-modal-confirm {
+  background: linear-gradient(90deg, #7B1E3A 80%, #b63c56 100%);
+  color: #fff;
+  border: none;
+  padding: 11px 23px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.09rem;
+  box-shadow: 0 2px 8px rgba(123,30,58,0.09);
+  transition: background 0.19s, box-shadow 0.19s, transform 0.13s;
+  outline: none;
+}
+.btn-modal-confirm:hover {
+  background: linear-gradient(90deg, #b63c56 60%, #7B1E3A 100%);
+  transform: scale(1.045);
+}
+
+.btn-modal-cancel {
+  background-color: #e3e3e3;
+  color: #333;
+  border: none;
+  padding: 11px 23px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.09rem;
+  transition: background-color 0.22s, color 0.15s;
+}
+.btn-modal-cancel:hover {
+  background-color: #bcbcbc;
+  color: #222;
+}

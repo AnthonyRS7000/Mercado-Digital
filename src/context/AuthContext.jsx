@@ -74,21 +74,18 @@ const AuthProvider = ({ children }) => {
   };
 
   // Efecto: solo refresca carrito cuando cambia usuario (login/logout)
-useEffect(() => {
-    console.log('[CONTEXT] Cambio de usuario:', user, 'guestUuid actual:', guestUuid);
-  // Si guestUuid está null, recupera o genera y sincroniza.
-  if (!user && !guestUuid) {
-    let uuid = localStorage.getItem('carrito_uuid');
-    if (!uuid) {
-      uuid = generateUUID();
-      localStorage.setItem('carrito_uuid', uuid);
+  useEffect(() => {
+    // Si guestUuid está null, recupera o genera y sincroniza.
+    if (!user && !guestUuid) {
+      let uuid = localStorage.getItem('carrito_uuid');
+      if (!uuid) {
+        uuid = generateUUID();
+        localStorage.setItem('carrito_uuid', uuid);
+      }
+      setGuestUuid(uuid);
     }
-    setGuestUuid(uuid);
-    console.log('[CONTEXT] guestUuid re-asignado por seguridad:', uuid);
-  }
-  refreshCartCount(true);
-}, [user, guestUuid]);
-
+    refreshCartCount(true);
+  }, [user, guestUuid]);
 
   const login = async (userData) => {
     const guestUuidLocal = localStorage.getItem('carrito_uuid');
@@ -101,7 +98,7 @@ useEffect(() => {
           user_id: userData.related_data.user_id
         });
       } catch (error) {
-        console.error('Error al fusionar carrito:', error);
+        // Silenciado, fallo al fusionar carrito
       }
     }
     // Aquí SÍ se elimina el uuid de invitado porque ahora el usuario tiene su propio carrito

@@ -1,6 +1,5 @@
-// src/pages/Portal/CarritoProductos.jsx
 import React, { useContext, useEffect, useState } from 'react';
-import bdMercado from '../../../services/bdMercado';
+import bdMercado, { BASE_IMG_URL } from '../../../services/bdMercado'; // <-- importa BASE_IMG_URL
 import { AuthContext } from '../../../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -46,7 +45,13 @@ const CarritoProductos = () => {
           {cart.productos.map(({ id, cantidad, total, producto }) => (
             <tr key={id}>
               <td>
-                <img src={`https://mercado-backend${producto.imagen}`} alt={producto.nombre} className={styles.productImage} />
+                <img
+                  src={producto.imagen?.startsWith('http')
+                    ? producto.imagen
+                    : `${BASE_IMG_URL}${producto.imagen}`}
+                  alt={producto.nombre}
+                  className={styles.productImage}
+                />
               </td>
               <td>{producto.nombre}</td>
               <td>{producto.precio}</td>

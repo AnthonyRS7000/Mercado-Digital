@@ -11,13 +11,11 @@ const DataProvider = ({ children }) => {
   const saveData = (newData) => {
     setData(newData);
     localStorage.setItem('data', JSON.stringify(newData));
-    console.log('Saved data to localStorage:', newData);
   };
 
   useEffect(() => {
     const storedData = localStorage.getItem('data');
     if (storedData) {
-      console.log('Loaded data from localStorage:', JSON.parse(storedData));
       setData(JSON.parse(storedData));
     }
   }, []);

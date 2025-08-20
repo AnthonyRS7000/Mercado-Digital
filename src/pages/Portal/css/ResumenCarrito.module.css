@@ -1,20 +1,83 @@
+/* ResumenCarrito.module.css */
+
+/* Caja interna del resumen */
 .resumenBox {
-  width: 100%;
-  background: #fff;
-  border-radius: 1.3rem;
-  box-shadow: 0 6px 32px #b0355a18, 0 2px 8px #991f4410;
-  padding: 1.4rem 1.3rem 1.1rem 1.3rem;
-  margin-top: 0;
-}
-.deliveryBox {
   background: #f8fdfa;
-  border-radius: 1.1rem;
-  padding: 0.7rem 1.1rem;
-  margin-bottom: 1.3rem;
-  font-size: 1.06rem;
-  color: #181925;
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.4rem;
+  margin: 0 auto;               /* sin márgenes arriba/abajo */
   box-shadow: 0 1px 4px #b0355a09;
+  max-width: 360px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 0.8rem;
+  position: static;
+}
+
+/* Detalle de delivery */
+.deliveryBox {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.01rem;
+  color: #181925;
+  gap: 2px;
+}
+
+/* Fila total */
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.21rem;
+  font-weight: bold;
+  margin-bottom: 0.7rem;
+}
+
+/* Precio total */
+.cartTotal {
+  color: #15171b;
+  font-size: 1.33rem;
+  font-weight: bold;
+}
+
+/* Botón siguiente */
+.nextBtn {
+  width: 100%;
+  padding: 1rem 0;
+  background: linear-gradient(90deg, #991f44, #b0355a 90%);
+  color: #fff;
+  border: none;
+  border-radius: 1.3rem;
+  font-size: 1.13rem;
+  font-weight: bold;
+  box-shadow: 0 2px 18px #b0355a11;
+  cursor: pointer;
+  margin-top: 0;
+  transition: background 0.18s, transform 0.12s;
+}
+.nextBtn:hover {
+  background: linear-gradient(90deg, #b0355a, #991f44 90%);
+  transform: scale(1.03);
+}
+
+/* Desktop: pegado a la derecha */
+@media (min-width: 900px) {
+  .resumenBox {
+    position: sticky;
+    top: 50px;
+    margin-top: 2.3rem;
+    max-width: 330px;
+    min-width: 240px;
+    align-self: flex-start;
+  }
+}
+
+/* Móvil: sin márgenes extra */
+@media (max-width: 899px) {
+  .resumenBox {
+    position: static;
+    max-width: 420px;
+    width: 100%;
+    margin: 0;                    /* elimina cualquier margin-bottom */
+  }
 }

@@ -1,17 +1,13 @@
-import { useToast } from '../../../../context/ToastContext';
 import { useState, useEffect, useContext } from 'react';
 import bdMercado from '../../../../services/bdMercado';
 import './css/Modal.css';
 import { AuthContext } from '../../../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
   const [cantidad, setCantidad] = useState(1);
   const [message, setMessage] = useState('');
   const [price, setPrice] = useState(null);
-  const [view, setView] = useState('form');
-  const { addToast } = useToast();
-
-  // Trae lo necesario del contexto
   const { user, guestUuid, refreshCartCount } = useContext(AuthContext);
 
   useEffect(() => {
@@ -44,37 +40,26 @@ const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
       return;
     }
 
-    let payload = {
+    const payload = {
       producto_id: productId,
       cantidad: cantidadEntera,
+      ...(user?.related_data ? { user_id: user.related_data.user_id } : { uuid: guestUuid })
     };
-
-    if (user?.related_data) {
-      payload.user_id = user.related_data.user_id;
-    } else {
-      payload.uuid = guestUuid; // Siempre usa el guestUuid del contexto
-    }
 
     try {
       await bdMercado.post('/carrito/agregar', payload);
-      await refreshCartCount(true); // 🔥 ACTUALIZA BURBUJA AL INSTANTE
-      setView('success');
-      addToast(`"${productName}" agregado al carrito 🛒`, 'success');
-      setTimeout(() => {
-        setView('form');
-        setCantidad(1);
-        setMessage('');
-        onClose();
-      }, 1500);
+      await refreshCartCount(true);
+      toast.success('🛒 Producto agregado al carrito');
+      setCantidad(1);
+      setMessage('');
+      onClose();
     } catch (error) {
-      setMessage('❌ Hubo un error al agregar el producto.');
-      addToast('Error al agregar el producto', 'error');
+      toast.error('❌ Hubo un error al agregar el producto.');
     }
   };
 
   const handleCloseModal = (e) => {
     if (e.target.className === 'modal-overlay' || e.target.className === 'close-button') {
-      setView('form');
       setCantidad(1);
       setMessage('');
       onClose();
@@ -93,30 +78,18 @@ const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
       <div className="modal-overlay" onClick={handleCloseModal}>
         <div className="peso-modal-content">
           <button className="close-button" onClick={handleCloseModal}>X</button>
-          {view === 'form' ? (
-            <>
-              <h2 className="modal-title">Seleccionar Cantidad</h2>
-              <input
-                type="text"
-                value={cantidad}
-                onChange={handleInputChange}
-                className="modal-input"
-                placeholder="Solo enteros"
-              />
-              <button className="modal-button" onClick={handleAddUnidad}>
-                Agregar al Carrito
-              </button>
-              {message && <p className="modal-message">{message}</p>}
-            </>
-          ) : (
-            <div className="success-view">
-              <div className="success-card">
-                <div className="success-icon">🛒✅</div>
-                <h3 className="success-text">¡Producto agregado!</h3>
-                <p className="success-subtext">Tu producto fue añadido correctamente al carrito.</p>
-              </div>
-            </div>
-          )}
+          <h2 className="modal-title">Seleccionar Cantidad</h2>
+          <input
+            type="text"
+            value={cantidad}
+            onChange={handleInputChange}
+            className="modal-input"
+            placeholder="Solo enteros"
+          />
+          <button className="modal-button" onClick={handleAddUnidad}>
+            Agregar al Carrito
+          </button>
+          {message && <p className="modal-message">{message}</p>}
         </div>
       </div>
     )

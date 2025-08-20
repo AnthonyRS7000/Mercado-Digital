@@ -4,33 +4,41 @@ import './css/CategoryNavbar.css';
 
 const CategoryNavbar = ({ onCategorySelect }) => {
   const [categories, setCategories] = useState([]);
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    (async () => {
       try {
-        const response = await bdMercado.get('/v1/categorias');
-        setCategories(response.data);  // Asegúrate de que accedes a response.data
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+        const { data } = await bdMercado.get('/v1/categorias');
+        setCategories(data);
+      } catch (err) {
+        console.error(err);
       }
-    };
-
-    fetchCategories();
+    })();
   }, []);
 
-  const handleShowAllCategories = () => {
-    onCategorySelect(null);  // Pasar null para mostrar todos los productos
+  const handleSelect = (id) => {
+    setActiveId(id);
+    onCategorySelect(id);
   };
 
   return (
     <div className="category-navbar">
       <h3>Nuestras categorías</h3>
       <ul>
-        {/* Opción para mostrar todas las categorías */}
-        <li onClick={handleShowAllCategories}>Todas las categorías</li>
-        {categories.map(category => (
-          <li key={category.id} onClick={() => onCategorySelect(category.id)}>
-            {category.nombre}
+        <li
+          className={activeId === null ? 'active' : ''}
+          onClick={() => handleSelect(null)}
+        >
+          Todas las categorías
+        </li>
+        {categories.map(cat => (
+          <li
+            key={cat.id}
+            className={activeId === cat.id ? 'active' : ''}
+            onClick={() => handleSelect(cat.id)}
+          >
+            {cat.nombre}
           </li>
         ))}
       </ul>

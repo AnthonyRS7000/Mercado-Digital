@@ -1,111 +1,188 @@
-/* src/styles/css/RegistrarProveedor.module.css */
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #ffffff;
+  --rosado: #fde5ee;
+  --naranja: #faaf40;
+  --verde: #21b075;
+}
+
 
 .registerContainer {
+  min-height: 50vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f5f5f5;
+  align-items: flex-start;
+  padding: 5px 0 5px 0;
 }
 
 .registerBox {
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  max-width: 900px;
-}
-
-.registerLogo {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.registerLogo img {
-  width: 100px;
-}
-
-.registerBox h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #007bff;
-}
-
-.registerBox form {
+  background: var(--blanco);
+  border-radius: 16px;
+  box-shadow: 0 4px 22px 0 rgba(123,30,58,0.13);
+  border: 2px solid var(--vino-oscuro);
+  width: 100%;
+  max-width: 1000px;    /* un poquito más ancho */
+  min-width: 0;         /* sin forzar min-width */
+  padding: 20px 32px 16px 32px;
+  margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: column;
+}
+
+.title {
+  text-align: center;
+  color: var(--vino);
+  font-size: 2rem;        /* más grande */
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 26px;     /* un poquito más de espacio entre columnas */
+  justify-content: center;
 }
 
 .formGroup {
-  flex: 1 1 calc(50% - 20px);
   display: flex;
   flex-direction: column;
 }
 
 .formGroup label {
+  font-weight: 700;
+  color: var(--vino-oscuro);
+  margin-bottom: 5px;
+  font-size: 1.05rem;   /* más grande */
   display: flex;
   align-items: center;
-  font-weight: bold;
-  margin-bottom: 5px;
+  gap: 8px;
 }
 
 .faIcon {
-  margin-right: 10px;
+  color: var(--vino);
+  font-size: 1.08em;
 }
 
 .formGroup input,
 .formGroup select {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 11px 12px;           /* más grande */
+  font-size: 1.12rem;
+  border: 1.4px solid #f3d0e2;
+  border-radius: 7px;
+  background: var(--crema);
+  color: var(--vino-oscuro);
+  outline: none;
+  transition: border 0.15s;
+  font-family: inherit;
+  min-height: 41px;
+  max-height: 44px;
 }
 
 .formGroup select[multiple] {
-  height: auto;
+  height: 65px;
+  font-size: 1.08rem;
 }
 
 .selectedCategories {
-  margin-top: 10px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
 .categoryTag {
-  display: inline-block;
-  background-color: #007bff;
-  color: #fff;
-  padding: 5px 10px;
-  margin: 2px;
-  border-radius: 4px;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--vino);
+  color: var(--blanco);
+  padding: 4px 10px;
+  margin: 0 3px 2px 0;
+  border-radius: 13px;
+  font-size: 1.03rem;
+  font-weight: 600;
   position: relative;
+  box-shadow: 0 2px 5px 0 rgba(123,30,58,0.09);
 }
 
 .categoryTag button {
   background: none;
   border: none;
-  color: #fff;
-  margin-left: 10px;
+  color: var(--rosado);
+  font-size: 1.08rem;
+  margin-left: 6px;
   cursor: pointer;
-  position: absolute;
-  right: 5px;
-  top: 2px;
+  font-weight: bold;
+  transition: color 0.18s;
+}
+
+.categoryTag button:hover {
+  color: var(--naranja);
 }
 
 .btn {
+  grid-column: 1 / -1;
   width: 100%;
-  padding: 15px;
-  background-color: #007bff;
-  color: #ffffff;
+  padding: 15px 0;
+  background: var(--vino);
+  color: var(--blanco);
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 7px;
+  font-size: 1.15rem;
+  font-weight: 700;
   cursor: pointer;
   margin-top: 20px;
+  box-shadow: 0 2px 9px 0 rgba(123,30,58,0.07);
+  transition: background 0.18s, color 0.18s;
 }
 
 .btn:hover {
-  background-color: #0056b3;
+  background: var(--vino-oscuro);
+  color: var(--rosado);
+}
+
+/* Responsive --- */
+@media (max-width: 1200px) {
+  .registerBox {
+    max-width: 98vw;
+    padding: 15px 1vw 9px 1vw;
+  }
+}
+
+@media (max-width: 800px) {
+  .registerBox {
+    padding: 10px 0vw 7px 0vw;
+  }
+  .form {
+    grid-template-columns: 1fr;
+    gap: 13px 0;
+  }
+  .btn {
+    margin-top: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registerContainer {
+    padding: 0 0 4px 0;
+  }
+  .registerBox {
+    padding: 3px 1vw 6px 1vw;
+    min-width: 0;
+  }
+  .title {
+    font-size: 1.08rem;
+    margin-bottom: 9px;
+  }
+  .formGroup label {
+    font-size: 0.97rem;
+  }
+  .btn {
+    font-size: 1.01rem;
+    padding: 10px 0;
+  }
 }

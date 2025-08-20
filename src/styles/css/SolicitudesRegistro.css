@@ -1,0 +1,78 @@
+.solicitudes-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+  text-align: center;
+}
+
+.solicitudes-container h2 {
+  color: #7B1E3A;
+  margin-bottom: 24px;
+}
+
+.solicitudes-list {
+  display: grid;
+  gap: 20px;
+}
+
+.solicitud-card {
+  background-color: #fff;
+  border-left: 5px solid #7B1E3A;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.solicitud-card p {
+  margin: 4px 0;
+}
+
+.solicitud-card button {
+  margin-top: 10px;
+  background-color: #7B1E3A;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.solicitud-card button:hover {
+  background-color: #5c122d;
+}
+
+.solicitud-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-aprobar {
+  background-color: #198754;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-aprobar:hover {
+  background-color: #157347;
+}
+
+.btn-rechazar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-rechazar:hover {
+  background-color: #bb2d3b;
+}

@@ -1,15 +1,20 @@
-import { useNavigate } from "react-router-dom";
+// src/components/PedidoEnRuta.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../../services/authService";
+import bdMercado from "../../services/bdMercado";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStore } from "@fortawesome/free-solid-svg-icons";
+import "react-toastify/dist/ReactToastify.css";
 import "../../../src/styles/css/PedidoEnRuta.css";
-import ModalEntrega from "./ModalEntrega"; // ✅ Usamos el nuevo componente
+import ModalEntrega from "./ModalEntrega";
 
 const PedidoEnRuta = () => {
   const { pedidoId } = useParams();
   const navigate = useNavigate();
   const [pedido, setPedido] = useState(null);
-  const [userData, setUserData] = useState(null); // ➡️ Aquí guardamos los datos de user_data
+  const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [estadoPedido, setEstadoPedido] = useState(null);
@@ -23,28 +28,27 @@ const PedidoEnRuta = () => {
 
         const storedUser = localStorage.getItem("user");
         if (!storedUser) throw new Error("No se encontró el usuario en localStorage");
+        const parsedUser = JSON.parse(storedUser);
 
-        const userData = JSON.parse(storedUser);
-        const deliveryId = userData?.related_data?.id;
-
+        const deliveryId = parsedUser?.related_data?.id;
         if (!deliveryId) throw new Error("No se encontró el ID del delivery");
 
-        const response = await fetch(`http://127.0.0.1:8000/api/pedidos/${pedidoId}/${deliveryId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await bdMercado.get(
+          `/pedidos/${pedidoId}/${deliveryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        if (!response.ok) throw new Error("Pedido no encontrado o no autorizado");
-
-        const data = await response.json();
-        setPedido(data.pedido);        // ✅ Guardar solo pedido
-        setUserData(data.user_data);    // ✅ Guardar user_data por separado
-        setEstadoPedido(data.pedido.estado);
+        setPedido(response.data.pedido);
+        setUserData(response.data.user_data);
+        setEstadoPedido(response.data.pedido.estado);
       } catch (err) {
         setError(err.message);
+        toast.error(`❌ ${err.message}`);
       } finally {
         setLoading(false);
       }
@@ -60,57 +64,91 @@ const PedidoEnRuta = () => {
 
       const storedUser = localStorage.getItem("user");
       if (!storedUser) throw new Error("No se encontró el usuario en localStorage");
+      const parsedUser = JSON.parse(storedUser);
 
-      const userData = JSON.parse(storedUser);
-      const deliveryId = userData?.related_data?.id;
-
+      const deliveryId = parsedUser?.related_data?.id;
       if (!deliveryId) throw new Error("No se encontró el ID del delivery");
 
-      const response = await fetch(`https://mercado-backend/api/pedidos/cancelar/${pedidoId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          delivery_id: deliveryId,
-        }),
-      });
+      await bdMercado.put(
+        `/pedidos/cancelar/${pedidoId}`,
+        { delivery_id: deliveryId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) throw new Error("No se pudo cancelar el pedido");
-
+      toast.success("✅ Pedido cancelado correctamente");
       navigate("/admin/recoger-pedido");
     } catch (err) {
       setError(err.message);
+      toast.error("❌ Hubo un error al cancelar el pedido");
+      console.error(err);
     }
   };
 
-  if (loading) return <div className="text-gray-500 text-center">Cargando pedido...</div>;
-  if (error) return <div className="text-red-600 text-center">Error: {error}</div>;
+  if (loading) {
+    return (
+      <div className="loadingContainer">
+        <FontAwesomeIcon
+          icon={faStore}
+          spin
+          size="3x"
+          className="loadingIcon"
+        />
+        <p>Cargando pedido...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-red-600 text-center">Error: {error}</div>;
+  }
 
   return (
-    <div className="pedido-container">
+    <div className="pedido-ruta-container">
+      {/* -- Aviso si no ha sido confirmado aún -- */}
+      {estadoPedido !== 4 && (
+        <div className="mensaje-instruccion">
+          <span role="img" aria-label="ubicacion">📦</span>
+          Dirígete al <strong>Mercado Central</strong> para recoger el paquete y confirmar tu pedido.
+        </div>
+      )}
+
       <h2 className="pedido-title">Pedido #{pedido.id}</h2>
-      <p>Dirección de entrega: {pedido.direccion_entrega}</p>
-
-      {/* ✅ Mostrar nombre y celular usando userData */}
-      <p>Nombre del Cliente: {userData?.nombre}</p>
-      <p>Número de Celular: {userData?.celular}</p>
-
-      <p>Total: S/ {pedido.total}</p>
+      <p>
+        <span className="label">Dirección de entrega:</span> {pedido.direccion_entrega}
+      </p>
+      <p>
+        <span className="label">Cliente:</span> {userData?.nombre}
+      </p>
+      {estadoPedido === 4 && (
+        <p>
+          <span className="label">Celular:</span> {userData?.celular}
+        </p>
+      )}
+      <p>
+        <span className="label">Total:</span> S/ {pedido.total}
+      </p>
 
       <h3 className="productos-title">Productos:</h3>
       <ul className="productos-list">
         {pedido.detalles_pedido.map((detalle) => (
           <li key={detalle.id}>
-            {detalle.producto.nombre} - {detalle.cantidad} {detalle.producto.tipo === 'peso' ? 'kg' : 'uni'}
+            <strong>{detalle.producto.nombre}</strong> - {detalle.cantidad}{' '}
+            {detalle.producto.tipo === "peso" ? "kg" : "uni"}
           </li>
         ))}
       </ul>
 
       <div className="estado-container">
         {estadoPedido === 4 ? (
-          <div className="estado-wrapper" onClick={() => setMostrarModal(true)}>
+          <div
+            className="estado-wrapper"
+            onClick={() => setMostrarModal(true)}
+          >
             <img
               src="https://img.icons8.com/color/64/000000/checked--v1.png"
               alt="Pedido confirmado"
@@ -119,7 +157,10 @@ const PedidoEnRuta = () => {
             <div className="estado-label">Entregar</div>
           </div>
         ) : (
-          <div className="estado-wrapper" onClick={cancelarPedido}>
+          <div
+            className="estado-wrapper cancelar"
+            onClick={cancelarPedido}
+          >
             <img
               src="https://img.icons8.com/color/64/000000/delete-sign--v1.png"
               alt="Cancelar pedido"
@@ -130,8 +171,12 @@ const PedidoEnRuta = () => {
         )}
       </div>
 
-      {/* Modal externalizado */}
-      {mostrarModal && <ModalEntrega onClose={() => setMostrarModal(false)} pedidoIdProp={pedido.id} />}
+      {mostrarModal && (
+        <ModalEntrega
+          onClose={() => setMostrarModal(false)}
+          pedidoIdProp={pedido.id}
+        />
+      )}
     </div>
   );
 };

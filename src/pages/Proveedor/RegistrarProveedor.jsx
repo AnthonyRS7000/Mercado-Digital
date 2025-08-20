@@ -66,34 +66,40 @@ const RegistrarProveedor = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    console.log("Datos enviados al backend:", formData); // <-- Agregado para depuración
-  
-    try {
-      const response = await bdMercado.post('/v1/proveedor', formData);
-      const proveedorCompleto = {
-        ...response.data.Proveedor,
-        user: response.data.user
-      };
-      setProveedorRegistrado(proveedorCompleto);
-      
-      setModalOpen(true);
-    } catch (error) {
-      console.error('Error registrando proveedor:', error.response?.data || error);
-    }
-  };
-  
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await bdMercado.post('/v1/proveedor', formData);
+    const proveedorCompleto = {
+      ...response.data.Proveedor,
+      user: response.data.user
+    };
+    setProveedorRegistrado(proveedorCompleto);
+
+    // Limpiar campos:
+    setFormData({
+      nombre: '',
+      nombre_empresa: '',
+      direccion: '',
+      dni: '',
+      celular: '',
+      ids: [],
+      email: '',
+      password: ''
+    });
+
+    setModalOpen(true);
+  } catch (error) {
+    console.error('Error registrando proveedor:', error.response?.data || error);
+  }
+};
+
 
   return (
     <div className={styles.registerContainer}>
       <div className={styles.registerBox}>
-        <div className={styles.registerLogo}>
-          <img src="/Logo.svg" alt="Logo" />
-        </div>
-        <h2>Registro de Proveedor</h2>
-        <form onSubmit={handleSubmit}>
+        <h2 className={styles.title}>Registro de Proveedor</h2>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="nombre">
               <FontAwesomeIcon icon={faUser} className={styles.faIcon} /> Nombre
@@ -139,7 +145,7 @@ const RegistrarProveedor = () => {
                 return (
                   <span key={id} className={styles.categoryTag}>
                     {categoria?.nombre}
-                    <button type="button" onClick={() => handleCategoryRemove(id)}>x</button>
+                    <button type="button" onClick={() => handleCategoryRemove(id)}>×</button>
                   </span>
                 );
               })}
@@ -160,11 +166,11 @@ const RegistrarProveedor = () => {
           <button type="submit" className={styles.btn}>Registrar</button>
         </form>
       </div>
-      {modalOpen && 
-        <ProveedorModal 
-          open={modalOpen} 
-          onClose={() => setModalOpen(false)} 
-          proveedor={proveedorRegistrado} 
+      {modalOpen &&
+        <ProveedorModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          proveedor={proveedorRegistrado}
         />
       }
     </div>

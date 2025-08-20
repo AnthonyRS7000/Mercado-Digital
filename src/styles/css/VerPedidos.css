@@ -1,131 +1,197 @@
-/* Estilo base */
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #ffffff;
+  --gris-oscuro: #6d2342;
+  --error: #d32f2f;
+}
+
+/*---------------------------------------------------
+  1) Contenedor general: full-width en desktop
+----------------------------------------------------*/
 .ver-pedidos-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  font-family: "Arial", sans-serif;
-}
-
-h1 {
-  color: #333;
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-/* Estilo para la tabla */
-.table-container {
+  padding: 16px;
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  max-width: 600px;      /* ancho limitado en móvil */
+  margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .ver-pedidos-container {
+    max-width: 90%;      /* se ensancha en tablet */
+  }
+}
+@media (min-width: 1200px) {
+  .ver-pedidos-container {
+    max-width: none;     /* full-width en desktop */
+    padding: 24px 48px;  /* puedes ajustar laterales */
+  }
 }
 
-.styled-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: white;
+.ver-pedidos-title {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--vino-oscuro);
 }
 
-.styled-table th,
-.styled-table td {
+/*---------------------------------------------------
+  2) Lista y tarjeta de pedido
+----------------------------------------------------*/
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pedido-card {
+  background: var(--crema);
+  border: 1px solid var(--vino-oscuro);
+  border-radius: 10px;
   padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  vertical-align: middle;
-  word-break: break-word;
-  white-space: nowrap;
-  height: 60px; /* Fuerza una altura constante en todas las filas */
+  transition: box-shadow .2s;
+}
+.pedido-card:hover {
+  box-shadow: 0 4px 12px rgba(90,30,56,0.1);
 }
 
-.styled-table th {
-  background-color: #8B1A1A; /* Paleta de colores azul */
-  color: white;
-  text-transform: uppercase;
-}
-
-.styled-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Estilo para los detalles del producto */
-.producto-detalle {
-  margin-bottom: 5px;
-}
-
-/* Corrección para el contenedor de Stock */
-.stock-container {
+/* Cabecera + botón */
+.pedido-header {
   display: flex;
   align-items: center;
-  justify-content: center;  /* Centra tanto el ícono como el texto */
-  gap: 6px;
-  font-size: 15px;  /* Asegura que todo tenga el mismo tamaño */
-  line-height: 1.7;
-  padding: 0;
-  height: 100%;  /* Igual para todas las celdas */
+  justify-content: space-between;
 }
-
-.stock-container i {
-  font-size: 17px;
-  line-height: 1.2;
-  color: #28a745; /* Paleta de color verde */
-  vertical-align: middle; /* Asegura que el ícono esté centrado */
+.pedido-header h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--vino);
 }
-
-/* Botón Entregar */
-.btn-entregar {
-  background-color: #28a745;
-  color: white;
-  padding: 8px 12px;
+.expand-btn {
+  background: var(--vino);
+  color: var(--blanco);
   border: none;
-  border-radius: 5px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease-in-out;
+  transition: background .15s;
 }
-
-.btn-entregar:hover {
-  background-color: #218838;
+.expand-btn:hover {
+  background: var(--vino-oscuro);
 }
-
-/* Mensaje cuando no hay pedidos */
-.no-pedidos {
-  text-align: center;
-  font-style: italic;
-  color: #888;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .ver-pedidos-container {
-    margin: 10px;
+@media (max-width: 480px) {
+  .pedido-header {
+    flex-direction: column;
+    gap: 8px;
   }
-
-  .styled-table th,
-  .styled-table td {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .stock-container {
-    font-size: 14px;
-  }
-
-  .stock-container i {
-    font-size: 14px;
+  .expand-btn {
+    width: 100%;
   }
 }
 
-@media (max-width: 600px) {
-  .styled-table {
-    font-size: 13px;
-  }
-
-  .stock-container {
-    font-size: 13px;
-  }
-
-  .stock-container i {
-    font-size: 13px;
-  }
+/*---------------------------------------------------
+  3) Carrusel de productos
+----------------------------------------------------*/
+.productos-list {
+  margin-top: 12px;
 }
+
+.productos-list-items-horizontal {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.productos-list-items-horizontal::-webkit-scrollbar {
+  height: 5px;
+}
+.productos-list-items-horizontal::-webkit-scrollbar-thumb {
+  background: var(--vino);
+  border-radius: 4px;
+}
+
+/*---------------------------------------------------
+  4) Tarjeta de producto: flujo Flex completo
+----------------------------------------------------*/
+.producto-card-horizontal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* empuja el botón abajo */
+  min-width: 140px;
+  background: var(--blanco);
+  border: 1px solid #e7c6d3;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.85rem;
+  color: var(--gris-oscuro);
+}
+.producto-info {
+  /* sólo agrupa los párrafos */
+}
+.producto-info p {
+  margin: 4px 0;
+}
+.producto-card-horizontal strong {
+  color: var(--vino);
+}
+
+/*---------------------------------------------------
+  5) Botón notificar – en flujo Flex
+----------------------------------------------------*/
+.notify-btn {
+  margin-top: 8px;        /* separador automático */
+  align-self: center;     /* centrado horizontal */
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--vino), var(--vino-oscuro));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  transition: transform .15s, box-shadow .15s;
+  border: none;
+  cursor: pointer;
+}
+.notify-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/*---------------------------------------------------
+  6) Pie de pedido (total + cliente)
+----------------------------------------------------*/
+.pedido-footer {
+  margin-top: 12px;
+  text-align: right;
+}
+.pedido-total {
+  font-weight: 600;
+  color: var(--vino-oscuro);
+}
+.pedido-cliente {
+  margin-top: 4px;
+  color: var(--gris-oscuro);
+}
+
+/*---------------------------------------------------
+  7) Spinner y mensajes
+----------------------------------------------------*/
+.loadingContainer {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingIcon {
+  color: #B63C56;
+  margin-bottom: 0.8rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.text-error { color: var(--error); }
+.text-center { text-align: center; }
+.text-gray   { color: var(--gris-oscuro); }

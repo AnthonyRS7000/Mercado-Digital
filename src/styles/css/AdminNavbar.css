@@ -1,69 +1,59 @@
-/* Estilo base para la barra lateral */
+:root {
+  --vino: #7b1e3d;
+  --vino-oscuro: #5c152e;
+  --crema: #fff5e1;
+  --blanco: #ffffff;
+}
+
+/* Barra lateral */
 .admin-navbar {
   width: 250px;
+  max-height: 100vh;
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #ffffff;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(180deg, var(--vino) 0%, var(--vino-oscuro) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 0;
   transition: transform 0.3s ease;
   z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.07);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Oculto por defecto en pantallas pequeñas */
+/* Título simula logo tipo "Mercado Central" */
+.admin-navbar-title {
+  width: 100%;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--crema);
+  background: none;
+  padding: 28px 0 16px 0;
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
 @media (max-width: 768px) {
   .admin-navbar {
     transform: translateX(-100%);
     width: 200px;
+    /* Ojo: z-index bajo por defecto */
+    z-index: 1000;
   }
-
   .admin-navbar.open {
     transform: translateX(0);
+    z-index: 9999; /* <-- Muy alto cuando esté abierto */
   }
-}
-
-/* Icono de hamburguesa */
-.hamburger-icon {
-  display: none;
-  font-size: 30px;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  cursor: pointer;
-  z-index: 1100; /* Por encima del navbar */
-}
-
-@media (max-width: 768px) {
-  .hamburger-icon {
-    display: block;
+  .admin-navbar-title {
+    font-size: 1.23rem;
+    padding: 18px 0 9px 0;
   }
-}
-
-/* Logo */
-.admin-navbar-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.admin-navbar-logo img {
-  width: 180px;
-  height: auto;
-  margin-bottom: 5px;
-}
-
-.admin-navbar-logo h2 {
-  margin: 0;
-  font-size: 18px;
-  background: none;
-  color: #7B1E3A;
 }
 
 /* Menú */
@@ -71,7 +61,7 @@
   list-style: none;
   padding: 0;
   width: 100%;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .admin-navbar-menu li {
@@ -83,60 +73,48 @@
   align-items: center;
   padding: 12px 20px;
   text-decoration: none;
-  color: #333;
+  color: var(--crema);
   font-size: 18px;
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  border-left: 4px solid transparent;
 }
 
 .admin-navbar-menu .navbar-link:hover {
-  background-color: #f0f0f0;
-  transform: translateX(5px);
+  background-color: #f6e8ed;
+  color: var(--vino);
+  /* transform: translateX(5px);   <--- QUITA ESTO */
+  padding-left: 30px; /* AGREGA ESTO, era 20px antes */
+  transition: background-color 0.3s, color 0.3s, padding 0.3s;
 }
 
 .admin-navbar-menu .navbar-link.active {
-  background-color: #007bff;
-  color: #ffffff;
+  background: linear-gradient(90deg, #f8e4ea 80%, #f7f0f1 100%);
+  color: var(--vino) !important;
+  font-weight: 700;
+  border-left: 6px solid var(--vino);
+  box-shadow: 0 1px 6px rgba(123,30,58,0.04);
+  transform: none;
 }
 
-/* Logout */
-.admin-navbar-logout {
-  margin-top: auto;
-  padding: 15px 20px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  bottom: 30px;
+/* Íconos */
+.fa-icon {
+  margin-right: 14px;
+  color: #ffc1d7;
+  font-size: 19px;
+  min-width: 22px;
 }
 
-.admin-navbar-logout .logout-btn {
-  width: 100%;
-  background-color: #dc3545;
-  border: none;
-  padding: 10px 20px;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.admin-navbar-menu .navbar-link.active .fa-icon {
+  color: var(--vino);
 }
 
-.admin-navbar-logout .logout-btn:hover {
-  background-color: #c82333;
-}
-
-/* Ajustes adicionales en pantallas pequeñas */
 @media (max-width: 768px) {
   .admin-navbar-menu .navbar-link {
     font-size: 16px;
     padding: 12px 18px;
   }
-
-  .admin-navbar-menu .navbar-link .fa-icon {
+  .fa-icon {
     font-size: 18px;
     margin-right: 12px;
-  }
-
-  .admin-navbar-logout {
-    bottom: 25px;
   }
 }

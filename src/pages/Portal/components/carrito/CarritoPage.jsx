@@ -1,20 +1,17 @@
 import React from "react";
 import Carrito from "./Carrito";
-import ResumenCarrito from "./ResumenCarrito";
 import styles from "../../css/CarritoPage.module.css";
 
 const CarritoPage = () => {
   return (
     <div className={styles.pageBg}>
       <div className={styles.cartWrapper}>
-        {/* Columna izquierda: Carrito */}
+        {/* Carrito de productos */}
         <div className={styles.productsCol}>
-          <Carrito hideFooterOnDesktop={true} />
+          <Carrito />
         </div>
-        {/* Columna derecha: ResumenCarrito SOLO en desktop */}
-        <div className={styles.summaryCol}>
-          <ResumenCarrito />
-        </div>
+        {/* El footer/resumen aparece a la derecha solo en desktop (con CSS) */}
+        {/* El propio componente Carrito renderiza el ResumenCarrito al fondo en mobile */}
       </div>
     </div>
   );

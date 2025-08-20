@@ -1,3 +1,5 @@
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useContext, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './context/AuthContext';
@@ -14,7 +16,6 @@ import ClientLayout from './layouts/ClientLayout';
 import CarritoPage from './pages/Portal/components/carrito/CarritoPage';
 import Pedido from './pages/Portal/Pedido/Pedido'; 
 import PedidoSeguimiento from './pages/Portal/Pedido/PedidoSeguimiento'; 
-import ProtectedRoute from './components/ProtectedRoute';
 import ProtectedRouteWithModal from './components/ProtectedRouteWithModal';
 import VerPedidos from './pages/Proveedor/VerPedidos';
 import PedidosListosDelivery from './pages/Delivery/PedidosDelivery';
@@ -24,7 +25,12 @@ import PedidoEnRuta from './pages/Delivery/PedidoEnRuta';
 import ConfirmarPedido from './pages/Personal/ConfirmarPedido';
 import LoginModal from './pages/Portal/LoginModal'; 
 import ProductoVista from './pages/Portal/components/ProductoVista';
-
+import RutaAdminPrivada from './pages/RutaAdminPrivada';
+import RegisterSolicitud from './pages/RegisterSolicitud';
+import SolicitudLayout from './layouts/SolicitudLayout';
+import SolicitudesRegistro from './pages/SolicitudesRegistro';
+import ProductosProveedor from './pages/Proveedor/ProductosProveedor';
+import MercadoPagoSuccess from './pages/Portal/Pedido/MercadoPagoSuccess';
 
 const App = () => {
   const navigate = useNavigate();
@@ -37,7 +43,6 @@ const App = () => {
 
   const handleCloseLoginModal = () => {
     setIsLoginModalOpen(false);
-  
     if (!isAuthenticated) {
       navigate('/'); // no logueado, ir al inicio
     } else {
@@ -48,14 +53,19 @@ const App = () => {
       }
     }
   };
+
   return (
     <>
       <Routes>
         <Route path="/login" element={<LoginAdmin />} />
+
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Portal />} />
           <Route path="/producto/:id" element={<ProductoVista />} />
+          <Route path="/proveedor/:id" element={<ProductosProveedor />} />
           <Route path="/carrito" element={<CarritoPage />} />
+
+          {/* 🚚 Seguimiento de pedidos */}
           <Route 
             path="/seguimiento" 
             element={
@@ -71,6 +81,8 @@ const App = () => {
               </ProtectedRouteWithModal>
             } 
           />
+
+          {/* 🛒 Pedido rápido / programado */}
           <Route 
             path="/pedido" 
             element={
@@ -86,6 +98,8 @@ const App = () => {
               </ProtectedRouteWithModal>
             } 
           />
+
+          {/* 📦 Mis pedidos */}
           <Route 
             path="/pedidosclientes" 
             element={
@@ -101,98 +115,80 @@ const App = () => {
               </ProtectedRouteWithModal>
             } 
           />
+
+          {/* ✅ ÉXITO MERCADO PAGO */}
+          <Route 
+            path="/mp/success" 
+            element={
+              <ProtectedRouteWithModal 
+                onLoginRequired={handleOpenLoginModal}
+                fallback={<div className="text-center mt-5">
+                  <div className="alert alert-info" role="alert">
+                    <strong>Debes iniciar sesión para confirmar tu pedido</strong>
+                  </div>
+                </div>}
+              >
+                {/* aquí MercadoPagoSuccess necesita onConfirm del padre Pedido */}
+                <MercadoPagoSuccess />
+              </ProtectedRouteWithModal>
+            } 
+          />
         </Route>
 
         {/* Rutas de registro */}
-        <Route path="/register/proveedor" element={<Register tipo="proveedor" />} />
-        <Route path="/register/delivery" element={<Register tipo="delivery" />} />
+        <Route
+          path="/register/proveedor"
+          element={
+            <SolicitudLayout>
+              <RegisterSolicitud tipo="proveedor" />
+            </SolicitudLayout>
+          }
+        />
 
-        {/* Rutas de administración */}
-        <Route path="/admin/*" element={<AdminLayout />}>
-          <Route 
-            path="vender-producto" 
-            element={
-              <ProtectedRoute>
-                <VenderProducto />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="ver-pedidos" 
-            element={
-              <ProtectedRoute>
-                <VerPedidos />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="alistar-pedido" 
-            element={
-              <ProtectedRoute>
-                <AlistarPedido />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="recoger-pedido" 
-            element={
-              <ProtectedRoute>
-                <PedidosListosDelivery />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="recoger-pedido/:pedidoId" 
-            element={
-              <ProtectedRoute>
-                <PedidoEnRuta />
-              </ProtectedRoute>
-            }
-          />
-          <Route 
-            path="pedidos-listos" 
-            element={
-              <ProtectedRoute>
-                <PedidosListosApoyo />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="confirmar-pedido" 
-            element={
-              <ProtectedRoute>
-                <ConfirmarPedido />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="registrar-proveedor" 
-            element={
-              <ProtectedRoute>
-                <RegistrarProveedor />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="registrar-delivery" 
-            element={
-              <ProtectedRoute>
-                <RegistrarDelivery />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="registrar-personal" 
-            element={
-              <ProtectedRoute>
-                <RegistrarPersonal />
-              </ProtectedRoute>
-            } 
-          />
+        <Route
+          path="/register/delivery"
+          element={
+            <SolicitudLayout>
+              <RegisterSolicitud tipo="delivery" />
+            </SolicitudLayout>
+          }
+        />
+
+        <Route
+          path="/register/personal"
+          element={
+            <SolicitudLayout>
+              <RegisterSolicitud tipo="personal_sistema" />
+            </SolicitudLayout>
+          }
+        />
+
+        {/* 🔐 Rutas admin */}
+        <Route
+          path="/admin/*"
+          element={
+            <RutaAdminPrivada>
+              <AdminLayout />
+            </RutaAdminPrivada>
+          }
+        >
+          <Route path="vender-producto" element={<VenderProducto />} />
+          <Route path="solicitudes" element={<SolicitudesRegistro />} />
+          <Route path="ver-pedidos" element={<VerPedidos />} />
+          <Route path="alistar-pedido" element={<AlistarPedido />} />
+          <Route path="recoger-pedido" element={<PedidosListosDelivery />} />
+          <Route path="recoger-pedido/:pedidoId" element={<PedidoEnRuta />} />
+          <Route path="pedidos-listos" element={<PedidosListosApoyo />} />
+          <Route path="confirmar-pedido" element={<ConfirmarPedido />} />
+          <Route path="registrar-proveedor" element={<RegistrarProveedor />} />
+          <Route path="registrar-delivery" element={<RegistrarDelivery />} />
+          <Route path="registrar-personal" element={<RegistrarPersonal />} />
         </Route>
       </Routes>
 
-      {/* Modal de login que será mostrado cuando se requiera */}
+      <ToastContainer position="top-right" autoClose={3000} />
+
+      {/* Modal de login */}
       <LoginModal 
         isOpen={isLoginModalOpen} 
         onClose={handleCloseLoginModal}

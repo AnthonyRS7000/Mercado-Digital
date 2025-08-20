@@ -1,11 +1,14 @@
 // src/services/authService.js
+import axios from 'axios';
+import { baseURL } from './bdMercado';
+
 export const getToken = () => {
   return localStorage.getItem('token');
 };
 
 export const getUserId = () => {
   const data = JSON.parse(localStorage.getItem('data'));
-  return data?.user?.related_data?.id || null; // Ajusta según dónde está realmente el ID
+  return data?.user?.related_data?.id || null;
 };
 
 export const getProveedorId = () => {
@@ -15,11 +18,11 @@ export const getProveedorId = () => {
   return proveedorId;
 };
 
-
 export const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refresh_token');
-  // Lógica para obtener un nuevo token usando el refresh token
-  const response = await axios.post('https://mercado-backend.sistemasudh.com/refresh-token', { token: refreshToken });
+  const response = await axios.post(`${baseURL.replace('/api', '')}/refresh-token`, {
+    token: refreshToken,
+  });
   const newToken = response.data.access_token;
   localStorage.setItem('token', newToken);
   return newToken;

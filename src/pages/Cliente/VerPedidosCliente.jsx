@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { getToken } from "../../services/authService";  // Asegúrate de tener esta función de obtener el token
+import { getToken } from "../../services/authService";
+import bdMercado from "../../services/bdMercado"; // ← Importa la instancia
 import './VerPedidosCliente.css';
 
 const VerPedidos = ({ userId }) => {
@@ -8,30 +9,23 @@ const VerPedidos = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para obtener los pedidos de la API
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const userToken = getToken();  // Obtener el token de usuario
+        const userToken = getToken();
         if (!userToken) {
           throw new Error("No se encontró el token de usuario");
         }
 
-        const response = await fetch(`https://mercado-backend.sistemasudh.com/api/pedidos/cliente/${userId}`, {
+        // Usa bdMercado con el endpoint (solo el path)
+        const response = await bdMercado.get(`/pedidos/cliente/${userId}`, {
           headers: {
             Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Pedidos obtenidos:", data);
-
-        setPedidos(data);
+        setPedidos(response.data);
       } catch (error) {
         console.error("Error al cargar pedidos:", error);
         setError(error.message);
@@ -43,7 +37,6 @@ const VerPedidos = ({ userId }) => {
     fetchPedidos();
   }, [userId]);
 
-  // Si la respuesta está cargando o hubo un error
   if (loading) {
     return (
       <div className="spinner-container">

@@ -1,0 +1,236 @@
+/* Spinner durante carga */
+.loadingContainer {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingIcon {
+  color: #B63C56;
+  margin-bottom: 0.8rem;
+}
+
+/* Contenedor general */
+.container {
+  max-width: 1200px;
+  margin: 24px auto;
+  background-color: #fdfdfd;
+  padding: 2rem 1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(123,30,58,0.08);
+}
+
+/* Header con título y botón */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Botón “Crear Nuevo” */
+.createButton {
+  background: linear-gradient(90deg, #7B1E3A 80%, #b63c56 100%);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(123,30,58,0.07);
+  transition: background 0.19s, box-shadow 0.19s, transform 0.17s;
+}
+.createButton:hover {
+  background: linear-gradient(90deg, #b63c56 60%, #7B1E3A 100%);
+  box-shadow: 0 3px 16px rgba(123,30,58,0.15);
+  transform: translateY(-1.5px) scale(1.04);
+}
+
+/* Tarjeta principal */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(123,30,58,0.07);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* Mensaje “sin productos” */
+.noProducts {
+  text-align: center;
+  color: #B63C56;
+  background: #f6f0f3;
+  padding: 24px 0;
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+/* Wrapper para que la tabla haga scroll */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+/* Tabla de productos */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.table th {
+  background: #f3f3f3;
+  color: #555;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  vertical-align: middle;
+  background: #fff;
+}
+
+/* Fila hover */
+.table tr:hover {
+  background: #f9f9f9;
+}
+
+/* Imágenes en la tabla */
+.image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* ===== Columna de ACCIÓN bien alineada ===== */
+.table th:last-child {
+  text-align: center;
+  width: 120px;
+}
+.table td.actions {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.75rem;
+  white-space: nowrap;
+}
+.actionsContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botones de acción */
+.iconBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #424242;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.2s, color 0.2s, box-shadow 0.2s;
+  line-height: 0;
+}
+.iconBtn:hover {
+  background: rgba(139,26,26,0.11);
+  color: #8B1A1A;
+  transform: scale(1.06);
+  box-shadow: 0 0 0 1px rgba(139,26,26,0.08) inset;
+}
+
+/* Modal de confirmación */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+.modal h2 {
+  color: #8B1A1A;
+  margin-bottom: 1rem;
+}
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.confirmBtn {
+  background: linear-gradient(90deg, #7B1E3A 80%, #b63c56 100%);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.confirmBtn:hover {
+  background: linear-gradient(90deg, #b63c56 60%, #7B1E3A 100%);
+}
+.cancelBtn {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.cancelBtn:hover { background: #bbb; }
+
+/* Error general */
+.error {
+  text-align: center;
+  color: #d32f2f;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .header { flex-direction: column; gap: 1rem; }
+  .createButton { font-size: 0.9rem; padding: 8px 14px; }
+
+  .table { font-size: 0.85rem; }
+  .image { width: 36px; height: 36px; }
+
+  .table th:last-child { width: 108px; }
+  .table td.actions { gap: 8px; padding: 0.6rem; }
+  .iconBtn { width: 30px; height: 30px; }
+}
+
+@media (max-width: 480px) {
+  .table { min-width: 640px; }
+  .createButton { font-size: 0.85rem; }
+
+  .table th:last-child { width: 104px; }
+  .table td.actions { gap: 8px; padding: 0.55rem; }
+  .iconBtn { width: 28px; height: 28px; }
+}

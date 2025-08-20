@@ -1,47 +1,41 @@
-import axios from 'axios';
-import { getToken, getUserId } from './authService';
-
-const bdMercado = axios.create({
-  baseURL: 'https://mercado-backend.sistemasudh.com/api',
-});
+// src/services/interceptors.js
+import bdMercado from './bdMercado';
+import { getToken, getUserId, refreshToken } from './authService';
 
 bdMercado.interceptors.request.use(
   async (config) => {
     const token = getToken();
-    const userId = getUserId();
-    const storedData = JSON.parse(localStorage.getItem('data'));
-    const proveedorId = storedData ? storedData.user.related_data.id : null;
-    console.log('Using token:', token);
-    console.log('Using userId:', userId); // Imprimir el user_id que se está utilizando
-    console.log('Using proveedorId:', proveedorId); // Imprimir el proveedor_id que se está utilizando
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    if (userId) {
+
+    // Rutas donde NO queremos inyectar userId / proveedorId
+    const skipParams = ['/login', '/carrito/merge', '/register'];
+
+    // Solo agregamos parámetros si no está en las rutas a omitir
+    if (!skipParams.some(path => config.url.includes(path))) {
+      const userId = getUserId();
+      const storedData = JSON.parse(localStorage.getItem('data'));
+      const proveedorId = storedData?.user?.related_data?.id || null;
+
       config.params = config.params || {};
-      config.params.userId = userId;
+      if (userId) config.params.userId = userId;
+      if (proveedorId) config.params.proveedorId = proveedorId;
     }
-    if (proveedorId) {
-      config.params = config.params || {};
-      config.params.proveedorId = proveedorId;
-    }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 bdMercado.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const newToken = await refreshToken();
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
+      originalRequest.headers.Authorization = `Bearer ${newToken}`;
       return bdMercado(originalRequest);
     }
     return Promise.reject(error);
