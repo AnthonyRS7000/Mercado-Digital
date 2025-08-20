@@ -24,7 +24,7 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
 
   const handlePaymentMethodSelect = (method) => {
     setPaymentMethod(method);
-    setStep(3); // Ir a confirmación directamente
+    setStep(3); // Saltar a confirmación
   };
 
   const handleLocationSelect = (loc) => {
@@ -43,31 +43,24 @@ const PedidoRapidoModal = ({ isOpen, onClose, onConfirm }) => {
 
     try {
       if (paymentMethod === 1) {
-        // CONTRAENTREGA → el padre crea el pedido y vacía carrito
+        // 🚚 CONTRAENTREGA → el padre crea el pedido y vacía carrito
         await onConfirm(paymentMethod, finalLocation);
         navigate('/seguimiento');
         return;
       }
 
       if (paymentMethod === 2) {
-        // MERCADO PAGO → crear preferencia
+        // 💳 MERCADO PAGO → crear preferencia en el backend
         const { data } = await bdMercado.post('/mercadopago/preferencia', {
           user_id: user.related_data.user_id,
           direccion_entrega: finalLocation,
-          productos: user.carrito.map((p) => ({
-            producto_id: p.producto_id,
-            cantidad: p.cantidad,
-          })),
           fecha_programada: null,
           hora_programada: null,
         });
 
         if (data.init_point) {
-          // Redirigir al checkout de MP con back_url al frontend
-          const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
-          window.location.href = `${data.init_point}&back_url=${encodeURIComponent(
-            `${frontendUrl}/mp/success?address=${encodeURIComponent(finalLocation)}`
-          )}`;
+          // 🔗 Redirigir al checkout de MP
+          window.location.href = data.init_point;
         } else {
           alert('No se pudo generar la preferencia de pago');
         }
