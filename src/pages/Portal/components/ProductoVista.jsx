@@ -4,7 +4,7 @@ import { FaShoppingCart, FaMinus, FaPlus, FaArrowLeft, FaStore } from 'react-ico
 // 👇 Solo importa bdMercado y BASE_IMG_URL
 import bdMercado, { BASE_IMG_URL } from '../../../services/bdMercado';
 import { v4 as uuidv4 } from 'uuid';
-import '../css/Productovista.css';
+import '../css/ProductoVista.css';
 import PesoModal from '../components/peso/PesoModal';
 import UnidadModal from '../components/peso/UnidadModal';
 import { DataContext } from '../../../context/DataContext';
