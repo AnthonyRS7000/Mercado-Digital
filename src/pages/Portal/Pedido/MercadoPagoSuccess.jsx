@@ -1,37 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bdMercado from '../../../services/bdMercado';
 
 const MercadoPagoSuccess = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPedido = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const userId = user?.related_data?.user_id; // 👈 usar el campo correcto
+    const timer = setTimeout(() => {
+      navigate('/seguimiento');
+      setLoading(false);
+    }, 1500); // espera corta para mostrar mensaje
 
-        if (!userId) {
-          navigate('/login');
-          return;
-        }
-
-        const res = await bdMercado.get(`/pedido/last/${userId}`);
-        if (res.data) {
-          navigate('/seguimiento', { state: { pedido: res.data } });
-        } else {
-          navigate('/seguimiento');
-        }
-      } catch (error) {
-        console.error('Error al obtener el último pedido:', error);
-        navigate('/seguimiento');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPedido();
+    return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
