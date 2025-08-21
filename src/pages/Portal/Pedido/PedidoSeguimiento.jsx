@@ -5,7 +5,6 @@ import { AuthContext } from '../../../context/AuthContext';
 import bdMercado from '../../../services/bdMercado';
 import LoginModal from '../LoginModal';
 import './css/PedidoSeguimiento.css';
-import { Spinner } from 'react-bootstrap';
 
 const PedidoSeguimiento = () => {
   const { user } = useContext(AuthContext);
@@ -36,8 +35,8 @@ const PedidoSeguimiento = () => {
   }, [user]);
 
   const normalizarEstado = (estado) => {
-    if (estado === 10) return 3; // Listo
-    if (estado === 20) return 4; // En Camino
+    if (estado === 10) return 3;
+    if (estado === 20) return 4;
     return estado;
   };
 
@@ -92,14 +91,30 @@ const PedidoSeguimiento = () => {
             <div className="productos">
               <h3>Productos:</h3>
               <ul>
-                {pedido.detalles_pedido.map((detalle) => (
-                  <li key={detalle.id}>
-                    <span className="producto-nombre">{detalle.producto.nombre}</span>
-                    <span className="producto-cantidad">
-                      {detalle.cantidad} {detalle.producto.tipo === 'peso' ? 'kg' : 'unidades'}
-                    </span>
-                  </li>
-                ))}
+                {pedido.detalles_pedido.map((detalle) => {
+                  // quitar ceros de más
+                  const cantidadFormatted =
+                    Number(detalle.cantidad) % 1 === 0
+                      ? Number(detalle.cantidad).toString()
+                      : Number(detalle.cantidad);
+
+                  // lógica singular/plural
+                  let unidadTexto = '';
+                  if (detalle.producto.tipo === 'peso') {
+                    unidadTexto = 'kg';
+                  } else {
+                    unidadTexto = Number(detalle.cantidad) === 1 ? 'unidad' : 'unidades';
+                  }
+
+                  return (
+                    <li key={detalle.id}>
+                      <span className="producto-nombre">{detalle.producto.nombre}</span>
+                      <span className="producto-cantidad">
+                        {cantidadFormatted} {unidadTexto}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className={`timeline step-${estado}`}>

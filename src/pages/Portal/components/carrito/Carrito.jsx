@@ -128,91 +128,94 @@ const Carrito = () => {
           </div>
 
           <div className={styles.cartProducts}>
-            {cart.productos.map(({ id, cantidad, producto }) => (
-              <div className={styles.cartItem} key={id}>
-                <div className={styles.productImgBox} style={{ background: '#f6fafd' }}>
-                  <img
-                    src={
-                      producto.imagen?.startsWith('http')
-                        ? producto.imagen
-                        : `${BASE_IMG_URL}${producto.imagen}`
-                    }
-                    alt={producto.nombre}
-                  />
-                </div>
+            {cart.productos.map(({ id, cantidad, producto }) => {
+              // quitar ceros de más
+              const cantidadFormatted =
+                Number(cantidad) % 1 === 0 ? Number(cantidad).toString() : Number(cantidad);
 
-                <div className={styles.itemDetails}>
-                  <span className={styles.productName}>{producto.nombre}</span>
-                  <span className={styles.productDesc}>
-                    {producto.tipo === 'peso' ? 'Producto a peso' : 'Producto por unidad'}
-                  </span>
-                  <span className={styles.productPrice}>S/. {producto.precio}</span>
-                  <span className={styles.productSubtotal}>
-                    Subtotal: <strong>S/. {(producto.precio * cantidad).toFixed(2)}</strong>
-                  </span>
-                </div>
+              return (
+                <div className={styles.cartItem} key={id}>
+                  <div className={styles.productImgBox} style={{ background: '#f6fafd' }}>
+                    <img
+                      src={
+                        producto.imagen?.startsWith('http')
+                          ? producto.imagen
+                          : `${BASE_IMG_URL}${producto.imagen}`
+                      }
+                      alt={producto.nombre}
+                    />
+                  </div>
 
-                <div className={styles.actionBox}>
-                  {producto.tipo === 'unidad' ? (
-                    <div className={styles.qtyBoxInline}>
+                  <div className={styles.itemDetails}>
+                    <span className={styles.productName}>{producto.nombre}</span>
+                    <span className={styles.productDesc}>
+                      {producto.tipo === 'peso' ? 'Producto a peso' : 'Producto por unidad'}
+                    </span>
+                    <span className={styles.productPrice}>S/. {producto.precio}</span>
+                    <span className={styles.productSubtotal}>
+                      Subtotal: <strong>S/. {(producto.precio * cantidad).toFixed(2)}</strong>
+                    </span>
+                  </div>
+
+                  <div className={styles.actionBox}>
+                    {producto.tipo === 'unidad' ? (
+                      <div className={styles.qtyBoxInline}>
+                        <button
+                          className={styles.qtyBtn}
+                          onClick={() =>
+                            handleUpdateQuantity(
+                              cart.carrito_id,
+                              producto.id,
+                              Math.max(Number(cantidad) - 1, 1)
+                            )
+                          }
+                          disabled={Number(cantidad) <= 1}
+                          title="Disminuir"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                        <span className={styles.qtyNum}>{cantidadFormatted}</span>
+                        <button
+                          className={styles.qtyBtn}
+                          onClick={() =>
+                            handleUpdateQuantity(cart.carrito_id, producto.id, Number(cantidad) + 1)
+                          }
+                          title="Aumentar"
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.qtyChip}>
+                        <span className={styles.qtyNum}>{cantidadFormatted}</span>
+                      </div>
+                    )}
+
+                    <div className={styles.iconRow}>
                       <button
-                        className={styles.qtyBtn}
+                        className={`${styles.iconBtn} ${styles.updateBtn}`}
+                        title="Actualizar cantidad"
                         onClick={() =>
-                          handleUpdateQuantity(
-                            cart.carrito_id,
-                            producto.id,
-                            Math.max(Number(cantidad) - 1, 1)
-                          )
+                          openQuantityModal({ producto, cantidad, carritoId: cart.carrito_id })
                         }
-                        disabled={Number(cantidad) <= 1}
-                        title="Disminuir"
                       >
-                        <FontAwesomeIcon icon={faMinus} />
+                        <FontAwesomeIcon icon={faEdit} />
                       </button>
-                      <span className={styles.qtyNum}>{cantidad}</span>
+
+                      <div className={styles.vDivider}></div>
+
                       <button
-                        className={styles.qtyBtn}
-                        onClick={() =>
-                          handleUpdateQuantity(cart.carrito_id, producto.id, Number(cantidad) + 1)
-                        }
-                        title="Aumentar"
+                        className={`${styles.iconBtn} ${styles.trashBtn}`}
+                        title="Eliminar"
+                        onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}
                       >
-                        <FontAwesomeIcon icon={faPlus} />
+                        <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
-                  ) : (
-                    <div className={styles.qtyChip}>
-                      <span className={styles.qtyNum}>{cantidad}</span>
-                    </div>
-                  )}
-
-                  {/* Fila de iconos */}
-<div className={styles.iconRow}>
-  <button
-    className={`${styles.iconBtn} ${styles.updateBtn}`}
-    title="Actualizar cantidad"
-    onClick={() =>
-      openQuantityModal({ producto, cantidad, carritoId: cart.carrito_id })
-    }
-  >
-    <FontAwesomeIcon icon={faEdit} />
-  </button>
-
-  {/* 👇 Separador */}
-  <div className={styles.vDivider}></div>
-
-  <button
-    className={`${styles.iconBtn} ${styles.trashBtn}`}
-    title="Eliminar"
-    onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}
-  >
-    <FontAwesomeIcon icon={faTrash} />
-  </button>
-</div>
-
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className={styles.footerActions}>
