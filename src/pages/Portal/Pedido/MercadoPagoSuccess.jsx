@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bdMercado from '@/services/bdMercado';
+import bdMercado from '../../../services/bdMercado';
 
 const MercadoPagoSuccess = () => {
   const [loading, setLoading] = useState(true);
