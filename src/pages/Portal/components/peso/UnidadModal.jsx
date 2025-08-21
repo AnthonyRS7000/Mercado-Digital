@@ -20,6 +20,9 @@ const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
     // eslint-disable-next-line
   }, [cantidad, productId]);
 
+  // ====================
+  // Calcular precio
+  // ====================
   const calculatePrice = async () => {
     try {
       const response = await bdMercado.post(`/calcular-precio/${productId}`, {
@@ -27,12 +30,17 @@ const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
       });
       const { precio_total } = response.data;
       setPrice(precio_total);
-      setMessage(`Estás a punto de agregar ${cantidad} unidad${cantidad !== 1 ? 'es' : ''} de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`);
-    } catch (error) {
+      setMessage(
+        `Estás a punto de agregar ${cantidad} unidad${cantidad !== 1 ? 'es' : ''} de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`
+      );
+    } catch {
       setMessage('');
     }
   };
 
+  // ====================
+  // Agregar producto
+  // ====================
   const handleAddUnidad = async () => {
     const cantidadEntera = parseInt(cantidad);
     if (!cantidad || isNaN(cantidadEntera) || cantidadEntera <= 0 || !Number.isInteger(+cantidad)) {
@@ -43,21 +51,36 @@ const UnidadModal = ({ isOpen, onClose, productId, productName }) => {
     const payload = {
       producto_id: productId,
       cantidad: cantidadEntera,
-      ...(user?.related_data ? { user_id: user.related_data.user_id } : { uuid: guestUuid })
     };
 
     try {
-      await bdMercado.post('/carrito/agregar', payload);
-      await refreshCartCount(true);
+      if (user?.related_data) {
+        // ➡️ Usuario logueado
+        await bdMercado.post('/carrito/user/agregar', {
+          ...payload,
+          user_id: user.related_data.user_id,
+        });
+      } else {
+        // ➡️ Invitado
+        await bdMercado.post('/carrito/invitado/agregar', {
+          ...payload,
+          uuid: guestUuid,
+        });
+      }
+
+      await refreshCartCount(true); // 🔥 refresca burbuja
       toast.success('🛒 Producto agregado al carrito');
       setCantidad(1);
       setMessage('');
       onClose();
-    } catch (error) {
+    } catch {
       toast.error('❌ Hubo un error al agregar el producto.');
     }
   };
 
+  // ====================
+  // Cerrar modal
+  // ====================
   const handleCloseModal = (e) => {
     if (e.target.className === 'modal-overlay' || e.target.className === 'close-button') {
       setCantidad(1);

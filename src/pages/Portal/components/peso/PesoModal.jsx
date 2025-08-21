@@ -20,6 +20,9 @@ const PesoModal = ({ isOpen, onClose, productId, productName }) => {
     // eslint-disable-next-line
   }, [weight, productId]);
 
+  // ====================
+  // Calcular precio
+  // ====================
   const calculatePrice = async () => {
     try {
       const response = await bdMercado.post(`/calcular-precio/${productId}`, {
@@ -32,45 +35,63 @@ const PesoModal = ({ isOpen, onClose, productId, productName }) => {
       const gramos = (weight - kilos) * 1000;
 
       if (weight < 1) {
-        setMessage(`Estás a punto de agregar ${gramos.toFixed(0)} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`);
+        setMessage(
+          `Estás a punto de agregar ${gramos.toFixed(0)} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`
+        );
       } else {
-        setMessage(`Estás a punto de agregar ${kilos} kilo${kilos !== 1 ? 's' : ''} con ${gramos.toFixed(0)} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`);
+        setMessage(
+          `Estás a punto de agregar ${kilos} kilo${kilos !== 1 ? 's' : ''} con ${gramos.toFixed(
+            0
+          )} gramos de ${productName}. Esto costará S/ ${precio_total.toFixed(2)}.`
+        );
       }
-    } catch (error) {
+    } catch {
       setMessage('');
     }
   };
 
+  // ====================
+  // Agregar producto
+  // ====================
   const handleAddWeight = async () => {
     if (!weight || parseFloat(weight) <= 0) {
       setMessage('⚠️ Ingrese un peso válido.');
       return;
     }
 
-    let payload = {
+    const payload = {
       producto_id: productId,
       cantidad: parseFloat(weight),
     };
 
-    if (user?.related_data) {
-      payload.user_id = user.related_data.user_id;
-    } else {
-      payload.uuid = guestUuid; // Siempre usa guestUuid del contexto
-    }
-
     try {
-      await bdMercado.post('/carrito/agregar', payload);
-      await refreshCartCount(true); // 🔥 ACTUALIZA BURBUJA AL INSTANTE
+      if (user?.related_data) {
+        // ➡️ Usuario logueado
+        await bdMercado.post('/carrito/user/agregar', {
+          ...payload,
+          user_id: user.related_data.user_id,
+        });
+      } else {
+        // ➡️ Invitado
+        await bdMercado.post('/carrito/invitado/agregar', {
+          ...payload,
+          uuid: guestUuid,
+        });
+      }
+
+      await refreshCartCount(true); // 🔥 Actualiza burbuja carrito
       toast.success('🛒 Producto agregado al carrito');
       setWeight('');
       setMessage('');
       onClose();
-
-    } catch (error) {
+    } catch {
       setMessage('❌ Hubo un error al agregar el producto.');
     }
   };
 
+  // ====================
+  // Cerrar modal
+  // ====================
   const handleCloseModal = (e) => {
     if (e.target.className === 'modal-overlay' || e.target.className === 'close-button') {
       setView('form');
@@ -84,7 +105,9 @@ const PesoModal = ({ isOpen, onClose, productId, productName }) => {
     isOpen && (
       <div className="modal-overlay" onClick={handleCloseModal}>
         <div className="peso-modal-content">
-          <button className="close-button" onClick={handleCloseModal}>X</button>
+          <button className="close-button" onClick={handleCloseModal}>
+            X
+          </button>
           {view === 'form' ? (
             <>
               <h2 className="modal-title">Ingresar Peso</h2>

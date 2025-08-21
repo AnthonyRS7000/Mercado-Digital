@@ -110,7 +110,7 @@
   border-radius: 1.6rem;
   padding: 0.4rem 0.6rem 0.4rem 0.6rem;
   box-shadow: 0 1px 8px #b0355a13;
-  min-width: 200px;          /* 👈 más ancho */
+  min-width: 200px;
   max-width: 280px;
   width: 100%;
   gap: 0.6rem;
@@ -142,7 +142,7 @@
   cursor: not-allowed;
 }
 
-/* Chip simple para peso (solo muestra cantidad actual) */
+/* Chip simple para peso */
 .qtyChip {
   display: inline-flex;
   align-items: center;
@@ -159,7 +159,7 @@
   text-align: center;
 }
 
-/* Iconos de acción a la derecha */
+/* Iconos de acción */
 .iconBtn {
   border: none;
   background: transparent;
@@ -181,18 +181,15 @@
   color: #991f44;
 }
 
-/* Separador vertical entre actualizar y eliminar */
+/* Separador SOLO en escritorio */
 .vDivider {
-  width: 1px;
-  height: 22px;
-  background: #e5e7eb; /* gris clarito */
-  margin-left: 2px;
-  margin-right: 2px;
-}
-
-/* (OBSOLETO) botón eliminar flotante: no se usa ya, oculto por compatibilidad */
-.removeBtn {
-  display: none;
+  display: inline-block;
+  width: 1.5px;
+  height: 24px;        
+  background: #cbd5e1;
+  margin: 0 6px;
+  opacity: 0.95;
+  align-self: stretch; 
 }
 
 /* Columna de resumen */
@@ -202,7 +199,7 @@
   margin-top: 2.5rem;
 }
 
-/* ===== ESCRITORIO: GRID horizontal para .cartItem ===== */
+/* ===== ESCRITORIO ===== */
 @media (min-width: 900px) {
   .cartProductsCol {
     margin-right: 300px;
@@ -218,9 +215,9 @@
   .cartItem {
     display: grid;
     grid-template-columns:
-      80px    /* imagen */
-      2fr     /* detalles */
-      1fr;    /* rectángulo acciones */
+      80px
+      2fr
+      1fr;
     align-items: center;
     column-gap: 2rem;
     padding: 1rem 2rem;
@@ -248,64 +245,49 @@
   .summaryCol {
     margin-top: 0;
   }
-  .qtyBox {
-  gap: 0.3rem; /* menos separación en móvil */
-  padding: 0.3rem 0.6rem;
+
+  /* Ajuste acción en columna */
+  .actionBox {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: auto;
+    width: auto;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .qtyBoxInline,
+  .qtyChip {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .iconRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  /* ❌ Ocultar divisor en móvil */
+  .vDivider {
+    display: none;
+  }
+
+  .updateBtn,
+  .trashBtn {
+    background: #f6fafd;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
-/* --- COMPACTACIÓN EN MÓVIL --- */
-.actionBox {
-  gap: 0.25rem;              /* más juntito */
-  padding: 0.25rem 0.45rem;  /* menos padding lateral */
-  min-width: 165px;          /* antes 180; cabe mejor */
-}
-
-.spacer {
-  display: none;             /* quita el “empujador” para pegar iconos al qty */
-}
-
-.qtyBtn {
-  width: 26px;               /* antes 28/32 */
-  height: 26px;
-}
-
-/* el número no robe espacio extra */
-.qtyNum {
-  min-width: 32px;           /* antes 36 */
-  font-size: 1rem;           /* un pelín más chico */
-}
-
-/* botón de editar con tamaño igual al de + / - */
-.updateBtn {
-  border: none;
-  background: #f6fafd;
-  border-radius: 50%;
-  width: 26px;               /* igual que qtyBtn */
-  height: 26px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* iconos “planos” y compactos */
-.iconBtn {
-  padding: 0.2rem;           /* antes 0.35/0.45 */
-  font-size: 0.95rem;        /* un poco más chico para caber */
-}
-
-/* divisor más visible y con menos aire alrededor */
-.vDivider {
-  width: 1.5px;              /* mantiene grosor */
-  height: 18px;              /* un poco más corto para pill pequeño */
-  background: #cbd5e1;       /* alto contraste suave */
-  margin: 0 4px;             /* espacio justo entre íconos */
-  opacity: 0.95;
-}
-
-}
-
-/* Cajas internas de resumen */
+/* Cajas resumen */
 .resumenBox {
   background: #fff;
   padding: 1rem;
@@ -364,4 +346,29 @@
   background: linear-gradient(90deg, #991f44, #b0355a 90%);
   color: #fff;
   cursor: pointer;
+}
+
+/* Footer acciones */
+.footerActions {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1rem 1.5rem 0;
+}
+.clearCartBtn {
+  background: transparent;
+  border: 2px solid #991f44;
+  color: #991f44;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.clearCartBtn:hover {
+  background: #991f44;
+  color: #fff;
+  transform: scale(1.02);
+}
+.clearCartBtn:active {
+  transform: scale(0.97);
 }

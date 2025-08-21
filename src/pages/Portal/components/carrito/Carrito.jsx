@@ -11,7 +11,6 @@ import {
   faPlus,
   faTrash,
   faEdit,
-  faArrowsRotate, // 👈 icono de actualizar diferente
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../../css/Carrito.module.css';
 
@@ -22,7 +21,6 @@ const Carrito = () => {
   const { user, setCartCount, cartRefreshTrigger, guestUuid } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Traer carrito
   const fetchCart = async () => {
     try {
       let response;
@@ -51,13 +49,11 @@ const Carrito = () => {
     // eslint-disable-next-line
   }, [user, guestUuid, cartRefreshTrigger]);
 
-  // Ir a pedido / pedir login
   const handlePlaceOrder = () => {
     if (!user) setLoginModalOpen(true);
     else navigate('/pedido');
   };
 
-  // Actualizar cantidad
   const handleUpdateQuantity = async (carritoId, productId, newQuantity) => {
     try {
       if (newQuantity === '' || Number(newQuantity) <= 0) return;
@@ -68,7 +64,6 @@ const Carrito = () => {
     } catch {}
   };
 
-  // Eliminar producto
   const handleRemoveProduct = async (carritoId, productId) => {
     try {
       await bdMercado.delete(`/carrito-eliminar/${carritoId}/${productId}`);
@@ -76,7 +71,19 @@ const Carrito = () => {
     } catch {}
   };
 
-  // Abrir modal para fijar cantidad (peso o unidad)
+  const handleVaciarCart = async () => {
+    try {
+      if (user?.related_data) {
+        await bdMercado.post('/carrito/user/vaciar', { user_id: user.related_data.user_id });
+      } else if (guestUuid) {
+        await bdMercado.post('/carrito/invitado/vaciar', null, {
+          params: { uuid: guestUuid },
+        });
+      }
+      fetchCart();
+    } catch {}
+  };
+
   const openQuantityModal = ({ producto, cantidad, carritoId }) => {
     setSelectedProduct({
       ...producto,
@@ -86,7 +93,6 @@ const Carrito = () => {
     });
   };
 
-  // Loader
   if (!cart) {
     return (
       <div className={styles.loadingContainer}>
@@ -96,7 +102,6 @@ const Carrito = () => {
     );
   }
 
-  // Carrito vacío
   if (!cart.productos || cart.productos.length === 0) {
     return (
       <div className={styles.emptyCartContainer}>
@@ -112,7 +117,6 @@ const Carrito = () => {
 
   return (
     <div className={styles.cartMainLayout}>
-      {/* Columna izquierda (productos) */}
       <div className={styles.cartProductsCol}>
         <div className={styles.cartAppContainer}>
           <div className={styles.header}>
@@ -148,9 +152,7 @@ const Carrito = () => {
                   </span>
                 </div>
 
-                {/* === Rectángulo blanco ancho con controles e iconos === */}
                 <div className={styles.actionBox}>
-                  {/* Controles de cantidad */}
                   {producto.tipo === 'unidad' ? (
                     <div className={styles.qtyBoxInline}>
                       <button
@@ -167,9 +169,7 @@ const Carrito = () => {
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
-
                       <span className={styles.qtyNum}>{cantidad}</span>
-
                       <button
                         className={styles.qtyBtn}
                         onClick={() =>
@@ -181,43 +181,48 @@ const Carrito = () => {
                       </button>
                     </div>
                   ) : (
-                    // Para peso, mostramos solo la cantidad actual como chip
                     <div className={styles.qtyChip}>
                       <span className={styles.qtyNum}>{cantidad}</span>
                     </div>
                   )}
 
-                  {/* Separador flexible para empujar iconos a la derecha en caja */}
-                  <span className={styles.spacer} />
-                  {/* Ícono Actualizar (abre modal para fijar cantidad) */}
-                  <button
-                    className={`${styles.iconBtn} ${styles.updateBtn}`}   // 👈 añade updateBtn
-                    title="Actualizar cantidad"
-                    onClick={() =>
-                      openQuantityModal({ producto, cantidad, carritoId: cart.carrito_id })
-                    }
-                  >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </button>
-                  {/* Separador vertical */}
-                  <span className={styles.vDivider} />
+                  {/* Fila de iconos */}
+<div className={styles.iconRow}>
+  <button
+    className={`${styles.iconBtn} ${styles.updateBtn}`}
+    title="Actualizar cantidad"
+    onClick={() =>
+      openQuantityModal({ producto, cantidad, carritoId: cart.carrito_id })
+    }
+  >
+    <FontAwesomeIcon icon={faEdit} />
+  </button>
 
-                  {/* Ícono Eliminar */}
-                  <button
-                    className={`${styles.iconBtn} ${styles.trashBtn}`}
-                    title="Eliminar"
-                    onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
+  {/* 👇 Separador */}
+  <div className={styles.vDivider}></div>
+
+  <button
+    className={`${styles.iconBtn} ${styles.trashBtn}`}
+    title="Eliminar"
+    onClick={() => handleRemoveProduct(cart.carrito_id, producto.id)}
+  >
+    <FontAwesomeIcon icon={faTrash} />
+  </button>
+</div>
+
                 </div>
               </div>
             ))}
           </div>
+
+          <div className={styles.footerActions}>
+            <button className={styles.clearCartBtn} onClick={handleVaciarCart}>
+              Vaciar carrito
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Columna derecha/responsive: Resumen */}
       <div className={styles.summaryCol}>
         <div className={styles.resumenBox}>
           <div className={styles.deliveryBox}>
@@ -235,7 +240,6 @@ const Carrito = () => {
         </div>
       </div>
 
-      {/* Modales */}
       {selectedProduct && (
         <QuantityModal
           isOpen={Boolean(selectedProduct)}
