@@ -10,12 +10,14 @@ const MercadoPagoSuccess = () => {
     const fetchPedido = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) {
+        const userId = user?.related_data?.user_id; // 👈 usar el campo correcto
+
+        if (!userId) {
           navigate('/login');
           return;
         }
 
-        const res = await bdMercado.get(`/pedido/last/${user.id}`);
+        const res = await bdMercado.get(`/pedido/last/${userId}`);
         if (res.data) {
           navigate('/seguimiento', { state: { pedido: res.data } });
         } else {
