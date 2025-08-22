@@ -1,0 +1,377 @@
+:root {
+  --color-vino-editar: #7a2048;       /* vino púrpura para diferenciar */
+  --color-crema-editar: #f9f6f0;      /* crema más clara */
+  --color-vino-oscuro-editar: #5a1834;
+  --color-texto-editar: #2e2e2e;
+  --color-placeholder-editar: #9a9a9a;
+}
+
+/* ===== Overlay de carga ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(249, 246, 240, 0.92); /* crema distinta a registrar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  color: var(--color-vino-editar);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.overlay small {
+  font-weight: 400;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--color-texto-editar);
+}
+
+/* ===== Modal principal ===== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  padding: 16px;
+}
+
+.modal {
+  position: relative; /* 👈 Para posicionar el botón cerrar */
+  background-color: var(--color-crema-editar);
+  border: 1px solid var(--color-vino-editar);
+  border-radius: 10px;
+  width: min(520px, calc(100vw - 40px));
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  color: var(--color-texto-editar);
+  box-sizing: border-box;
+}
+
+.modal h2 {
+  margin: 0 0 14px 0;
+  text-align: center;
+  font-weight: 800;
+  color: var(--color-vino-editar);
+}
+
+/* ===== Botón cerrar (X) ===== */
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--color-vino-editar);
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+  padding: 4px;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.closeBtn:hover {
+  color: var(--color-vino-oscuro-editar);
+  transform: scale(1.2);
+  background: rgba(122, 32, 72, 0.1);
+}
+
+.closeBtn:disabled {
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+  background: transparent;
+}
+
+/* ===== Formulario ===== */
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.formGroup {
+  display: grid;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: var(--color-vino-editar);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-vino-editar);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+  color: var(--color-texto-editar);
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--color-vino-oscuro-editar);
+  box-shadow: 0 0 0 2px rgba(122, 32, 72, 0.2);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ===== Barra unificada (buscar + botón + icono) ===== */
+.comboBar {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-vino-editar);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.comboInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px;
+  font-size: 1rem;
+  background: transparent;
+}
+
+.comboInput:focus {
+  outline: none;
+}
+
+.comboIconRight {
+  margin-right: 8px;
+  color: var(--color-vino-editar);
+}
+
+.comboBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-vino-editar);
+  color: var(--color-crema-editar);
+  padding: 6px 10px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.comboBtn:hover:not(:disabled) {
+  background: var(--color-vino-oscuro-editar);
+}
+
+.comboBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.comboBtnText {
+  display: inline-block;
+}
+
+/* Botón cambiar ocupa toda la barra */
+.changeBtn {
+  width: 100%;
+  justify-content: center;
+  font-size: 1rem;
+  padding: 10px;
+  background: #777; /* más grisáceo que en registrar */
+  color: #fff;
+  border-radius: 6px;
+}
+
+.changeBtn:hover:not(:disabled) {
+  background: #555;
+}
+
+.changeBtn span {
+  font-weight: 600;
+}
+
+.hiddenFile {
+  display: none;
+}
+
+/* ===== Resultados búsqueda ===== */
+.resultados {
+  margin-top: 6px;
+  display: grid;
+  gap: 6px;
+}
+
+.resultadoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resultadoItem:hover {
+  background: #f9f6f0;
+  border-color: var(--color-vino-editar);
+}
+
+.resultadoItem img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.resultadoItem span {
+  flex: 1;
+  font-size: 0.9rem;
+  color: var(--color-texto-editar);
+}
+
+.resultadoItem.selected {
+  border-color: var(--color-vino-editar);
+  background: #f5e1ea;
+}
+
+.check {
+  margin-left: auto;
+  color: var(--color-vino-editar);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* ===== Vista previa ===== */
+.imagePreview {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.imagePreview img {
+  max-width: 180px;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--color-vino-editar);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.imageStatus {
+  color: var(--color-vino-editar);
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ===== Acciones ===== */
+.modalActions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.confirmBtn {
+  background: linear-gradient(90deg, var(--color-vino-editar) 80%, #b63c56 100%);
+  color: var(--color-crema-editar);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirmBtn:hover:not(:disabled) { 
+  background: linear-gradient(90deg, #b63c56 60%, var(--color-vino-editar) 100%); 
+}
+
+.confirmBtn:disabled { 
+  opacity: .7; 
+  cursor: not-allowed; 
+}
+
+.cancelBtn {
+  background: #ddd;
+  color: #333;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelBtn:hover:not(:disabled) { 
+  background: #cfcfcf; 
+}
+
+.cancelBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .modal { 
+    padding: 18px; 
+    border-radius: 8px; 
+  }
+  
+  .closeBtn {
+    top: 8px;
+    right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea { 
+    font-size: 14px; 
+  }
+  
+  .confirmBtn, .cancelBtn { 
+    padding: 10px 14px; 
+    font-size: 15px; 
+  }
+
+  .imagePreview img {
+    max-width: 150px;
+    max-height: 120px;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .confirmBtn, .cancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
