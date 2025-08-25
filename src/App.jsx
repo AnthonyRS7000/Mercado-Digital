@@ -31,6 +31,8 @@ import SolicitudLayout from './layouts/SolicitudLayout';
 import SolicitudesRegistro from './pages/SolicitudesRegistro';
 import ProductosProveedor from './pages/Proveedor/ProductosProveedor';
 import MercadoPagoSuccess from './pages/Portal/Pedido/MercadoPagoSuccess';
+import MercadoPagoFailure from './pages/Portal/Pedido/MercadoPagoFailure';
+import MercadoPagoPending from './pages/Portal/Pedido/MercadoPagoPending';
 
 const App = () => {
   const navigate = useNavigate();
@@ -61,13 +63,13 @@ const App = () => {
 
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Portal />} />
-          <Route path="/producto/:id" element={<ProductoVista />} />
-          <Route path="/proveedor/:id" element={<ProductosProveedor />} />
-          <Route path="/carrito" element={<CarritoPage />} />
+          <Route path="producto/:id" element={<ProductoVista />} />
+          <Route path="proveedor/:id" element={<ProductosProveedor />} />
+          <Route path="carrito" element={<CarritoPage />} />
 
           {/* 🚚 Seguimiento de pedidos */}
           <Route 
-            path="/seguimiento" 
+            path="seguimiento" 
             element={
               <ProtectedRouteWithModal 
                 onLoginRequired={handleOpenLoginModal}
@@ -84,7 +86,7 @@ const App = () => {
 
           {/* 🛒 Pedido rápido / programado */}
           <Route 
-            path="/pedido" 
+            path="pedido" 
             element={
               <ProtectedRouteWithModal 
                 onLoginRequired={handleOpenLoginModal}
@@ -101,7 +103,7 @@ const App = () => {
 
           {/* 📦 Mis pedidos */}
           <Route 
-            path="/pedidosclientes" 
+            path="pedidosclientes" 
             element={
               <ProtectedRouteWithModal 
                 onLoginRequired={handleOpenLoginModal}
@@ -118,7 +120,7 @@ const App = () => {
 
           {/* ✅ ÉXITO MERCADO PAGO */}
           <Route 
-            path="/mp/success" 
+            path="mp/success" 
             element={
               <ProtectedRouteWithModal 
                 onLoginRequired={handleOpenLoginModal}
@@ -128,11 +130,16 @@ const App = () => {
                   </div>
                 </div>}
               >
-                {/* aquí MercadoPagoSuccess necesita onConfirm del padre Pedido */}
                 <MercadoPagoSuccess />
               </ProtectedRouteWithModal>
             } 
           />
+
+          {/* ❌ FALLIDO MERCADO PAGO */}
+          <Route path="mp/failure" element={<MercadoPagoFailure />} />
+
+          {/* ⏳ PENDIENTE MERCADO PAGO */}
+          <Route path="mp/pending" element={<MercadoPagoPending />} />
         </Route>
 
         {/* Rutas de registro */}
