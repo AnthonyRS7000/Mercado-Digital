@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bdMercado, { BASE_IMG_URL } from '../../../../services/bdMercado';
 import { AuthContext } from '../../../../context/AuthContext';
@@ -20,6 +20,13 @@ const Carrito = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const { user, setCartCount, cartRefreshTrigger, guestUuid } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // --- refs para controlar debounce, acumuladores y requests por item ---
+  const pendingTimersRef = useRef(new Map()); // key: `${carritoId}:${productId}` -> timeoutId
+  const inFlightRef = useRef(new Set());      // keys en vuelo
+  const deltaBufferRef = useRef(new Map());   // key -> delta acumulado
+
+  const isBusy = (carritoId, productId) => inFlightRef.current.has(`${carritoId}:${productId}`);
 
   const fetchCart = async () => {
     try {
@@ -54,14 +61,97 @@ const Carrito = () => {
     else navigate('/pedido');
   };
 
+  // -------- Incremento con debounce + acumulación de deltas --------
+  const queueIncrement = (carritoId, productId, delta) => {
+    const key = `${carritoId}:${productId}`;
+
+    // 1) UI optimista inmediata
+    setCart((prev) => {
+      if (!prev?.productos) return prev;
+      const productos = prev.productos.map((p) => {
+        if (p.producto.id !== productId) return p;
+        const nuevaCantidad = Math.max(1, Number(p.cantidad) + delta);
+        return { ...p, cantidad: nuevaCantidad };
+      });
+      const total_precio = productos.reduce(
+        (acc, p) => acc + Number(p.cantidad) * Number(p.producto.precio),
+        0
+      );
+      return { ...prev, productos, total_precio };
+    });
+
+    // 2) Acumular delta
+    const current = deltaBufferRef.current.get(key) || 0;
+    deltaBufferRef.current.set(key, current + delta);
+
+    // 3) Resetear debounce
+    if (pendingTimersRef.current.has(key)) {
+      clearTimeout(pendingTimersRef.current.get(key));
+    }
+
+    const t = setTimeout(async () => {
+      pendingTimersRef.current.delete(key);
+      const totalDelta = deltaBufferRef.current.get(key) || 0;
+      deltaBufferRef.current.delete(key);
+      if (totalDelta === 0) return;
+
+      if (inFlightRef.current.has(key)) return;
+      inFlightRef.current.add(key);
+
+      try {
+        const { data } = await bdMercado.patch(
+          `/carrito-incrementar/${carritoId}/${productId}`,
+          { delta: totalDelta } // 👈 aquí enviamos el acumulado
+        );
+
+        // 4) Ajuste final con backend
+        setCart((prev) => {
+          if (!prev?.productos) return prev;
+          const productos = prev.productos.map((p) =>
+            p.producto.id === productId
+              ? { ...p, cantidad: data.item.cantidad, producto: data.item.producto }
+              : p
+          );
+          return {
+            ...prev,
+            productos,
+            total_precio: data?.resumen?.total_precio ?? prev.total_precio,
+          };
+        });
+      } catch {
+        fetchCart(); // fallback
+      } finally {
+        inFlightRef.current.delete(key);
+      }
+    }, 250);
+
+    pendingTimersRef.current.set(key, t);
+  };
+
+  // -------- Mantengo tu PUT para el modal (setear cantidad exacta) --------
   const handleUpdateQuantity = async (carritoId, productId, newQuantity) => {
     try {
       if (newQuantity === '' || Number(newQuantity) <= 0) return;
+
+      // UI optimista
+      setCart((prev) => {
+        if (!prev?.productos) return prev;
+        const productos = prev.productos.map((p) =>
+          p.producto.id === productId ? { ...p, cantidad: Number(newQuantity) } : p
+        );
+        const total_precio = productos.reduce(
+          (acc, p) => acc + Number(p.cantidad) * Number(p.producto.precio),
+          0
+        );
+        return { ...prev, productos, total_precio };
+      });
+
       await bdMercado.put(`/carrito-actualizar/${carritoId}/${productId}`, {
         cantidad: parseFloat(newQuantity),
       });
+    } catch {
       fetchCart();
-    } catch {}
+    }
   };
 
   const handleRemoveProduct = async (carritoId, productId) => {
@@ -129,7 +219,6 @@ const Carrito = () => {
 
           <div className={styles.cartProducts}>
             {cart.productos.map(({ id, cantidad, producto }) => {
-              // quitar ceros de más
               const cantidadFormatted =
                 Number(cantidad) % 1 === 0 ? Number(cantidad).toString() : Number(cantidad);
 
@@ -163,13 +252,9 @@ const Carrito = () => {
                         <button
                           className={styles.qtyBtn}
                           onClick={() =>
-                            handleUpdateQuantity(
-                              cart.carrito_id,
-                              producto.id,
-                              Math.max(Number(cantidad) - 1, 1)
-                            )
+                            queueIncrement(cart.carrito_id, producto.id, -1)
                           }
-                          disabled={Number(cantidad) <= 1}
+                          disabled={Number(cantidad) <= 1 || isBusy(cart.carrito_id, producto.id)}
                           title="Disminuir"
                         >
                           <FontAwesomeIcon icon={faMinus} />
@@ -178,8 +263,9 @@ const Carrito = () => {
                         <button
                           className={styles.qtyBtn}
                           onClick={() =>
-                            handleUpdateQuantity(cart.carrito_id, producto.id, Number(cantidad) + 1)
+                            queueIncrement(cart.carrito_id, producto.id, +1)
                           }
+                          disabled={isBusy(cart.carrito_id, producto.id)}
                           title="Aumentar"
                         >
                           <FontAwesomeIcon icon={faPlus} />
