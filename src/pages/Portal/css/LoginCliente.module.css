@@ -235,3 +235,16 @@
     padding: 11px 7px;
   }
 }
+.togglePasswordBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 8px;
+  color: #666;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.togglePasswordBtn:hover {
+  color: #111;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { DataContext } from '../../context/DataContext';
@@ -28,6 +28,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     direccion: '',
   });
 
+  // 👀 Toggle contraseña
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -37,10 +40,26 @@ const LoginModal = ({ isOpen, onClose }) => {
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfileForm({ ...profileForm, [name]: value });
+    if (error) setError('');
   };
 
   const handleCompleteProfile = async (e) => {
     e.preventDefault();
+
+    // 👉 Validaciones
+    if (!/^\d{8}$/.test(profileForm.dni)) {
+      setError('El DNI debe tener exactamente 8 dígitos.');
+      return;
+    }
+    if (!/^\d{9}$/.test(profileForm.celular)) {
+      setError('El celular debe tener exactamente 9 dígitos.');
+      return;
+    }
+    if (!profileForm.direccion.trim()) {
+      setError('La dirección es obligatoria.');
+      return;
+    }
+
     setLoading(true);
     try {
       await bdMercado.post('/cliente/completar', profileForm, {
@@ -148,6 +167,8 @@ const LoginModal = ({ isOpen, onClose }) => {
                       value={profileForm.dni}
                       onChange={handleProfileChange}
                       required
+                      maxLength="8"
+                      pattern="\d{8}"
                     />
                   </div>
                   <div className={styles.formGroup}>
@@ -159,6 +180,8 @@ const LoginModal = ({ isOpen, onClose }) => {
                       value={profileForm.celular}
                       onChange={handleProfileChange}
                       required
+                      maxLength="9"
+                      pattern="\d{9}"
                     />
                   </div>
                   <div className={styles.formGroup}>
@@ -208,7 +231,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                         <FontAwesomeIcon icon={faLock} />
                       </span>
                       <input
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -216,6 +239,14 @@ const LoginModal = ({ isOpen, onClose }) => {
                         required
                         autoComplete="current-password"
                       />
+                      <button
+                        type="button"
+                        className={styles.togglePasswordBtn}
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                      >
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                      </button>
                     </div>
                   </div>
                   <button type="submit" className={styles.btn} disabled={loading}>
