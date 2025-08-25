@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import styles from "../css/MercadoPagoFailure.module.css";
+import styles from "./css/MercadoPagoFailure.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle, faArrowLeft, faRedoAlt } from "@fortawesome/free-solid-svg-icons";
 
