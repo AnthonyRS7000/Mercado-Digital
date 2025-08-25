@@ -6,7 +6,7 @@ import { DataContext } from '../../context/DataContext';
 import bdMercado from '../../services/bdMercado';
 import styles from './css/LoginCliente.module.css';
 
-const GoogleLogin = ({ onClose, setLoading }) => {
+const GoogleLogin = ({ onClose, setLoading, setNeedsProfileCompletion }) => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const { saveData } = useContext(DataContext);
@@ -28,6 +28,13 @@ const GoogleLogin = ({ onClose, setLoading }) => {
 
       saveData(userData);
       login(userData.user);
+
+      // 👇 si el cliente está incompleto, activamos el form en el mismo modal
+      const cliente = userData.user.related_data;
+      if (!cliente?.dni || !cliente?.celular || !cliente?.direccion) {
+        setNeedsProfileCompletion(true);
+        return; // 👈 no cierres todavía
+      }
 
       if (userId) {
         const uuid = localStorage.getItem('carrito_uuid');

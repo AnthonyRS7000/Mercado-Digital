@@ -20,10 +20,45 @@ const LoginModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 👉 Nuevo state para completar perfil
+  const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    dni: '',
+    celular: '',
+    direccion: '',
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     if (error) setError('');
+  };
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileForm({ ...profileForm, [name]: value });
+  };
+
+  const handleCompleteProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await bdMercado.post('/cliente/completar', profileForm, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+
+      // actualizar localStorage con datos completos
+      const data = JSON.parse(localStorage.getItem('data'));
+      data.user.related_data = { ...data.user.related_data, ...profileForm };
+      localStorage.setItem('data', JSON.stringify(data));
+
+      onClose();
+    } catch (err) {
+      console.error('Error completando perfil:', err);
+      setError('Hubo un problema al guardar tus datos.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -32,7 +67,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const handleSubmit = async (e) => {
@@ -97,19 +134,55 @@ const LoginModal = ({ isOpen, onClose }) => {
           </button>
           <div className={styles.modalContent}>
             <img src={logo} alt="Logo" className={styles.logo} />
-            {showRegister ? (
-              <RegistroModal 
-                onClose={onClose} 
-                setShowRegister={setShowRegister} 
-              />
+            {needsProfileCompletion ? (
+              <>
+                <h2 className={styles.modalTitle}>Completa tu perfil</h2>
+                {error && <div className={styles.errorMessage}>{error}</div>}
+                <form onSubmit={handleCompleteProfile} className={styles.form}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="dni">DNI</label>
+                    <input
+                      type="text"
+                      id="dni"
+                      name="dni"
+                      value={profileForm.dni}
+                      onChange={handleProfileChange}
+                      required
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="celular">Celular</label>
+                    <input
+                      type="text"
+                      id="celular"
+                      name="celular"
+                      value={profileForm.celular}
+                      onChange={handleProfileChange}
+                      required
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="direccion">Dirección</label>
+                    <input
+                      type="text"
+                      id="direccion"
+                      name="direccion"
+                      value={profileForm.direccion}
+                      onChange={handleProfileChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className={styles.btn} disabled={loading}>
+                    {loading ? 'Guardando...' : 'Guardar'}
+                  </button>
+                </form>
+              </>
+            ) : showRegister ? (
+              <RegistroModal onClose={onClose} setShowRegister={setShowRegister} />
             ) : (
               <>
                 <h2 className={styles.modalTitle}>Inicia sesión</h2>
-                {error && (
-                  <div className={styles.errorMessage}>
-                    {error}
-                  </div>
-                )}
+                {error && <div className={styles.errorMessage}>{error}</div>}
                 <form onSubmit={handleSubmit} className={styles.form} autoComplete="on">
                   <div className={styles.formGroup}>
                     <label htmlFor="email">Email</label>
@@ -145,11 +218,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                       />
                     </div>
                   </div>
-                  <button 
-                    type="submit" 
-                    className={styles.btn}
-                    disabled={loading}
-                  >
+                  <button type="submit" className={styles.btn} disabled={loading}>
                     {loading ? 'Ingresando...' : 'Ingresar'}
                   </button>
                 </form>
@@ -161,7 +230,11 @@ const LoginModal = ({ isOpen, onClose }) => {
                   <span className={styles.dividerText}>o</span>
                 </div>
                 <div className={styles.googleContainer}>
-                  <GoogleLogin onClose={onClose} setLoading={setLoading} />
+                  <GoogleLogin 
+                    onClose={onClose} 
+                    setLoading={setLoading} 
+                    setNeedsProfileCompletion={setNeedsProfileCompletion} // 👈 paso el setter
+                  />
                 </div>
               </>
             )}
