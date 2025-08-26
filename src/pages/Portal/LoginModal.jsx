@@ -6,7 +6,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { DataContext } from '../../context/DataContext';
 import bdMercado from '../../services/bdMercado';
 import styles from './css/LoginCliente.module.css';
-import logo from '../../../public/Logo.svg';
+import logo from '../../../public/logo_vino.png';
 import GoogleLogin from './GoogleLogin';
 import RegistroModal from './RegistroModal';
 
