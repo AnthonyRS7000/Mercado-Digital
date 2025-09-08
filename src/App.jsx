@@ -33,6 +33,8 @@ import ProductosProveedor from './pages/Proveedor/ProductosProveedor';
 import MercadoPagoSuccess from './pages/Portal/Pedido/MercadoPagoSuccess';
 import MercadoPagoFailure from './pages/Portal/Pedido/MercadoPagoFailure';
 import MercadoPagoPending from './pages/Portal/Pedido/MercadoPagoPending';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+
 
 const App = () => {
   const navigate = useNavigate();
@@ -60,6 +62,7 @@ const App = () => {
     <>
       <Routes>
         <Route path="/login" element={<LoginAdmin />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Portal />} />
