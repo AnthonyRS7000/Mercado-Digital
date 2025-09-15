@@ -6,10 +6,9 @@ import { FaArrowLeft, FaStore } from 'react-icons/fa';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import '../../styles/css/ProductosProveedor.css';
 
-// 👇 añadidos para seguir el mismo flujo que Productovista
 import { v4 as uuidv4 } from 'uuid';
-import PesoModal from '../Portal/components/peso/PesoModal';     // <- ajusta la ruta si difiere
-import UnidadModal from '../Portal/components/peso/UnidadModal'; // <- ajusta la ruta si difiere
+import PesoModal from '../Portal/components/peso/PesoModal';
+import UnidadModal from '../Portal/components/peso/UnidadModal';
 import { DataContext } from '../../context/DataContext';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -21,7 +20,6 @@ const ProductosProveedor = () => {
   const { data } = useContext(DataContext);
   const { setCartCount } = useContext(AuthContext);
 
-  // nombre que llega desde la ficha del producto (si venías navegando)
   const provNameFromState = location.state?.provName || '';
 
   const [productos, setProductos] = useState([]);
@@ -29,11 +27,9 @@ const ProductosProveedor = () => {
   const [err, setErr] = useState(null);
   const [provName, setProvName] = useState(provNameFromState);
 
-  // feedback en tarjeta
   const [addingIds, setAddingIds] = useState(new Set());
   const [okIds, setOkIds] = useState(new Set());
 
-  // estado del modal { open: bool, tipo: 'peso'|'unidad', prod: objetoProducto }
   const [modal, setModal] = useState({ open: false, tipo: null, prod: null });
 
   useEffect(() => {
@@ -78,7 +74,6 @@ const ProductosProveedor = () => {
 
   const titulo = provName ? `Productos de ${provName}` : `Productos del proveedor #${id}`;
 
-  // === Flujo unificado de agregado (igual que Productovista) ===
   const handleAddToCart = async (productId, quantity) => {
     let payload = {
       producto_id: productId,
@@ -100,11 +95,8 @@ const ProductosProveedor = () => {
     setCartCount(prev => prev + 1);
   };
 
-  // abrir modal según tipo
   const abrirModalAgregar = (e, prod) => {
     e.stopPropagation();
-    if (Number(prod.stock) <= 0) return;
-
     if (prod.tipo === 'peso') {
       setModal({ open: true, tipo: 'peso', prod });
     } else {
@@ -112,22 +104,18 @@ const ProductosProveedor = () => {
     }
   };
 
-  // cerrar modal
   const cerrarModal = () => setModal({ open: false, tipo: null, prod: null });
 
-  // llamado por los modales al confirmar
   const confirmarDesdeModal = async ({ productId, quantity = 1 }) => {
     const pid = productId ?? modal.prod?.id;
     if (!pid) return;
 
-    // para feedback en la tarjeta
     setOkIds(prev => { const n = new Set(prev); n.delete(pid); return n; });
     setAddingIds(prev => new Set(prev).add(pid));
 
     try {
       await handleAddToCart(pid, quantity);
 
-      // mostrar "Agregado!"
       setOkIds(prev => new Set(prev).add(pid));
       setTimeout(() => {
         setOkIds(prev => { const n = new Set(prev); n.delete(pid); return n; });
@@ -150,9 +138,8 @@ const ProductosProveedor = () => {
           <h1 className="prov-title">{titulo}</h1>
         </header>
         <div className="prov-loading prov-loading--center">
-          {/* guía: usar FaStore como spinner */}
           <FaStore className="spinner-store" />
-          <span>Cargando productos…</span>
+          <span>Cargando productos...</span>
         </div>
       </div>
     );
@@ -233,7 +220,7 @@ const ProductosProveedor = () => {
                   <span className="prov-price">S/ {p.precio}</span>
                   {typeof p.stock !== 'undefined' && (
                     <span className={`prov-stock ${sinStock ? 'out' : ''}`}>
-                      {sinStock ? 'Sin stock' : `Stock: ${p.stock}`}
+                      {sinStock ? 'Stock no registrado' : `Stock: ${p.stock}`}
                     </span>
                   )}
                 </div>
@@ -247,20 +234,18 @@ const ProductosProveedor = () => {
                   )}
                 </div>
 
-                {/* Acciones */}
                 <div className="prov-actions">
                   <button
                     className="btn-add"
                     onClick={(e) => abrirModalAgregar(e, p)}
-                    disabled={sinStock || agregando}
+                    disabled={agregando}
                     aria-label="Agregar al carrito"
                   >
                     {agregando ? (
-                      <>
-                        {/* guía: usar FaStore como spinner */}
+                      <React.Fragment>
                         <FaStore className="btn-add-spinner" />
-                        <span>Agregando…</span>
-                      </>
+                        <span>Agregando...</span>
+                      </React.Fragment>
                     ) : agregadoOk ? (
                       <span>¡Agregado!</span>
                     ) : (
@@ -274,7 +259,6 @@ const ProductosProveedor = () => {
         })}
       </section>
 
-      {/* ==== Modales ==== */}
       {modal.open && modal.tipo === 'peso' && modal.prod && (
         <PesoModal
           isOpen={modal.open}
@@ -282,7 +266,6 @@ const ProductosProveedor = () => {
           productId={modal.prod.id}
           productName={modal.prod.nombre}
           productPrice={modal.prod.precio}
-          // si tu PesoModal necesita props extra (stock, unidad mínima, etc) pásalas aquí
           handleAddToCart={({ productId, quantity }) =>
             confirmarDesdeModal({ productId, quantity })
           }
@@ -296,7 +279,6 @@ const ProductosProveedor = () => {
           productId={modal.prod.id}
           productName={modal.prod.nombre}
           productPrice={modal.prod.precio}
-          // puedes pasar un valor por defecto de cantidad desde aquí si tu UnidadModal lo soporta
           handleAddToCart={({ productId, quantity }) =>
             confirmarDesdeModal({ productId, quantity })
           }
